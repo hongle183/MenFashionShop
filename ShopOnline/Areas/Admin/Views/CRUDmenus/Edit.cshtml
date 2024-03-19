@@ -1,0 +1,100 @@
+﻿@model ShopOnline.Models.Menu
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h4 class="page-title text-truncate text-dark font-weight-medium mb-1">Edit menu</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0 p-0">
+                        <li class="breadcrumb-item"><a href="~/Admin/CRUDmenus/Index" class="text-muted">Menu manage</a></li>
+                        <li class="breadcrumb-item text-muted active" aria-current="page">Edit</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="col-5 align-self-center">
+            <div class="customize-input float-right">
+                <select class="custom-select custom-select-set form-control bg-white border-0 custom-shadow custom-radius">
+                    <option selected>Aug 19</option>
+                    <option value="1">July 19</option>
+                    <option value="2">Jun 19</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Edit menu</h3>
+                    @using (Html.BeginForm("Edit", "CRUDmenus", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-body">
+                            @Html.HiddenFor(model => model.menuId)
+                            @Html.HiddenFor(model => model.dateCreate)
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="menuName">Menu name</label>
+                                        @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control", @id = "menuName" } })
+                                        <span class="form-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="meta">Meta</label>
+                                        @Html.EditorFor(model => model.meta, new { htmlAttributes = new { @class = "form-control", @id = "meta" } })
+                                        <span class="form-message"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="order">Order</label>
+                                        @Html.EditorFor(model => model.order, new { htmlAttributes = new { @class = "form-control", @id = "order" } })
+                                        <span class="form-message"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="status">Is checked</label>
+                                        @Html.EditorFor(model => model.status, new { htmlAttributes = new { @class = "form-control", @id = "status" } })
+                                        <span class="form-message"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="text-right">
+                                <button type="submit" class="btn waves-effect waves-light btn-info">Save changes</button>
+                                <a href="~/Admin/CRUDmenus/Index" class="btn btn-secondary">Back to list</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/js/validator.js"></script>
+<script>Validator({
+        form: '#form-1',
+        formGroupSelector: '.form-group',
+        errorSelector: '.form-message',
+        rules: [
+            Validator.isRequired('#menuName'),
+            Validator.isRequired('#meta'),
+            Validator.isRequired('#order'),
+            Validator.isRequired('#status')
+        ],
+    });</script>

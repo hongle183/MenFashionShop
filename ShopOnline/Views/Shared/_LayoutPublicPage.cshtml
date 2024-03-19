@@ -1,0 +1,175 @@
+﻿@using System.Web.Optimization
+@using ShopOnline.Models
+@{
+    Member user = (Member)Session["info"];
+}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>@ViewBag.Title - FashionStore</title>
+
+    <!--favicon-->
+    <link rel="shortcut icon" type="image/png" href="~/Content/img/icon/favicon.png" />
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <!-- Css Styles -->
+    @Styles.Render("~/bundle/css")
+    <!--<script>(function (w, d) { w.CollectId = "60827f2b34b8b76f099ef81c"; var h = d.head || d.getElementsByTagName("head")[0]; var s = d.createElement("script"); s.setAttribute("type", "text/javascript"); s.async = true; s.setAttribute("src", "https://collectcdn.com/launcher.js"); h.appendChild(s); })(window, document);</script>-->
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin/ Mobile Menu -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__option">
+            <div class="offcanvas__links">
+                <a href="/dang-nhap">Sign in</a>
+                <a href="#">FAQs</a>
+            </div>          
+        </div>
+        <div class="offcanvas__nav__option">
+            <a href="#" class="search-switch"><i class="fa-solid fa-magnifying-glass"></i></a>
+            <a href="#"><i class="fa-regular fa-heart"></i></a>
+            <a href="~/Cart/Cart"><i class="fa-solid fa-bag-shopping fa-lg"></i><span>@ViewBag.quanlityItem</span></a>
+            <div class="price">$ @ViewBag.totalPrice</div>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__text">
+            <p>Free shipping, 30-day return or refund guarantee.</p>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                @Html.Action("Index", "Menus")
+
+
+                @Html.Action("Navbar", "Cart")
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars"></i></div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+
+    @RenderBody()
+
+    <!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="footer__about">
+                        <div class="footer__logo">
+                            <a href="#"><img src="~/Content/img/footer-logo.png" alt="Footer logo"></a>
+                        </div>
+                        <p>
+                            The customer is at the heart of our unique business model, which includes design.
+                        </p>
+                        <a href="#"><img src="~/Content/img/payment.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>Store</h6>
+                        <ul>
+                            <li><a href="/trang-chu">Home</a></li>
+                            <li><a href="/san-pham">Shop</a></li>
+                            <li><a href="/bai-viet">Blog</a></li>
+                            <li><a href="/ve-chung-toi">About us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>Help &amp; Support</h6>
+                        <ul>
+                            <li><a href="/lien-he">Contact Us</a></li>
+                            <li><a href="#">Payment Methods</a></li>
+                            <li><a href="#">Delivery</a></li>
+                            <li><a href="#">Return & Exchanges</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>Find us on</h6>
+                        <div class="pb-2">
+                            <a href="https://www.facebook.com/">
+                                <img src="~/Content/img/icon/facebook.png" style="width:15%;" alt="">
+                            </a>
+                            <a href="https://www.instagram.com/">
+                                <img src="~/Content/img/icon/instagram.png" style="width:15%;" alt="">
+                            </a>
+                            <a href="https://www.youtube.com/">
+                                <img src="~/Content/img/icon/youtube.png" style="width:15%;" alt="">
+                            </a>
+                        </div>
+                        <h6>NewLetter</h6>
+                        <div class="footer__newslatter">
+                            <p>Be the first to know about new arrivals, look books, sales & promos!</p>
+                            <form action="#">
+                                <input type="text" placeholder="Your email">
+                                <button type="submit"><img src="~/Content/img/icon/send.png" style="width:80%;" alt=""/></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="footer__copyright__text">
+                        <p>
+                            Copyright ©
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>
+                            Fashion Store
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+    <!-- Search Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search End -->
+    <!-- Js Plugins -->
+    @Scripts.Render("~/bundle/js")
+    <script>
+    //session end
+    var sessionTimeoutWarning = @Session.Timeout- 1;
+
+    var sTimeout = parseInt(sessionTimeoutWarning) * 60 * 1000;
+    setTimeout('SessionEnd()', sTimeout);
+
+    function SessionEnd() {
+        window.location = "/User/LogOut";
+    }
+    </script>
+</body>
+
+</html>

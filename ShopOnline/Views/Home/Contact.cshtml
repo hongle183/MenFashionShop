@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Contact";
+    Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
+}
+<script>
+    var obj = document.querySelector(".navlist li:nth-child(1)");
+    obj.classList.remove("active");
+    var liTags = document.querySelectorAll('.navlist li');
+    for (var i = 0; i < liTags.length; i++) {
+        if (liTags[i].getAttribute('data-value') == "lien-he") {
+            liTags[i].classList.add("active");
+        }
+    }
+</script>
+<!-- Contact Section Begin -->
+<section class="contact spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="contact__text">
+                    <div class="section-title">
+                        <span>Information</span>
+                        <h2>Contact Us</h2>
+                    </div>
+                    <p>
+                        <img src="~/Content/img/icon/place.png" style="width:4%;" alt=""> &nbspNguyễn Hữu Thọ, TP. HCM
+                        <br /><img src="~/Content/img/icon/gmail.png" style="width:4%;" alt=""> fashionstore@gmail.com
+                        <br /><img src="~/Content/img/icon/phone.png" style="width:4%;" alt=""> +84 0335 880 080
+                    </p>
+                    <div class="h2">
+                        <a href="https://www.facebook.com/">
+                            <img src="~/Content/img/icon/facebook.png" style="width:10%;" alt="">
+                        </a>
+                        <a href="https://www.instagram.com/">
+                            <img src="~/Content/img/icon/instagram.png" style="width:10%;" alt="">
+                        </a>
+                        <a href="https://www.youtube.com/">
+                            <img src="~/Content/img/icon/youtube.png" style="width:10%;" alt="">
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6">
+                @if (ViewBag.MessageSuccess != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>@ViewBag.MessageSuccess</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+                <div class="contact__form">
+                    @using (Html.BeginForm("Contact", "Home", FormMethod.Post, new { @id = "form-1" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="row">
+                            <div class="col-lg-6 form-group">
+                                <input class="form-control" type="text" placeholder="Name" name="name" id="name">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="col-lg-6 form-group">
+                                <input class="form-control" type="text" placeholder="Email" name="email" id="email">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="col-lg-12 form-group">
+                                <textarea class="form-control" placeholder="Message" name="message" id="message"></textarea>
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="col-lg-12 form-group">
+                                <button type="submit" class="btn site-btn">Send Message</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Contact Section End -->
+<script src="~/Content/js/validator.js"></script>
+<script>
+    Validator({
+        form: '#form-1',
+        formGroupSelector: '.form-group',
+        errorSelector: '.form-message',
+        rules: [
+            Validator.isRequired('#name'),
+            Validator.isEmail('#email'),
+            Validator.isRequired('#message'),
+        ],
+    });
+</script>

@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Blog";
+    Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
+}
+@using PagedList.Mvc
+@using ShopOnline.Models
+@model PagedList.PagedList<Article>
+
+<script>
+    var obj = document.querySelector(".navlist li:nth-child(1)");
+    obj.classList.remove("active");
+    var liTags = document.querySelectorAll('.navlist li');
+    for (var i = 0; i < liTags.length; i++) {      
+        if (liTags[i].getAttribute('data-value') == "bai-viet") {
+            liTags[i].classList.add("active");
+        }
+    }  
+</script>
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>Article</h4>
+                    <div class="breadcrumb__links">
+                        <a href="/trang-chu">Home</a>
+                        <span>Article</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+<!-- Blog Section Begin -->
+<section class="blog spad">
+    <div class="container">
+        <div class="row">
+            @foreach (var i in Model)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <div class="blog__item__pic set-bg" data-setbg=@Url.Content(""+@i.image)></div>
+                        <div class="blog__item__text card">
+                            <span><img src="~/Content/img/icon/date.png" style="width:10%;" alt=""> @i.dateCreate</span>
+                            <h5>@i.title</h5>
+                            <a href="@Url.Action("ArticleDetail", "Article", new { type = "chi-tiet-bai-viet", meta =i.meta + '-' + (CSharpVitamins.ShortGuid)i.articleId})">Read more</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="product__pagination">
+        @Html.PagedListPager(Model, page => Url.Action("ArticleList", new { page = page }))
+    </div>
+</section>
+<!-- Blog Section End -->

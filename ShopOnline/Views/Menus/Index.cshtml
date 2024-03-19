@@ -1,0 +1,29 @@
+﻿@model IEnumerable<ShopOnline.Models.Menu>
+
+@{
+    ViewBag.Title = "Index";
+}
+<div class="col-lg-3 col-md-3">
+    <div class="header__logo">
+        <a href="/@Model.ElementAt(0).meta"><img src="~/Content/img/logo.png" alt=""></a>
+    </div>
+</div>
+<div class="col-lg-6 col-md-6 my-auto">
+    <nav class="header__menu mobile-menu">
+        <ul class="navlist">
+            @{
+                foreach (var i in Model)
+                {
+                    if (i.order == 1)
+                    {
+                        <li class="active" data-value="@i.meta"><a href="/@i.meta">@i.name</a></li>
+                    }
+                    else
+                    {
+                        <li data-value="@i.meta"><a href="/@i.meta">@i.name</a></li>
+                    }
+                }
+            }
+        </ul>
+    </nav>
+</div>

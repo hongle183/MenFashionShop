@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='utf-8' />
+    <!-- CSS -->
+    <link href="https://unpkg.com/smartwizard@6.0.6/dist/css/smart_wizard_dots.min.css" rel="stylesheet"
+        type="text/css" />
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js"
+        type="text/javascript"></script>
+</head>
+
+<body>
+    <!-- SmartWizard html -->
+    <div id="smartwizard">
+        <ul class="nav nav-progress">
+            <li class="nav-item">
+                <a class="nav-link" href="#step-1">
+                    <div class="num">1</div>
+                    Step Title
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#step-2">
+                    <span class="num">2</span>
+                    Step Title
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#step-3">
+                    <span class="num">3</span>
+                    Step Title
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#step-4">
+                    <span class="num">4</span>
+                    Step Title
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                Step content
+            </div>
+            <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
+                Step content
+            </div>
+            <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+                Step content
+            </div>
+            <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
+                Step content
+            </div>
+        </div>
+
+        <!-- Include optional progressbar HTML -->
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0"
+                aria-valuemax="100"></div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            // Smart Wizard
+            $('#smartwizard').smartWizard({
+                selected: 0,
+                // autoAdjustHeight: false,
+                theme: 'dots', // basic, arrows, square, round, dots
+                transition: {
+                  animation:'none'
+                },
+                toolbar: {
+                  showNextButton: true, // show/hide a Next button
+                  showPreviousButton: true, // show/hide a Previous button
+                  position: 'bottom', // none/ top/ both bottom
+                  extraHtml: `<button class="btn btn-success" id="btnFinish" disabled onclick="onConfirm()">Complete Order</button>
+                              <button class="btn btn-danger" id="btnCancel" onclick="onCancel()">Cancel</button>`
+                },
+                anchor: {
+                    enableNavigation: true, // Enable/Disable anchor navigation 
+                    enableNavigationAlways: false, // Activates all anchors clickable always
+                    enableDoneState: true, // Add done state on visited steps
+                    markPreviousStepsAsDone: true, // When a step selected by url hash, all previous steps are marked done
+                    unDoneOnBackNavigation: true, // While navigate back, done state will be cleared
+                    enableDoneStateNavigation: true // Enable/Disable the done state navigation
+                },
+            });
+
+            $("#state_selector").on("change", function() {
+                $('#smartwizard').smartWizard("setState", [$('#step_to_style').val()], $(this).val(), !$('#is_reset').prop("checked"));
+                return true;
+            });
+
+            $("#style_selector").on("change", function() {
+                $('#smartwizard').smartWizard("setStyle", [$('#step_to_style').val()], $(this).val(), !$('#is_reset').prop("checked"));
+                return true;
+            });
+
+        });
+    </script>
+</body>
+
+</html>
