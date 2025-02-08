@@ -55,7 +55,10 @@ namespace ShopOnline.Areas.Admin.Controllers
 
         public ActionResult ExportPDF()
         {
-            return new Rotativa.ActionAsPdf("InvoinceDetail");
+            return new Rotativa.ActionAsPdf("InvoinceDetail")
+            {
+                FileName = "Invoice.pdf" // Tùy chọn đặt tên file PDF
+            };
         }
     }
 }

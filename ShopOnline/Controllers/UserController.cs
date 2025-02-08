@@ -33,13 +33,13 @@ namespace ShopOnline.Controllers
             {
                 if (check == null)
                 {
-                    ModelState.AddModelError("", "Your phone/email or password is invalid.");
+                    ModelState.AddModelError("", "Số điện thoại/ Email hoặc mật khẩu không hợp lệ.");
                 }
                 else
                 {
                     if (!this.IsCaptchaValid(""))
                     {
-                        ViewBag.captcha = "Captcha is not valid";
+                        ViewBag.captcha = "Captcha không hợp lệ.";
                     }
                     else
                     {
@@ -70,21 +70,21 @@ namespace ShopOnline.Controllers
                     if (check != null)
                     {
                         // check username constained in database
-                        ModelState.AddModelError("", "Your phone or email already exists.");
+                        ModelState.AddModelError("", "Số điện thoại hoặc email đã được sử dụng");
                         return View(member);
                     }
                     else
                     {
                         member.password = Encryptor.MD5Hash(member.password);
                         member.dateCreate = DateTime.Now;
-                        member.roleId = Guid.Parse("c07429e6-4fcf-4fa7-8514-6a9a406c01e8");
+                        member.roleId = Guid.Parse("54ed1855-5103-4121-811c-3997ce4c2241");
                         member.avatar = "~/Content/img/avatar.png";
                         member.status = false;
                         db.Members.Add(member);
                         var result = db.SaveChanges();
                         if (result > 0)
                         {
-                            TempData["msgSuccess"] = "Successfully create account!";
+                            TempData["msgSuccess"] = "Tạo tài khoản thành công! Vui lòng đăng nhập.";
                             return RedirectToAction("SignIn");
                         }
                     }
@@ -93,7 +93,7 @@ namespace ShopOnline.Controllers
             }
             catch(Exception ex)
             {
-                TempData["msgFailed"] = "Failed create account! " +ex.Message;
+                TempData["msgFailed"] = "Xảy ra lỗi! " +ex.Message;
                 return RedirectToAction("SignIn");
             }
         }

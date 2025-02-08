@@ -106,7 +106,7 @@
                     <th class="text-center">Discount</th>
                     <th class="text-center">Quality</th>
                     <th class="text-center">Category</th>
-                    <th class="text-center">Checked</th>
+                    <th class="text-center">Public</th>
                     <th class="text-center">Feature</th>
                 </tr>
             </thead>
@@ -190,15 +190,3 @@
         justify-content: flex-end;
     }
 </style>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#search").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("table tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>

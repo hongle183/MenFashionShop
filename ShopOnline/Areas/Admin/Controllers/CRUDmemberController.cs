@@ -29,6 +29,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             ViewBag.roleId = new SelectList(db.Roles, "roleId", "roleName");
             return View();
         }
+
         [HttpPost]
         public ActionResult Create(Member member, HttpPostedFileBase uploadFile)
         {
@@ -64,7 +65,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                             member.avatar = "~/Content/img/avatar/" + fileName;
                             member.status = false;
                             member.dateCreate = DateTime.Now;
-                            
+
                             db.Members.Add(member);
                             if (db.SaveChanges() > 0)
                             {

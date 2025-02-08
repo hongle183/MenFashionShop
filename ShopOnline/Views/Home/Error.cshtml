@@ -3,10 +3,7 @@
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
 
-<link href='https://fonts.googleapis.com/css?family=Anton|Passion+One|PT+Sans+Caption' rel='stylesheet' type='text/css'>
-
 <body>
-
     <!-- Error Page -->
     <div class="error">
         <div class="container-floud">
@@ -24,6 +21,10 @@
     <!-- Error Page -->
 </body>
 <script>
+    setTimeout(function() {
+            window.location.href = '/';
+    }, 5000); // Redirects after 5 seconds
+
     function randomNum() {
         "use strict";
         return Math.floor(Math.random() * 9) + 1;

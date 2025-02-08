@@ -1,18 +1,7 @@
 ﻿@{
-    ViewBag.Title = "ProductList";
+    ViewBag.Title = "Danh sách sản phẩm";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
-
-<script>
-    var obj = document.querySelector(".navlist li:nth-child(1)");
-    obj.classList.remove("active");
-    var liTags = document.querySelectorAll('.navlist li');
-    for (var i = 0; i < liTags.length; i++) {
-        if (liTags[i].getAttribute('data-value') == "san-pham") {
-            liTags[i].classList.add("active");
-        }
-    }
-</script>
 
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
@@ -22,7 +11,7 @@
                 <div class="breadcrumb__text">
                     <h4>Shop</h4>
                     <div class="breadcrumb__links">
-                        <a href="/trang-chu">Home</a>
+                        <a href="/trang-chu">Trang chủ</a>
                         <span>Shop</span>
                     </div>
                 </div>
@@ -32,23 +21,24 @@
 </section>
 <!-- Breadcrumb Section End -->
 <!-- Shop Section Begin -->
+
 <section class="shop spad">
     <div class="container">
         <div class="row">
             <div class="col-lg-3">
                 <div class="shop__sidebar">
                     <div class="shop__sidebar__search">
-                        @using (Html.BeginForm("ProductList", "Shop", FormMethod.Get, new { @style = "display: flex; align-items: center;" }))
+                        @using (Html.BeginForm("Shop", "Shop", FormMethod.Get, new { @style = "display: flex; align-items: center;" }))
                         {
-                            <input type="text" placeholder="Search...">
+                            <input type="text" name="searching" placeholder="Tìm kiếm...">
                             <button type="submit"><span class="icon_search"></span></button>
                         }
                     </div>
                     <div class="shop__sidebar__accordion">
-                        <div class="accordion" id="accordionExample">
+                        <div id="accordionExample">
                             <div class="card p-3">
                                 <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                                    <a data-toggle="collapse" data-target="#collapseOne">Danh mục sản phẩm</a>
                                 </div>
                                 <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
@@ -60,34 +50,33 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card p-3">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseOne">Brands</a>
-                                </div>
-                                <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__categories">
-                                            <ul class="nice-scroll">
-                                                @Html.Action("Brand", "Shop")
-                                            </ul>
+                            @*<div class="card p-3">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseOne">Brands</a>
+                                    </div>
+                                    <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__categories">
+                                                <ul class="nice-scroll">
+                                                    @Html.Action("Brand", "Shop")
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                </div>*@
                             <div class="card p-3">
                                 <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
+                                    <a data-toggle="collapse" data-target="#collapseThree">Giá sản phẩm</a>
                                 </div>
                                 <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="shop__sidebar__price">
                                             <ul>
-                                                <li><a href="#">$0.00 - $50.00</a></li>
-                                                <li><a href="#">$50.00 - $100.00</a></li>
-                                                <li><a href="#">$100.00 - $150.00</a></li>
-                                                <li><a href="#">$150.00 - $200.00</a></li>
-                                                <li><a href="#">$200.00 - $250.00</a></li>
-                                                <li><a href="#">250.00+</a></li>
+                                                <li>@Html.ActionLink("< 100,000₫", "Shop", new { minPrice = 0, maxPrice = 100000 })</li>
+                                                <li>@Html.ActionLink("100,000₫ - 250,000₫", "Shop", new { minPrice = 100000, maxPrice = 250000 })</li>
+                                                <li>@Html.ActionLink("250,000₫ - 500,000₫", "Shop", new { minPrice = 250000, maxPrice = 500000 })</li>
+                                                <li>@Html.ActionLink("500,000₫ - 1,000,000₫", "Shop", new { minPrice = 500000, maxPrice = 1000000 })</li>
+                                                <li>@Html.ActionLink("> 1,000,000₫", "Shop", new { minPrice = 1000000, maxPrice = (decimal?)null })</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -98,28 +87,20 @@
                 </div>
             </div>
             <div class="col-lg-9">
-                <div class="shop__product__option">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="shop__product__option__left">
-                                <p>Showing 1–12 of 126 results</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="shop__product__option__right">
-                                <p>Sort by Price:</p>
-                                <select>
-                                    <option value="">Low To High</option>
-                                    <option value="">$0 - $55</option>
-                                    <option value="">$55 - $100</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @Html.Action("ListProduct", "Shop")
+                @Html.Action("ListProduct", "Shop", new { meta = ViewBag.meta })
             </div>
         </div>
     </div>
 </section>
 <!-- Shop Section End -->
+
+<script>
+    var obj = document.querySelector(".navbar li:nth-child(1)");
+    obj.classList.remove("active");
+    var liTags = document.querySelectorAll('.navbar li');
+    for (var i = 0; i < liTags.length; i++) {
+        if (liTags[i].getAttribute('data-value') == "san-pham") {
+            liTags[i].classList.add("active");
+        }
+    }
+</script>

@@ -90,10 +90,9 @@
             </tr>
         </thead>
         <tbody>
-            @{ int stt = 1, total = 0, totaldiscount = 0, totalprice = 0, tempPrice = 0;}
+            @{ int stt = 1, total = 0, totaldiscount = 0;}
             @foreach (var i in Model)
             {
-                tempPrice = (int)i.price * (int)i.quanlity;
                 <tr>
                     <th scope="row" class="text-center font-weight-medium" width="80px">@stt</th>
                     <td width="400px">
@@ -109,14 +108,14 @@
                     <td class="text-center">@i.quanlity</td>
                     <td class="text-center">@String.Format("{0:#,0}", i.Product.price)</td>
                     <td class="text-center">@i.Product.discount%</td>
-                    <td class="text-center">@String.Format("{0:#,0}", tempPrice)</td>
+                    <td class="text-center">@String.Format("{0:#,0}", (int)i.price * (int)i.quanlity)</td>
                 </tr>
                 stt++;
-                total += tempPrice;
-                totaldiscount += (int)i.price * (int)i.discount / 100;
+                total += (int)i.Product.price * (int)i.quanlity;
+                totaldiscount += ((int)i.Product.price - (int)i.price) * (int)i.quanlity;
             }
             @{ 
-                totalprice = total - totaldiscount; 
+                int totalprice = total - totaldiscount; 
              }
         </tbody>
     </table>
@@ -135,10 +134,10 @@
         </thead>
         <tbody>
             <tr>
-                <td class="text-center">@String.Format("{0:#,0}", totalprice)</td>
+                <td class="text-center">@String.Format("{0:#,0}", total)</td>
                 <td class="text-center">$0</td>
                 <td class="text-center">@String.Format("{0:#,0}", totaldiscount)</td>
-                <td class="text-center">@String.Format("{0:#,0}", total)</td>
+                <td class="text-center">@String.Format("{0:#,0}", totalprice)</td>
                 <td class="text-center"><a href="@Url.Action("ExportPDF", "CRUDinvoince")"><u>Print order</u></a></td>
             </tr>
         </tbody>

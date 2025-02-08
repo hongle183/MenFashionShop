@@ -1,24 +1,21 @@
 ﻿@using ShopOnline.Models
 @model List<Cart>
 @{
-    ViewBag.Title = "Cart";
+    ViewBag.Title = "Giỏ hàng";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
-<script>
-    var obj = document.querySelector(".navlist li:nth-child(1)");
-    obj.classList.remove("active");
-</script>
+
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcrumb__text">
-                    <h4>Shopping Cart</h4>
+                    <h4>@ViewBag.Title</h4>
                     <div class="breadcrumb__links">
-                        <a href="/trang-chu">Home</a>
+                        <a href="/trang-chu">Trang chủ</a>
                         <a href="/san-pham">Shop</a>
-                        <span>Shopping Cart</span>
+                        <span>@ViewBag.Title</span>
                     </div>
                 </div>
             </div>
@@ -39,9 +36,9 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Product</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Số lượng</th>
+                                        <th>Thành tiền</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -49,13 +46,11 @@
                                     @foreach (var i in Model)
                                     {
                                         <tr>
-                                            <td class="product__cart__item">
-                                                <div class="product__cart__item__pic">
-                                                    <img src=@Url.Content(""+i.imageItem) style="width:20%;">
-                                                </div>
+                                            <td class="product__cart__item d-flex align-items-center">
+                                                <img class="product__cart__item__pic" src=@Url.Content(""+i.imageItem) style="width:20%;">
                                                 <div class="product__cart__item__text">
-                                                    <a href="@Url.Action("ShopDetail","Shop",new { id = i.idItem})"><h6>@i.nameItem</h6></a>
-                                                    <h5>@String.Format("{0:0,0}", i.priceItem)</h5>
+                                                    <a href="@Url.Action("ProductDetail", "Shop", new { meta = i.metaItem, id = i.idItem })"><h6>@i.nameItem</h6></a>
+                                                    <h5>@String.Format("{0:N0}", i.priceItem) ₫ <small class="discount-price">@String.Format("{0:N0}", i.unitPrice) ₫</small></h5>
                                                 </div>
                                             </td>
                                             <td class="quantity__item">
@@ -65,7 +60,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="cart__price">@String.Format("{0:0,0}", i.priceTotal) ₫</td>
+                                            <td class="cart__price">@String.Format("{0:N0}", i.priceTotal) ₫</td>
                                             <td class="cart__close">
                                                 <a href="@Url.Action("DeteteCart","Cart", new { id = i.idItem})"><img src="~/Content/img/icon/close.png" alt="" /></a>
                                             </td>
@@ -76,13 +71,11 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="continue__btn">
-                                    <a class="rounded btn" href="/san-pham">Continue Shopping</a>
-                                </div>
+                                <a class="outline-btn btn" href="/san-pham">Continue Shopping</a>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="continue__btn update__btn">
-                                    <button class="btn" type="submit"><i class="fa fa-spinner"></i> Update cart</button>
+                                <div class="update__btn">
+                                    <button class="site-btn" type="submit"><i class="fa fa-spinner"></i> Update cart</button>
                                 </div>
                             </div>
                         </div>
@@ -94,37 +87,37 @@
             {
                 <div class="col-lg-8">
                     <div class="shopping__cart__table">
-                        <h3>Nothing in your cart!!</h3>
+                        <h3>Không có sản phẩm nào trong giỏ hàng!!</h3>
                     </div>
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="continue__btn">
-                                <a class="rounded" href="/san-pham">Continue Shopping</a>
-                            </div>
+                            <a class="outline-btn btn" href="/san-pham">Continue Shopping</a>
                         </div>
                     </div>
                 </div>
             }
             <div class="col-lg-4">
                 <div class="cart__discount">
-                    <h6>Discount codes</h6>
+                    <h6>Mã giảm giá</h6>
                     <form action="#">
-                        <input class="form-control" type="text" placeholder="Coupon code">
-                        <button class="rounded-right" type="submit">Apply</button>
+                        <input type="text" placeholder="Nhập mã giảm giá">
+                        <button class="rounded-right" type="submit">Áp dụng</button>
                     </form>
                 </div>
                 <div class="cart__total card">
-                    <h6>Cart total</h6>
+                    <h6>Thông tin đơn hàng</h6>
                     <ul>
-                        <li>Total <span>@String.Format("{0:0,0}", ViewBag.totalPrice) ₫</span></li>
+                        <li>Thành tiền <span>@String.Format("{0:N0}", ViewBag.price) ₫</span></li>
+                        <li>Giảm giá <span>@String.Format("{0:N0}", ViewBag.discount) ₫</span></li>
+                        <li>Tổng cộng <span class="text-danger font-weight-bold">@String.Format("{0:N0}", ViewBag.totalPrice) ₫</span></li>
                     </ul>
                     @if (Session["info"] != null)
                     {
-                        <a href="@Url.Action("Checkout","Cart")" class="btn primary-btn">Proceed to checkout</a>
+                        <a href="@Url.Action("Checkout","Cart")" class="btn site-btn">Mua hàng</a>
                     }
                     else
                     {
-                        <a href="@Url.Action("CheckoutNoAccount","Cart")" class="btn primary-btn">Proceed to checkout</a>
+                        <a href="@Url.Action("CheckoutNoAccount","Cart")" class="btn site-btn">Mua hàng</a>
                     }
                 </div>
             </div>
@@ -132,3 +125,7 @@
     </div>
 </section>
 <!-- Shopping Cart Section End -->
+<script>
+    var obj = document.querySelector(".navlist li:nth-child(1)");
+    obj.classList.remove("active");
+</script>

@@ -12,41 +12,49 @@ namespace shopOnline.Controllers
     {
         menfsEntities1 db = new menfsEntities1();
         // GET: Shop
-        public ActionResult Shop()
+        public ActionResult Shop(string meta)
         {
+            ViewBag.meta = meta;
             return View();
         }
-        public PartialViewResult ListProduct(string brand, Guid? categories,int? page, string searching) // Show product
+
+        public PartialViewResult ListProduct(int? page, string meta, string searching, string brand, decimal? minPrice, decimal? maxPrice) // Show product
         {
             var pageNumber = page ?? 1;
             var pageSize = 9;
+
+            List<Product> list = db.Products.Where(model => model.ProductCategory.meta.Equals(meta) || meta == null && model.status == true).OrderByDescending(model => model.dateCreate).ToList();
+
             if(searching != null)
             {
-                ViewBag.categories = categories;
-                var list = db.Products.Where(model => model.productName.Contains(searching) || searching == null && model.status == true).OrderByDescending(model => model.dateCreate).ToPagedList(pageNumber, pageSize);
-                return PartialView(list);
+                var result = list.Where(model => model.productName.ToLower().Contains(searching.ToLower()) || searching == null);
+                ViewBag.searching = searching;
+                ViewBag.count = result.Count();
+                return PartialView(result.ToPagedList(pageNumber, pageSize));
             }
             else
             {
-                if (brand != null && categories == null)
+                if (brand != null)
                 {
-                    ViewBag.categories = categories;
-                    var list = db.Products.OrderByDescending(model => model.dateCreate).Where(model => model.brand == brand && model.status == true).ToPagedList(pageNumber, pageSize);
-                    return PartialView(list);
-                }
-                else if (brand == null && categories != null)
+                    var result = list.Where(model => model.brand == brand);
+                    ViewBag.count = result.Count();
+                    return PartialView(result.ToPagedList(pageNumber, pageSize));
+                } else if (minPrice.HasValue && maxPrice.HasValue)
                 {
-                    ViewBag.categories = categories;
-                    var list = db.Products.OrderByDescending(model => model.dateCreate).Where(model => model.categoryId == categories && model.status == true).ToPagedList(pageNumber, pageSize);
-                    return PartialView(list);
+                    var result = list.Where(model => model.price >= minPrice && model.price <= maxPrice);
+                    ViewBag.minPrice = minPrice;
+                    ViewBag.maxPrice = maxPrice;
+                    ViewBag.count = result.Count();
+                    return PartialView(result.ToPagedList(pageNumber, pageSize));
                 }
                 else
-                {
-                    var list = db.Products.OrderByDescending(model => model.dateCreate).Where(model => model.status == true).ToPagedList(pageNumber, pageSize);
-                    return PartialView(list);
+                {                    
+                    ViewBag.count = list.Count();
+                    return PartialView(list.ToPagedList(pageNumber, pageSize));
                 }
             }
         }
+
         public PartialViewResult Categories() // List categories
         {
             var list = db.ProductCategories.ToList();
@@ -55,7 +63,7 @@ namespace shopOnline.Controllers
         public PartialViewResult Brand() // List brand
         {
             List<string> brand = new List<string>();
-            foreach (Product i in this.db.Products)
+            foreach (Product i in db.Products)
             {
                 if (i.brand != null)
                 {
@@ -66,20 +74,21 @@ namespace shopOnline.Controllers
             }
             return PartialView(brand);
         }        
-        public PartialViewResult RelationProduct(Guid? category)
+        public PartialViewResult RelationProduct(Guid? product, Guid? category)
         {
-            var categories = db.Products.Where(model => model.categoryId == category).Take(4).ToList();
+            var categories = db.Products.Where(model => model.productId != product && model.categoryId == category).Take(4).ToList();
             return PartialView(categories);
         }
 
-        public ActionResult ProductDetail(string meta)
+        public ActionResult ProductDetail(string id)
         {
-            if (meta == null)
+            if (id == null)
             {
                 return RedirectToAction("Error", "Home");
             }
-            ShortGuid id =(ShortGuid)meta;
-            var detail = db.Products.Where(model => model.productId == id.Guid).Single();
+
+            ShortGuid gid = (ShortGuid)id;
+            var detail = db.Products.Where(model => model.productId == gid.Guid).Single();
             ViewBag.NewPrice = detail.price - ((detail.price * detail.discount) / 100);
             if (detail == null)
             {

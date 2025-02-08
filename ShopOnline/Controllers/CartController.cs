@@ -47,6 +47,26 @@ namespace shopOnline.Controllers
             }
             return amount;
         }
+        private double DiscountPrice() //  Lấy tổng số tiền sản phẩm
+        {
+            double total = 0;
+            List<Cart> listCart = Session["Cart"] as List<Cart>;
+            if (listCart != null)
+            {
+                total = listCart.Sum(model => model.discountTotal);
+            }
+            return total;
+        }
+        private double Price() //  Lấy tổng số tiền sản phẩm
+        {
+            double total = 0;
+            List<Cart> listCart = Session["Cart"] as List<Cart>;
+            if (listCart != null)
+            {
+                total = listCart.Sum(model => model.unitPrice * model.quantity);
+            }
+            return total;
+        }
         private double TotalPrice() //  Lấy tổng số tiền sản phẩm
         {
             double total = 0;
@@ -69,10 +89,13 @@ namespace shopOnline.Controllers
         {
             List<Cart> listCart = getCart();
             Session["Cart"] = listCart;
-            ViewBag.quanlityItem = Quanlity();
+            //ViewBag.quanlityItem = Quanlity();
             ViewBag.totalPrice = TotalPrice();
+            ViewBag.price = Price();
+            ViewBag.discount = DiscountPrice();
             return View(listCart);
         }
+
         public ActionResult DeteteCart(Guid id)
         {
             List<Cart> listCart = getCart();
@@ -176,11 +199,13 @@ namespace shopOnline.Controllers
         
         // Trang checkout khi đã đăng nhập tài khoản
         [HttpGet]
+
         public ActionResult Checkout()
         {
             List<Cart> listCart = getCart();
-            ViewBag.quanlityItem = Quanlity();
             ViewBag.totalPrice = TotalPrice();
+            ViewBag.price = Price();
+            ViewBag.discount = DiscountPrice();
 
             return View(listCart);
         }
@@ -216,8 +241,8 @@ namespace shopOnline.Controllers
                         ctdh.invoinceId = bill.invoinceId;
                         ctdh.productId = Guid.Parse(item.idItem.ToString());
                         ctdh.quanlity = item.quantity;
-                        ctdh.price = item.unitPrice;
-                        ctdh.discount = item.discount * item.quantity;
+                        ctdh.price = item.priceItem;
+                        ctdh.discount = item.discountTotal;
                         db.InvoinceDetails.Add(ctdh);
                     }
                     db.SaveChanges();
@@ -277,7 +302,7 @@ namespace shopOnline.Controllers
                             ctdh.quanlity = item.quantity;
                             ctdh.price = item.unitPrice;
                             /*ctdh.totalPrice = (int?)(long)item.PriceTotal;*/
-                            ctdh.discount = item.discount * item.quantity;
+                            ctdh.discount = item.discountTotal;
                             db.InvoinceDetails.Add(ctdh);
                         }
                         db.SaveChanges();
@@ -309,7 +334,7 @@ namespace shopOnline.Controllers
                             ctdh.quanlity = item.quantity;
                             ctdh.price = item.unitPrice;
                             /*ctdh.totalPrice = (int?)(long)item.PriceTotal;*/
-                            ctdh.discount = item.discount * item.quantity;
+                            ctdh.discount = item.discountTotal;
                             db.InvoinceDetails.Add(ctdh);
                         }
                         db.SaveChanges();
@@ -326,6 +351,7 @@ namespace shopOnline.Controllers
             }
         }
         [HttpGet]
+
         public ActionResult SubmitBill()
         {
             ViewBag.quanlityItem = Quanlity();
@@ -483,7 +509,7 @@ namespace shopOnline.Controllers
                     ctdh.quanlity = item.quantity;
                     ctdh.price = item.unitPrice;
                    /* ctdh.totalPrice = (int?)(long)item.PriceTotal;*/
-                    ctdh.discount = item.discount * item.discount;
+                    ctdh.discount = item.discountTotal;
                     db.InvoinceDetails.Add(ctdh);
                 }
                 db.SaveChanges();

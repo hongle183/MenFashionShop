@@ -31,8 +31,9 @@ namespace ShopOnline.App_Start
                                             "~/Areas/Admin/Content/css/style.min.css"
             ));
             bundle.Add(new ScriptBundle("~/bundle/js").Include(
-                                            "~/Content/js/jquery-3.3.1.min.js",
-                                            "~/Content/js/bootstrap.min.js",
+                                            "~/Content/js/jquery-3.7.1.min.js",
+                                            "~/Content/js/popper.min.js",
+                                            "~/Content/js/bootstrap.min.js",                                            
                                             "~/Content/js/jquery.nice-select.min.js",
                                             "~/Content/js/jquery.nicescroll.min.js",
                                             "~/Content/js/jquery.magnific-popup.min.js",
@@ -56,7 +57,8 @@ namespace ShopOnline.App_Start
                                 "~/Areas/Admin/Content/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js",
                                 "~/Areas/Admin/Content/assets/extra-libs/jvector/jquery-jvectormap-world-mill-en.js",
                                 "~/Areas/Admin/Content/js/pages/dashboards/dashboard1.min.js",
-                                "~/Areas/Admin/Content/assets/extra-libs/sparkline/sparkline.js"
+                                "~/Areas/Admin/Content/assets/extra-libs/sparkline/sparkline.js",
+                                "~/Areas/Admin/Content/assets/libs/moment/moment.js"
             ));
             bundle.Add(new ScriptBundle("~/bundle/admin/login/js").Include(
                                 "~/Areas/Admin/Content/assets/libs/jquery/dist/jquery.min.js",

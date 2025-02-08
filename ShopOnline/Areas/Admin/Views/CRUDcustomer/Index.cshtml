@@ -116,6 +116,7 @@
                 });
             }
         });
+
         function LoadDsCustomer() {
             //Dùng ajax để load danh sách member trong controller CRUDmember
             $.ajax({
@@ -148,14 +149,3 @@
         }
     </script>
 }
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#search").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("table tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>

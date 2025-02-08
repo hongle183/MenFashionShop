@@ -37,7 +37,6 @@ namespace ShopOnline.Models
         public virtual DbSet<ProductCategory> ProductCategories { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Slide> Slides { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<vDoanhThuTheoNgay> vDoanhThuTheoNgays { get; set; }
         public virtual DbSet<vHoaDonTrongNgay> vHoaDonTrongNgays { get; set; }
     

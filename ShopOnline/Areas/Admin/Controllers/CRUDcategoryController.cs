@@ -22,8 +22,9 @@ namespace ShopOnline.Areas.Admin.Controllers
                                   select new
                                   {
                                       categoryId = i.categoryId,
-                                      categoryName = i.categoryName
-                                  }).ToList();
+                                      categoryName = i.categoryName,
+                                      dateCreate = i.dateCreate
+            }).ToList();
 
                 return Json(new { code = 200, dsCategory = dsCategory, msg = "Successfully get list Category!" }, JsonRequestBehavior.AllowGet);
             }
@@ -39,6 +40,8 @@ namespace ShopOnline.Areas.Admin.Controllers
             {
                 var category = new ProductCategory();
                 category.categoryName = categoryName;
+                category.status = true;
+                category.dateCreate = DateTime.Now;
 
                 db.ProductCategories.Add(category);
                 db.SaveChanges();
@@ -77,6 +80,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 var category = (from i in db.ProductCategories
                                 select i).SingleOrDefault(model => model.categoryId == categoryId);
                 category.categoryName = (string)categoryName;
+                category.dateCreate = DateTime.Now;
                 db.SaveChanges();
                 return Json(new { code = 200, msg = "Successfully update!" }, JsonRequestBehavior.AllowGet);
             }

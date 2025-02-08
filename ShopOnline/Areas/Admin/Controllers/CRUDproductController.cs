@@ -19,7 +19,7 @@ namespace ShopOnline.Areas.Admin.Controllers
         public ActionResult Index(int? page, string searching)
         {
             var pageNumber = page ?? 1;
-            var pageSize = 10;
+            var pageSize = 5;
             var products = db.Products.Where(model => model.productName.Contains(searching) || searching == null && model.status == true).OrderByDescending(model => model.dateCreate).Include(model => model.Member).Include(model => model.ProductCategory).ToPagedList(pageNumber, pageSize);
             return View(products);
         }
@@ -69,11 +69,12 @@ namespace ShopOnline.Areas.Admin.Controllers
                             else
                             {
                                 product.productName = product.productName.Trim();
-                                product.brand = product.brand.Trim();
+                                product.characteristic = product.characteristic.Trim();
+                                product.meta = product.meta.Trim();
                                 product.image = "~/Content/img/product/" + fileName;
                                 product.memberId = new Guid(Session["userNameAdmin"].ToString());
                                 product.dateCreate = DateTime.Now;
-                                product.status = false;
+                                product.status = true;
                                 db.Products.Add(product);
                                 if (db.SaveChanges() > 0)
                                 {

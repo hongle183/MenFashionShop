@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -21,7 +20,6 @@ namespace ShopOnline.Areas.Admin.Controllers
         {
             var pageNumber = page ?? 1;
             var pageSize = 10;
-            /*var article = db.Articles.Where(model => model.title.Contains(searching) || searching == null).OrderByDescending(model => model.dateCreate).Include(model => model.ProductCategory).ToPagedList(pageNumber, pageSize);*/
             var article = db.Articles.Where(model => model.title.Contains(searching) || searching == null).OrderByDescending(model => model.dateCreate).ToPagedList(pageNumber, pageSize);
             return View(article);
         }
@@ -34,6 +32,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName");
             return View();
         }
+
         [HttpPost, ValidateInput(false)]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Article article, HttpPostedFileBase uploadFile)
@@ -55,8 +54,10 @@ namespace ShopOnline.Areas.Admin.Controllers
                     {
                         article.meta = Functions.ConvertToUnSign(article.title);
                         article.image = "~/Content/img/blog/" + fileName;
-                       /* article.userName = Session["userNameAdmin"].ToString();*/
+                        article.memberId = new Guid("e4d33c53-b8a3-4f82-9ff3-e611912631fe");
+                        article.status = true;
                         article.dateCreate = DateTime.Now;
+
                         db.Articles.Add(article);
                         if (db.SaveChanges() > 0)
                         {
@@ -71,7 +72,6 @@ namespace ShopOnline.Areas.Admin.Controllers
                 {
                     ModelState.AddModelError("", "Invalid File Type");
                 }
-                /*ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName", article.categoryId);*/
                 return View(article);
             }
             catch (Exception ex)
@@ -134,7 +134,6 @@ namespace ShopOnline.Areas.Admin.Controllers
                         }
                     }
                 }
-                /*ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName", article.categoryId);*/
                 return View(article);
             }
             catch(Exception ex)
@@ -144,7 +143,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
         }
         //DELETE
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(Guid? id)
         {
             try
             {

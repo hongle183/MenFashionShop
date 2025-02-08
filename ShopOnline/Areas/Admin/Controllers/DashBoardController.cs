@@ -20,7 +20,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             // Lấy ra tổng số tiền các đơn hàng - lợi nhuận
             ViewBag.profit = db.InvoinceDetails.Sum(model => model.price);
             // Lấy ra tổng số lượng các user khách hàng đang có trong database - tổng số tài khoản hiện tại
-            ViewBag.users = db.Members.Where(model => model.roleId == new Guid("36017067-8140-4972-8c64-3bdfdc21dabb")).Count();
+            ViewBag.users = db.Members.Where(model => model.roleId == new Guid("54ed1855-5103-4121-811c-3997ce4c2241")).Count();
             // Lấy ra tổng số các đơn đặt hàng đang có trong database - tổng số đơn hàng 
             ViewBag.orders = db.Invoinces.Count();
             // Lấy số lượng người truy cập từ Application đã tạo
@@ -90,9 +90,9 @@ namespace ShopOnline.Areas.Admin.Controllers
             // Chart
             return PartialView();
         }
-        public PartialViewResult InvoinceList() // Danh sách hóa đơn trong ngày
+        public PartialViewResult InvoinceList()
         {
-            var list = db.vHoaDonTrongNgays.OrderByDescending(model => model.dateCreate).ToList();
+            var list = db.Invoinces.OrderByDescending(model => model.dateCreate).ToList();
             return PartialView(list);
         }
         public ActionResult TrackingCovid()

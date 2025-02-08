@@ -50,50 +50,37 @@
 
                         <div class="form-body">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-8">
                                     <div class="form-group">
                                         <label for="title">Title</label>
                                         <input type="text" class="form-control" name="title" id="title" />
                                         <span class="form-message"></span>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="meta">Meta</label>
+                                        <input type="text" class="form-control" name="meta" id="meta" />
+                                        <span class="form-message"></span>
+                                    </div>
                                     <div class="form-group">
                                         <label for="description">Description</label>
                                         <input type="text" class="form-control" name="description" id="description" />
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="image">Image</label>
+                                        <img id="file-ip-1-preview" style="max-height: 163px; max-width: 342px; display: block; margin-bottom: 10px" />
+                                        <input type="file" name="uploadFile" class="form-control-file" id="image" onchange="showPreview(event);" />
+                                        <span class="form-message"></span>
+                                    </div>
+                                </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="content">Content</label>
                                         <textarea name="content" class="form-control textareaTinym" id="content"></textarea>
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="">Category</label>
-                                        @Html.DropDownList("categoryId", null, htmlAttributes: new { @class = "form-control" })
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="image">Image</label>
-                                        <img id="file-ip-1-preview" style="margin-bottom: 10px;" />
-                                        <input type="file" name="uploadFile" class="form-control-file" id="image" onchange="showPreview(event);" />
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
@@ -112,6 +99,7 @@
     </div>
 </div>
 <script src="~/Content/js/validator.js"></script>
+<script src="~/Areas/Admin/Content/js/helper.js"></script>
 <script>
     Validator({
         form: '#form-1',
@@ -123,13 +111,20 @@
         ],
     });
 
+    document.addEventListener('DOMContentLoaded', function () {
+        var titleInput = document.getElementById('title');
+        var metaInput = document.getElementById('meta');
+
+        titleInput.addEventListener('input', function () {
+            metaInput.value = cleanText(titleInput.value);
+        });
+    });
+
     function showPreview(event) {
         if (event.target.files.length > 0) {
             var src = URL.createObjectURL(event.target.files[0]);
             var preview = document.getElementById("file-ip-1-preview");
             preview.src = src;
-            preview.style.display = "block";
-            preview.style.height = "200px";
         }
     }
 </script>

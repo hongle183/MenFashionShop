@@ -49,68 +49,69 @@
 
                         <div class="form-body">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="productName">Product name</label>
                                         <input type="text" class="form-control" name="productName" id="productName" />
                                         <span class="form-message"></span>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="brand">Brand</label>
-                                        <input type="text" class="form-control" name="brand" id="brand" />
+                                        <label for="meta">Meta</label>
+                                        <input type="text" class="form-control" name="meta" id="meta" />
+                                        <span class="form-message"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="characteristic">Characteristic</label>
+                                        <input type="text" class="form-control" name="characteristic" id="characteristic" />
+                                        <span class="form-message"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="">Category</label>
+                                                @Html.DropDownList("categoryId", null, htmlAttributes: new { @class = "form-control" })
+                                                <span class="form-message"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="quanlity">Quality</label>
+                                                <input type="number" class="form-control" name="quanlity" id="quanlity" />
+                                                <span class="form-message"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="price">Price</label>
+                                                <input type="number" class="form-control" name="price" id="price" />
+                                                <span class="form-message"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="discount">Discount</label>
+                                                <input type="number" class="form-control" name="discount" id="discount" />
+                                                <span class="form-message"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="image">Image</label>
+                                        <img id="file-ip-1-preview" style="max-height:300px; max-width:342px; display:block; margin-bottom:10px" />
+                                        <input type="file" name="uploadFile" class="form-control-file" id="image" onchange="showPreview(event);" />
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Category</label>
-                                        @Html.DropDownList("categoryId", null, htmlAttributes: new { @class = "form-control" })
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="quanlity">Quality</label>
-                                        <input type="number" class="form-control" name="quanlity" id="quanlity" />
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="price">Price</label>
-                                        <input type="number" class="form-control" name="price" id="price" />
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="discount">Discount</label>
-                                        <input type="number" class="form-control" name="discount" id="discount" />
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                            </div>
+                            </div>                         
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="description">Description</label>
                                         <textarea name="description" class="form-control textareaTinym" id="description"></textarea>
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="image">Image</label>
-                                        <img id="file-ip-1-preview" style="margin-bottom: 10px" />
-                                        <input type="file" name="uploadFile" class="form-control-file" id="image" onchange="showPreview(event);" />
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
@@ -129,6 +130,7 @@
     </div>
 </div>
 <script src="~/Content/js/validator.js"></script>
+<script src="~/Areas/Admin/Content/js/helper.js"></script>
 <script>
     Validator({
         form: '#form-1',
@@ -136,12 +138,21 @@
         errorSelector: '.form-message',
         rules: [
             Validator.isRequired('#productName'),
-            Validator.isRequired('#price'),
-            Validator.isRequired('#image'),
-            Validator.isRequired('#discount'),
+            Validator.isRequired('#meta'),
             Validator.isRequired('#quanlity'),
-            Validator.isRequired('#brand'),
+            Validator.isRequired('#price'),
+            Validator.isRequired('#discount'),
+            Validator.isRequired('#image'),  
         ],
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var productNameInput = document.getElementById('productName');
+        var metaInput = document.getElementById('meta');
+
+        productNameInput.addEventListener('input', function () {
+            metaInput.value = cleanText(productNameInput.value);
+        });
     });
 
     function showPreview(event) {
@@ -150,7 +161,6 @@
             var preview = document.getElementById("file-ip-1-preview");
             preview.src = src;
             preview.style.display = "block";
-            preview.style.height = "200px";
         }
     }
 </script>

@@ -112,7 +112,9 @@
             <tbody>
                 @if (Model.Count == 0)
                 {
-
+                    <tr>
+                        <td colspan="8">No match any document</td>
+                    </tr>
                 }
                 else
                 {
@@ -122,10 +124,10 @@
                             <th scope="row" class="text-center font-weight-medium">
                                 <div class="d-flex no-block align-items-center">
                                     <div class="">
-                                        <img src=@Url.Content("" + Html.DisplayFor(modelItem => i.avatar)) alt="user" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" />
+                                        <img src=@Url.Content("" + i.avatar) alt="user" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" />
                                     </div>
                                     <div class="col">
-                                        <span class="text-muted font-14">@Html.DisplayFor(modelItem => i.email)</span>
+                                        <span class="text-muted font-14">@i.email</span>
                                     </div>
                                 </div>
                             </th>
@@ -193,15 +195,3 @@
         justify-content: flex-end;
     }
 </style>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#search").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("table tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>

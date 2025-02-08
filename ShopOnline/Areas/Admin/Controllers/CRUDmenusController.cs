@@ -15,7 +15,7 @@ namespace ShopOnline.Areas.Admin.Controllers
         // GET: Admin/CRUDmenus
         public ActionResult Index()
         {
-            return View(db.Menus.ToList());
+            return View(db.Menus.OrderBy(model => model.order).ToList());
         }
 
 
@@ -47,7 +47,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                     menu.meta = menu.meta.Trim();
                     menu.order = menu.order;
                     menu.dateCreate = DateTime.Now;
-                    menu.status = false;
+                    menu.status = true;
                     db.Menus.Add(menu);
                     if (db.SaveChanges() > 0)
                     {
@@ -107,7 +107,7 @@ namespace ShopOnline.Areas.Admin.Controllers
         }
 
         // POST: Admin/CRUDmenus/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(Guid? id)
         {
             try
             {

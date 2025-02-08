@@ -2,16 +2,7 @@
     ViewBag.Title = "Contact";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
-<script>
-    var obj = document.querySelector(".navlist li:nth-child(1)");
-    obj.classList.remove("active");
-    var liTags = document.querySelectorAll('.navlist li');
-    for (var i = 0; i < liTags.length; i++) {
-        if (liTags[i].getAttribute('data-value') == "lien-he") {
-            liTags[i].classList.add("active");
-        }
-    }
-</script>
+
 <!-- Contact Section Begin -->
 <section class="contact spad">
     <div class="container">
@@ -23,9 +14,9 @@
                         <h2>Contact Us</h2>
                     </div>
                     <p>
-                        <img src="~/Content/img/icon/place.png" style="width:4%;" alt=""> &nbspNguyễn Hữu Thọ, TP. HCM
+                        <img src="~/Content/img/icon/place.png" style="width:4%;" alt=""> 19 Đ. Nguyễn Hữu Thọ, Quận 7, TP. Hồ Chí Minh
                         <br /><img src="~/Content/img/icon/gmail.png" style="width:4%;" alt=""> fashionstore@gmail.com
-                        <br /><img src="~/Content/img/icon/phone.png" style="width:4%;" alt=""> +84 0335 880 080
+                        <br /><img src="~/Content/img/icon/phone.png" style="width:4%;" alt=""> +84 338 650 639
                     </p>
                     <div class="h2">
                         <a href="https://www.facebook.com/">
@@ -59,15 +50,15 @@
 
                         <div class="row">
                             <div class="col-lg-6 form-group">
-                                <input class="form-control" type="text" placeholder="Name" name="name" id="name">
+                                <input type="text" placeholder="Name" name="name" id="name">
                                 <span class="form-message"></span>
                             </div>
                             <div class="col-lg-6 form-group">
-                                <input class="form-control" type="text" placeholder="Email" name="email" id="email">
+                                <input type="text" placeholder="Email" name="email" id="email">
                                 <span class="form-message"></span>
                             </div>
                             <div class="col-lg-12 form-group">
-                                <textarea class="form-control" placeholder="Message" name="message" id="message"></textarea>
+                                <textarea placeholder="Message" name="message" id="message"></textarea>
                                 <span class="form-message"></span>
                             </div>
                             <div class="col-lg-12 form-group">
@@ -93,4 +84,15 @@
             Validator.isRequired('#message'),
         ],
     });
+</script>
+
+<script>
+    var obj = document.querySelector(".navbar li:nth-child(1)");
+    obj.classList.remove("active");
+    var liTags = document.querySelectorAll('.navbar li');
+    for (var i = 0; i < liTags.length; i++) {
+        if (liTags[i].getAttribute('data-value') == "lien-he") {
+            liTags[i].classList.add("active");
+        }
+    }
 </script>

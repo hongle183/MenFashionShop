@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using System.Xml.Linq;
 using CSharpVitamins;
 using PagedList;
 using ShopOnline.Models;
@@ -20,15 +21,15 @@ namespace ShopOnline.Controllers
             var ListBlog = db.Articles.OrderByDescending(model => model.dateCreate).ToPagedList(pageNum, pageSize);
             return View(ListBlog);
         }
-        public ActionResult ArticleDetail(string meta)
+        public ActionResult ArticleDetail(string id)
         {
-            if (meta == null)
+            if (id == null)
             {
                 return RedirectToAction("Error", "Home");
             }
-            var tmp = meta.Split('-');
-            ShortGuid id = (ShortGuid)tmp[tmp.Length - 1];
-            var item = db.Articles.Where(model => model.articleId == id.Guid).Single();
+
+            ShortGuid gid = (ShortGuid)id;
+            var item = db.Articles.Where(model => model.articleId == gid.Guid).Single();
             if (item == null)
             {
                 return RedirectToAction("Error", "Home");

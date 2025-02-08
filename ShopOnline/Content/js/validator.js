@@ -147,7 +147,7 @@ Validator.isRequired = function (selector, message){
     return{
         selector :selector,
         test: function(value){
-            return value ? undefined : message || 'This field can\'t be blank'
+            return value ? undefined : message || 'Vui lòng nhập vào ô này.'
         }
     };
 }
@@ -156,7 +156,7 @@ Validator.isEmail = function (selector, message){
         selector :selector,
         test: function(value){
             var regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-            return regex.test(value) ? undefined : message || 'Please enter a valid email.'
+            return regex.test(value) ? undefined : message || 'Vui lòng nhập email hợp lệ.'
         }
     };
 }
@@ -164,7 +164,7 @@ Validator.minLength = function (selector, min, message){
     return{
         selector :selector,
         test: function(value){
-            return value.length >= min ? undefined : message || `Password is too short (minimum is ${min} characters)`
+            return value.length >= min ? undefined : message || `Mật khẩu quá ngắn (ít nhất là ${min} ký tự).`
         }
     };
 }
@@ -173,7 +173,7 @@ Validator.isConfirmed = function (selector, getConfirmValue, message){
     return {
         selector: selector,
         test: function(value){
-            return value === getConfirmValue()? undefined : message || 'Giá trị nhập vào không chính xác'
+            return value === getConfirmValue()? undefined : message || 'Giá trị nhập vào không chính xác.'
         }
     }
 }
@@ -182,7 +182,7 @@ Validator.isDate = function (selector, message) {
         selector: selector,
         test: function (value) {
             var regex = /^([0-9]{4}|[0-9]{4})[./-]([0]?[1-9]|[1][0-2])[./-]([0]?[1-9]|[1|2][0-9]|[3][0|1])$/
-            return regex.test(value) ? undefined : message || 'Please enter a valid date.'
+            return regex.test(value) ? undefined : message || 'Vui lòng nhập ngày hợp lệ.'
         }
     };
 }

@@ -16,10 +16,12 @@
 
     <!--favicon-->
     <link rel="shortcut icon" type="image/png" href="~/Content/img/icon/favicon.png" />
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
 
     <!-- Css Styles -->
     @Styles.Render("~/bundle/css")
@@ -37,8 +39,8 @@
     <div class="offcanvas-menu-wrapper">
         <div class="offcanvas__option">
             <div class="offcanvas__links">
-                <a href="/dang-nhap">Sign in</a>
-                <a href="#">FAQs</a>
+                <a href="/dang-nhap">Đăng nhập</a>
+                <a href="#">FAQs</a>e
             </div>          
         </div>
         <div class="offcanvas__nav__option">
@@ -78,38 +80,38 @@
                         <div class="footer__logo">
                             <a href="#"><img src="~/Content/img/footer-logo.png" alt="Footer logo"></a>
                         </div>
-                        <p>
-                            The customer is at the heart of our unique business model, which includes design.
-                        </p>
-                        <a href="#"><img src="~/Content/img/payment.png" alt=""></a>
+                        <p>Khách hàng – nguồn cảm hứng cho mô hình kinh doanh và thiết kế sáng tạo của chúng tôi.</p>
+                        <a href="#"><img src="~/Content/img/payment.png" alt="" style="width:80%;"></a>
                     </div>
                 </div>
                 <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
                     <div class="footer__widget">
-                        <h6>Store</h6>
+                        <h6>Về chúng tôi</h6>
                         <ul>
-                            <li><a href="/trang-chu">Home</a></li>
-                            <li><a href="/san-pham">Shop</a></li>
-                            <li><a href="/bai-viet">Blog</a></li>
-                            <li><a href="/ve-chung-toi">About us</a></li>
+                            <li><a href="/trang-chu">Trang chủ</a></li>
+                            <li><a href="/san-pham">Sản phẩm</a></li>
+                            <li><a href="/bai-viet">Tin tức</a></li>
+                            <li><a href="/lien-he">Liên hệ</a></li>
+                            <li><a href="/ve-chung-toi">Giới thiệu</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
+                <div class="col-lg-3 col-md-3 col-sm-6">
                     <div class="footer__widget">
-                        <h6>Help &amp; Support</h6>
+                        <h6>Chăm sóc khách hàng</h6>
                         <ul>
-                            <li><a href="/lien-he">Contact Us</a></li>
-                            <li><a href="#">Payment Methods</a></li>
-                            <li><a href="#">Delivery</a></li>
-                            <li><a href="#">Return & Exchanges</a></li>
+                            <li><a href="#">Chính sách bảo hành</a></li>
+                            <li><a href="#">Chính sách đổi trả</a></li>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Chính sách thanh toán</a></li>
+                            <li><a href="#">Câu hỏi thường gặp</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="footer__widget">
-                        <h6>Find us on</h6>
-                        <div class="pb-2">
+                        <h6>Kết nối với chúng tôi</h6>
+                        <div class="pb-3">
                             <a href="https://www.facebook.com/">
                                 <img src="~/Content/img/icon/facebook.png" style="width:15%;" alt="">
                             </a>
@@ -120,11 +122,10 @@
                                 <img src="~/Content/img/icon/youtube.png" style="width:15%;" alt="">
                             </a>
                         </div>
-                        <h6>NewLetter</h6>
                         <div class="footer__newslatter">
-                            <p>Be the first to know about new arrivals, look books, sales & promos!</p>
+                            <p>Cập nhật ngay sản phẩm mới, ưu đãi và khuyến mãi đặc biệt!</p>
                             <form action="#">
-                                <input type="text" placeholder="Your email">
+                                <input type="text" placeholder="Email của bạn">
                                 <button type="submit"><img src="~/Content/img/icon/send.png" style="width:80%;" alt=""/></button>
                             </form>
                         </div>

@@ -1,5 +1,5 @@
 ﻿@using ShopOnline.Models
-@model List<vHoaDonTrongNgay>
+@model List<Invoince>
 
 <div class="table-responsive" style="height:400px;">
     <table class="table">
@@ -39,7 +39,7 @@
                         @i.dateCreate
                     </td>
                      <td class="text-muted px-2 py-4 font-14 text-center">
-                        $@i.totalMoney
+                        @i.totalMoney ₫
                     </td>
                     <td class="text-center px-2 py-4">
                         @if (i.status == true) { <i class="fa fa-circle text-success font-12" data-toggle="tooltip" data-placement="top" title="Checked"></i>}

@@ -1,0 +1,10 @@
+﻿@model ShopOnline.Models.Article
+
+<div class="blog__item">
+    <div class="blog__item__pic set-bg" data-setbg=@Url.Content("" + @Model.image)></div>
+    <div class="blog__item__text card">
+        <span><img src="~/Content/img/icon/date.png" style="width:10%;" alt=""> @Model.dateCreate</span>
+        <h5 class="three-lines">@Model.title</h5>
+        <a href="@Url.Action("ArticleDetail", "Article", new { meta = Model.meta, id = (CSharpVitamins.ShortGuid)Model.articleId})">Read more</a>
+    </div>
+</div>

@@ -51,8 +51,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="meta">Meta</label>
-                                        @Html.EditorFor(model => model.meta, new { htmlAttributes = new { @class = "form-control", @id = "meta" } })
+                                        <label for="order">Order</label>
+                                        @Html.EditorFor(model => model.order, new { htmlAttributes = new { @class = "form-control", @id = "order" } })
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
@@ -60,16 +60,18 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="order">Order</label>
-                                        @Html.EditorFor(model => model.order, new { htmlAttributes = new { @class = "form-control", @id = "order" } })
+                                        <label for="meta">Meta</label>
+                                        @Html.EditorFor(model => model.meta, new { htmlAttributes = new { @class = "form-control", @id = "meta" } })
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="status">Is checked</label>
-                                        @Html.EditorFor(model => model.status, new { htmlAttributes = new { @class = "form-control", @id = "status" } })
-                                        <span class="form-message"></span>
+                                        <label for="status">Public</label>
+                                        @{
+                                            bool status = (Model.status.GetValueOrDefault(false) ? true : false);
+                                        }
+                                        @Html.CheckBoxFor(model => status)
                                     </div>
                                 </div>
                             </div>
@@ -87,14 +89,25 @@
     </div>
 </div>
 <script src="~/Content/js/validator.js"></script>
-<script>Validator({
+<script src="~/Areas/Admin/Content/js/helper.js"></script>
+<script>
+    Validator({
         form: '#form-1',
         formGroupSelector: '.form-group',
         errorSelector: '.form-message',
         rules: [
             Validator.isRequired('#menuName'),
             Validator.isRequired('#meta'),
-            Validator.isRequired('#order'),
-            Validator.isRequired('#status')
+            Validator.isRequired('#order')
         ],
-    });</script>
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var menuNameInput = document.getElementById('menuName');
+        var metaInput = document.getElementById('meta');
+
+        menuNameInput.addEventListener('input', function () {
+            metaInput.value = cleanText(menuNameInput.value);
+        });
+    });
+</script>

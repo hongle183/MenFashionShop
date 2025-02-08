@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace ShopOnline
@@ -10,106 +8,127 @@ namespace ShopOnline
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            // Route cho Trang chủ
             routes.MapRoute(
-                "Trang-chu",
-                "{type}/{meta}",
-                new { controller = "Home", action = "Index", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", "trang-chu"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "Home",
+                url: "trang-chu/{meta}",
+                defaults: new { controller = "Home", action = "Index", meta = UrlParameter.Optional }
             );
+
+            // Route cho Sản phẩm
             routes.MapRoute(
-                "San-pham",
-                "{type}",
-                new { controller = "Shop", action = "Shop", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", @"san-pham"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "Shop",
+                url: "san-pham/{meta}",
+                defaults: new { controller = "Shop", action = "Shop", meta = UrlParameter.Optional }
             );
+
+            // Route cho Bài viết
             routes.MapRoute(
-                "Bai-viet",
-                "{type}/{meta}",
-                new { controller = "Article", action = "ArticleList", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", "bai-viet"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "ArticleList",
+                url: "bai-viet/{meta}",
+                defaults: new { controller = "Article", action = "ArticleList", meta = UrlParameter.Optional }
             );
+
+            // Route cho Về chúng tôi
             routes.MapRoute(
-                "Ve-chung-toi",
-                "{type}/{meta}",
-                new { controller = "Home", action = "About", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", "ve-chung-toi"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "About",
+                url: "ve-chung-toi/{meta}",
+                defaults: new { controller = "Home", action = "About", meta = UrlParameter.Optional }
             );
+
+            // Route cho Liên hệ
             routes.MapRoute(
-                "Lien-he",
-                "{type}/{meta}",
-                new { controller = "Home", action = "Contact", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", "lien-he"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "Contact",
+                url: "lien-he/{meta}",
+                defaults: new { controller = "Home", action = "Contact", meta = UrlParameter.Optional }
             );
+
+            // Route cho Chi tiết bài viết
             routes.MapRoute(
-                "Chi-tiet-bai-viet",
-                "{type}/{meta}",
-                new { controller = "Article", action = "ArticleDetail", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", "chi-tiet-bai-viet"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "ArticleDetail",
+                url: "chi-tiet-bai-viet/{meta}--{id}",
+                defaults: new { controller = "Article", action = "ArticleDetail", id = UrlParameter.Optional }
             );
+
+            // Route cho Chi tiết sản phẩm
             routes.MapRoute(
-                "Chi-tiet-san-pham",
-                "{type}/{meta}",
-                new { controller = "Shop", action = "ProductDetail", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", "chi-tiet-san-pham"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "ProductDetail",
+                url: "chi-tiet-san-pham/{meta}--{id}",
+                defaults: new { controller = "Shop", action = "ProductDetail", id = UrlParameter.Optional }
             );
+
+            // Route cho Giỏ hàng
             routes.MapRoute(
-                "Gio-hang",
-                "{type}/{meta}",
-                new { controller = "Cart", action = "Cart", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", "gio-hang"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "Cart",
+                url: "gio-hang",
+                defaults: new { controller = "Cart", action = "Cart" }
             );
+
+            // Route cho Đặt hàng
             routes.MapRoute(
-                "Dang-nhap",
-                "{type}/{meta}",
-                new { controller = "User", action = "SignIn", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", "dang-nhap"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "Checkout",
+                url: "gio-hang/dat-hang",
+                defaults: new { controller = "Cart", action = "Checkout" }
             );
+
+            // Route cho Xác nhận đơn hàng
             routes.MapRoute(
-                "Dang-ky",
-                "{type}/{meta}",
-                new { controller = "User", action = "Register", meta = UrlParameter.Optional },
-                new RouteValueDictionary
-                {
-                    {"type", "dang-ky"}
-                },
-                new[] { "ShopOnline.Controllers" }
+                name: "SubmitBill",
+                url: "gio-hang/xac-nhan-don-hang",
+                defaults: new { controller = "Cart", action = "SubmitBill" }
             );
+
+            // Route cho Theo dõi đơn hàng
+            routes.MapRoute(
+                name: "MyOrder",
+                url: "don-hang-cua-toi/{memberId}",
+                defaults: new { controller = "Home", action = "MyOrder", memberId = UrlParameter.Optional }
+            );
+
+            // Route cho Chi tiết đơn hàng
+            routes.MapRoute(
+                name: "InvoinceDetail",
+                url: "don-hang-cua-toi/{memberId}/chi-tiet/{invoinceId}",
+                defaults: new { controller = "Home", action = "InvoinceDetail", memberId = UrlParameter.Optional, invoinceId = UrlParameter.Optional }
+            );
+
+            // Route cho Đăng nhập
+            routes.MapRoute(
+                name: "SignIn",
+                url: "dang-nhap",
+                defaults: new { controller = "User", action = "SignIn" }
+            );
+
+            // Route cho Đăng ký
+            routes.MapRoute(
+                name: "Register",
+                url: "dang-ky",
+                defaults: new { controller = "User", action = "Register" }
+            );
+
+            // Route cho Đăng xuất
+            routes.MapRoute(
+                name: "LogOut",
+                url: "dang-xuat",
+                defaults: new { controller = "User", action = "LogOut" }
+            );
+
+            // Route cho Đổi mật khẩu
+            routes.MapRoute(
+                name: "ChangePassword",
+                url: "doi-mat-khau/{memberId}",
+                defaults: new { controller = "Home", action = "ChangePassword", memberId = UrlParameter.Optional }
+            );
+
+            // Route cho Thông tin cá nhân
+            routes.MapRoute(
+                name: "EditProfie",
+                url: "thong-tin-ca-nhan/{memberId}",
+                defaults: new { controller = "Home", action = "EditProfie", memberId = UrlParameter.Optional }
+            );
+
+            // Route mặc định
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

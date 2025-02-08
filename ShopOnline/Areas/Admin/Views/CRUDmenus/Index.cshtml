@@ -4,17 +4,6 @@
     ViewBag.Title = "Menu";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
 }
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#search").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("table tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>
 
 <div class="page-breadcrumb">
     <div class="row">
@@ -113,7 +102,7 @@
                 <tr>
                     <th scope="col">Name</th>
                     <th>Meta</th>
-                    <th class="text-center">Checked</th>
+                    <th class="text-center">Public</th>
                     <th class="text-center">Order</th>
                     <th>Date Update</th>
                     <th class="text-center">Feature</th>

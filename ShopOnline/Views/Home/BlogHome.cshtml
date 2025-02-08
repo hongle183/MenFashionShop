@@ -4,14 +4,7 @@
     @foreach (var i in Model)
     {
     <div class="col-lg-4 col-md-6 col-sm-6">
-        <div class="blog__item">
-            <div class="blog__item__pic set-bg" data-setbg=@Url.Content(""+@i.image)></div>
-            <div class="blog__item__text card">
-                <span><img src="~/Content/img/icon/date.png" style="width:10%;" alt=""> @i.dateCreate</span>
-                <h5>@i.title</h5>
-                <a href="/chi-tiet-bai-viet/@i.articleId">Read More</a>
-            </div>
-        </div>
+        @Html.Partial("_BlogItem", i)
     </div>
     }
 </div>

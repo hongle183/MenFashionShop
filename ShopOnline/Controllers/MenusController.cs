@@ -13,6 +13,11 @@ namespace ShopOnline.Controllers
         {
             return View(db.Menus.Where(model => model.status == true).OrderBy(model => model.order).ToList());
         }
+        public PartialViewResult Categories()
+        {
+            return PartialView(db.ProductCategories.Where(model => model.status == true).OrderBy(model => model.order).ToList());
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

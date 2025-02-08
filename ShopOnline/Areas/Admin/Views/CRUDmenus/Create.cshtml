@@ -60,15 +60,15 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="order">Order</label>
-                                        <input type="number" class="form-control" name="order" id="order" />
+                                        <label for="meta">Meta</label>
+                                        <input type="text" class="form-control" name="meta" id="meta" />
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="meta">Meta</label>
-                                        <input type="text" class="form-control" name="meta" id="meta" />
+                                        <label for="order">Order</label>
+                                        <input type="number" class="form-control" name="order" id="order" />
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
@@ -87,6 +87,7 @@
     </div>
 </div>
 <script src="~/Content/js/validator.js"></script>
+<script src="~/Areas/Admin/Content/js/helper.js"></script>
 <script>
     Validator({
         form: '#form-1',
@@ -94,8 +95,17 @@
         errorSelector: '.form-message',
         rules: [
             Validator.isRequired('#menuName'),
-            Validator.isRequired('#order'),
             Validator.isRequired('#meta'),
+            Validator.isRequired('#order')
         ],
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var menuNameInput = document.getElementById('menuName');
+        var metaInput = document.getElementById('meta');
+
+        menuNameInput.addEventListener('input', function () {
+            metaInput.value = cleanText(menuNameInput.value);
+        });
     });
 </script>

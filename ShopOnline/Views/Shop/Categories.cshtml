@@ -3,5 +3,5 @@
 
 @foreach (var i in Model)
 {
-    <li>@Html.ActionLink(i.categoryName, "ProductList", "Shop", new { categories = i.categoryId }, null)</li>
+    <li><a href="@Url.Action("Shop", "Shop", new { meta = i.meta })">@i.categoryName</a></li>
 }

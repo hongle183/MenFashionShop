@@ -1,4 +1,4 @@
-/*  ---------------------------------------------------
+﻿/*  ---------------------------------------------------
     Template Name: Male Fashion
     Description: Male Fashion - ecommerce teplate
     Author: Colorib
@@ -27,7 +27,11 @@
         });
         if ($('.product__filter').length > 0) {
             var containerEl = document.querySelector('.product__filter');
-            var mixer = mixitup(containerEl);
+            var mixer = mixitup(containerEl, {
+                selectors: {
+                    control: '.filter-control-item'
+                }
+            });
         }
     });
 
@@ -81,6 +85,17 @@
     });
 
     /*-----------------------
+      Sticky Header
+    ------------------------*/
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 0) {
+            $('.header').addClass('sticky-top');
+        } else {
+            $('.header').removeClass('sticky-top');
+        }
+    });
+
+    /*-----------------------
         Hero Slider
     ------------------------*/
     $(".hero__slider").owlCarousel({
@@ -89,7 +104,7 @@
         items: 1,
         dots: false,
         nav: true,
-        navText: ["<span class='arrow_left'><span/>", "<span class='arrow_right'><span/>"],
+        navText: ["<i class='fa-solid fa-chevron-left'></i>", "<i class='fa-solid fa-chevron-right'></i>"],
         animateOut: 'fadeOut',
         animateIn: 'fadeIn',
         smartSpeed: 1200,
@@ -114,9 +129,9 @@
 		Scroll
 	--------------------- */
     $(".nice-scroll").niceScroll({
-        cursorcolor: "#0d0d0d",
+        cursorcolor: "#2b2b2b",
         cursorwidth: "5px",
-        background: "#e5e5e5",
+        background: "#b7b7b7",
         cursorborder: "",
         autohidemode: true,
         horizrailenabled: false
@@ -167,11 +182,11 @@
         var $button = $(this);
         var oldValue = $button.parent().find('input').val();
         if ($button.hasClass('inc')) {
-            var newVal = parseFloat(oldValue) + 1;
+            var newVal = parseFloat(oldValue) - 1;
         } else {
             // Don't allow decrementing below zero
             if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) - 1;
+                var newVal = parseFloat(oldValue) + 1;
             } else {
                 newVal = 0;
             }

@@ -46,49 +46,39 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="title">Title</label>
-                                        @Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control", @id = "title" } })
+                                        @Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control" } })
                                         <span class="form-message"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="title">Meta</label>
-                                        @Html.EditorFor(model => model.meta, new { htmlAttributes = new { @class = "form-control", @id = "meta" } })
+                                        <label for="meta">Meta</label>
+                                        @Html.EditorFor(model => model.meta, new { htmlAttributes = new { @class = "form-control" } })
                                         <span class="form-message"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="shortDescription">Description</label>
-                                        @Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control", @id = "description" } })
+                                        <label for="description">Description</label>
+                                        @Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control" } })
                                     </div>
                                     <div class="form-group">
-                                        <label for="productName">Public</label>
+                                        <label for="status">Public</label>
                                         @{
-                                            bool hide = (Model.status.GetValueOrDefault(false) ? true : false);
+                                            bool status = (Model.status.GetValueOrDefault(false) ? true : false);
                                         }
-                                        @Html.CheckBoxFor(model => hide)
+                                        @Html.CheckBoxFor(model => status)
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="productName">Image</label>
-                                        <img src=@Url.Content(Model.image) class="img-thumbnail" style="max-height:211.6px; width:auto; display:block; margin-bottom:10px" id="imagePreview" />
+                                        <img src=@Url.Content(Model.image) class="img-thumbnail" style="max-height:200px; max-width:342px; display:block; margin-bottom:10px" id="imagePreview" />
                                         <input type="file" name="uploadFile" class="form-control-file" id="image" accept="image/jpeg, image/png" onclick="defaultBtnActive()" />
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
                             </div>
-                            @*<div class="row">
-                                <div class="col-md-12">
-                                    
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    
-                                </div>
-                            </div>*@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="productName">Content</label>
+                                        <label for="content">Content</label>
                                         @*@Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control textareaTinym", @id = "description" } })*@
                                         <textarea class="form-group" name="des" id="content">
                                             @*@if(Model.content.Length < 500)
@@ -103,21 +93,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                @*<div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="productName">Category</label>
-                                        @Html.DropDownList("categoryId", null, htmlAttributes: new { @class = "form-control" })
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>*@
-                                @*<div class="col-md-6">
-                                                                      
-                                </div>*@
-                            </div>
-                            @*<div class="row">
-                                
-                            </div>*@
                         </div>
                         <div class="form-actions">
                             <div class="text-right">
@@ -132,6 +107,7 @@
     </div>
 </div>
 <script src="~/Content/js/validator.js"></script>
+<script src="~/Areas/Admin/Content/js/helper.js"></script>
 <script>
     Validator({
         form: '#form-1',
@@ -140,6 +116,15 @@
         rules: [
             Validator.isRequired('#title')
         ],
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var titleInput = document.getElementById('title');
+        var metaInput = document.getElementById('meta');
+
+        titleInput.addEventListener('input', function () {
+            metaInput.value = cleanText(titleInput.value);
+        });
     });
 </script>
 

@@ -106,7 +106,7 @@
                     <th class="text-center">Title</th>
                     <th class="text-center">Public date</th>
                     <th class="text-center">Author</th>
-                    <th class="text-center">Status</th>
+                    <th class="text-center">Public</th>
                     <th class="text-center">Feature</th>
                 </tr>
             </thead>
@@ -126,7 +126,12 @@
                         <tr>
                             <th scope="row" class="text-center font-weight-medium">@stt</th>
                             <td>@i.title</td>
-                            <td class="text-center">@i.dateCreate</td>
+                            <td class="text-center">
+                                @{
+                                    var date = (DateTime)i.dateCreate;
+                                    string update = date.ToString("dd/MM/yyyy");
+                                }@update
+                            </td>
                             <td class="text-center">@i.Member.lastName</td>
                             <td class="text-center">
                                 @if (i.status == true)
@@ -177,14 +182,3 @@
         justify-content: flex-end;
     }
 </style>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#search").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("table tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>

@@ -1,17 +1,35 @@
 ﻿@using ShopOnline.Models
 @model List<Invoince>
 @{
-    ViewBag.Title = "MyOrder";
+    ViewBag.Title = "Đơn hàng của tôi";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>@ViewBag.Title</h4>
+                    <div class="breadcrumb__links">
+                        <a href="/trang-chu">Trang chủ</a>
+                        <span>@ViewBag.Title</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
 <link rel="stylesheet" href="~/Content/css/WatchOrders.css">
 @if (Model.Count == 0)
 {
     <div class="container" style="padding: 50px 0">
         <div class="text-center">
             <img src="~/Content/img/Orders/empty_state.png" class="img-fluid" alt="Responsive image" width="30%">
-            <h5 style=" margin-bottom: 19px; color:#3a3434;">There are no orders yet.</h5>
-            <a href="/san-pham" class="btn-shownow">SHOP NOW</a>
+            <h5 style="margin: 16px 0;">Chưa có đơn hàng nào.</h5>
+            <a href="/san-pham" class="btn outline-btn">SHOP NOW</a>
         </div>
     </div>
 }
@@ -23,11 +41,11 @@ else
             <div class="card">
                 <div class="row d-flex justify-content-between px-3 top">
                     <div class="d-flex">
-                        <h5>ORDER <span class="text-primary font-weight-bold"><a href="@Url.Action("InvoinceDetail", "Home", new { invoinceNo = i.invoinceId})">#@i.invoinceId</a></span></h5>
+                        <h5>ĐƠN HÀNG <span class="font-weight-bold"><a href="@Url.Action("InvoinceDetail", "Home", new { invoinceId = i.invoinceId})">#@i.invoinceId</a></span></h5>
                     </div>
                     <div class="d-flex flex-column text-sm-right">
-                        <p class="mb-0">Date order <span class="font-weight-bold">@i.dateCreate</span></p>
-                        <p>USPS <span class="font-weight-bold">234094567242423422898</span></p>
+                        <p class="mb-0">Ngày <span class="font-weight-bold">@i.dateCreate</span></p>
+                        @*<p>USPS <span class="font-weight-bold">234094567242423422898</span></p>*@
                     </div>
                 </div> <!-- Add class 'active' to progress -->
                 <div class="row d-flex justify-content-center">
@@ -97,3 +115,7 @@ else
     }
 }
 
+<script>
+    var obj = document.querySelector(".navbar li:nth-child(1)");
+    obj.classList.remove("active");
+</script>

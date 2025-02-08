@@ -2,103 +2,124 @@
 @model List<InvoinceDetail>
 
 @{
-    ViewBag.Title = "InvoinceDetail";
+    ViewBag.Title = "Chi tiết đơn hàng";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
-}
 
-@{
     Invoince info = (Invoince)@Session["information"];
 }
 
-<div class="container" style="padding: 50px 0">
-    <h4 class="mb-3 text-dark text-uppercase">Orders / #@ViewBag.invoinceNo</h4>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="text-center">Product</th>
-                                <th scope="col" class="text-center">Quality</th>
-                                <th scope="col" class="text-center">Unit price</th>
-                                <th scope="col" class="text-center">Total money</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{ int stt = 1, total = 0, totaldiscount = 0, totalprice = 0, tempPrice = 0;}
-                            @foreach (var i in Model)
-                            {
-                                tempPrice = (int)i.price + (int)i.discount;
-                                <tr>
-                                    <td width="400px">
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <img src=@Url.Content("" + i.Product.image) width="80%" />
-                                            </div>
-                                            <div class="col-md-9">
-                                                @i.Product.productName
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">@i.quanlity</td>
-                                    <td class="text-center">$@i.Product.price</td>
-                                    <td class="text-center">$@tempPrice</td>
-                                </tr>
-                                stt++;
-                                total += (int)i.price;
-                                totaldiscount += (int)i.discount;
-                            }
-                            @{ totalprice = total + totaldiscount; }
-                        </tbody>
-                    </table>
-
-                    <hr />
-                    <div class="row">
-                        <div class="col-md-6">
-
-                        </div>
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-6 text-right">
-                                    <p>Subtotal:</p>
-                                    <p>Shipping:</p>
-                                    <p>Discounted: </p>
-                                    <p><b>Total:</b></p>
-                                </div>
-                                <div class="col-md-6 text-right">
-                                    <p>$@totalprice</p>
-                                    <p>$0</p>
-                                    <p>-$@totaldiscount</p>
-                                    <p>$@total</p>
-                                </div>
-                            </div>
-                        </div>
-
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>@ViewBag.Title</h4>
+                    <div class="breadcrumb__links">
+                        <a href="/trang-chu">Trang chủ</a>
+                        <a href="@Url.Action("MyOrder", "Home")">Đơn hàng của tôi</a>
+                        <span>@ViewBag.Title</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h4 style="margin-bottom: 25px">Orderer information</h4>
-                    <p style="margin: 0">
-                        <b>
-                            @info.Member.firstName<span> </span>@info.Member.lastName
-                        </b>
-                    </p>
-                    <p style="margin: 0"> 
-                        @info.Member.phone
-                    </p>
-                    <p style="margin: 0">
-                        @info.Member.address
-                    </p>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+<div class="container spad">
+    <h5 class="mb-3 text-uppercase">Đơn hàng <span class="font-weight-bold theme-color">#@ViewBag.invoinceId</span></h5>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="invoince__detail card">
+                <p>Ngày đặt hàng: @info.dateCreate</p>
+                <p>Ngày giao hàng: @info.deliveryDate</p>
+                <p>Tình trạng đơn hàng: 
+                    @if (info.deliveryStatus == true)
+                    { 
+                        <b>Đã hoàn thành</b> 
+                    }
+                    else 
+                    {
+                        <b>Chờ giao hàng</b>
+                    }
+                </p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Sản phẩm</th>
+                            <th scope="col" class="text-center">Số lượng</th>
+                            <th scope="col" class="text-center">Đơn giá</th>
+                            <th scope="col" class="text-center">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int stt = 1, total = 0, totaldiscount = 0, totalprice = 0; }
+                        @foreach (var i in Model)
+                        {
+                            <tr>
+                                <td width="400px">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <img src=@Url.Content("" + i.Product.image) width="80%" />
+                                        </div>
+                                        <div class="col-md-9 d-flex align-items-center">
+                                            @i.Product.productName
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center align-middle">@i.quanlity</td>
+                                <td class="text-center align-middle">@String.Format("{0:0,0}", i.price) ₫</td>
+                                <td class="text-center align-middle">@String.Format("{0:0,0}", i.price * i.quanlity) ₫</td>
+                            </tr>
+                            stt++;
+                            total += (int)i.price;
+                            totaldiscount += (int)i.discount;
+                        }
+                        @{ totalprice = total + totaldiscount; }
+                    </tbody>
+                </table>
+
+                <hr /> <br />
+                <div class="row justify-content-end">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6 text-right">
+                                <p>Tổng cộng:</p>
+                                <p>Vận chuyển:</p>
+                                <p>Giảm giá: </p>
+                                <p><b>Thanh toán:</b></p>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <p>@String.Format("{0:0,0}", totalprice) ₫</p>
+                                <p>@String.Format("{0:0,0}", 0) ₫</p>
+                                <p>@String.Format("{0:0,0}", -totaldiscount) ₫</p>
+                                <p>@String.Format("{0:0,0}", total) ₫</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="invoince__detail card">
+                <h4 style="margin-bottom: 16px">Thông tin giao hàng</h4>
+                <p style="margin: 0">
+                    <b>
+                        @info.Member.firstName<span> </span>@info.Member.lastName
+                    </b>
+                </p>
+                <p style="margin: 0">
+                    @info.Member.phone
+                </p>
+                <p style="margin: 0">
+                    @info.Member.address
+                </p>
+            </div>
+        </div>
     </div>
-
-
-
 </div>
+
+<script>var obj = document.querySelector(".navbar li:nth-child(1)");
+    obj.classList.remove("active");
+</script>

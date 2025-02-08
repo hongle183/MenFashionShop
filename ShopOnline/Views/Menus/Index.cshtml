@@ -9,18 +9,34 @@
     </div>
 </div>
 <div class="col-lg-6 col-md-6 my-auto">
-    <nav class="header__menu mobile-menu">
-        <ul class="navlist">
+    <nav class="navbar header__menu mobile-menu">
+        <ul>
+
             @{
                 foreach (var i in Model)
                 {
-                    if (i.order == 1)
+                    if (i.meta == "san-pham")
                     {
-                        <li class="active" data-value="@i.meta"><a href="/@i.meta">@i.name</a></li>
+                        <li class="nav-item dropdown" data-value="@i.meta">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @i.name
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/@i.meta">Tất cả sản phẩm</a>
+                                @Html.Action("Categories", "Menus")
+                            </div>
+                        </li>
                     }
                     else
                     {
-                        <li data-value="@i.meta"><a href="/@i.meta">@i.name</a></li>
+                        if (i.order == 1)
+                        {
+                            <li class="nav-item active" data-value="@i.meta"><a class="nav-link" href="/@i.meta">@i.name</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item" data-value="@i.meta"><a class="nav-link" href="/@i.meta">@i.name</a></li>
+                        }
                     }
                 }
             }
