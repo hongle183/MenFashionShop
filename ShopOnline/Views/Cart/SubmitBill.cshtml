@@ -9,10 +9,6 @@
     <link rel="shortcut icon" type="image/png" href="~/Content/img/icon/favicon.png" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="~/Content/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="~/Content/css/style.css" type="text/css">
@@ -33,7 +29,19 @@
             <h4 class="theme-color mb-5 text-center">Thanks for your order</h4>
             <span class="theme-color">Payment Summary <img src="~/Content/img/icon/checked.png" alt="" style="width: 8%;"></span>
             <div class="d-flex justify-content-between"> <span>Số hóa đơn: <b>0125</b></span></div>
-            <div class="d-flex justify-content-between"> <span>Ngày: 27.10.2024</span> <span>Giờ: 17:46</span> </div>
+            <div class="d-flex justify-content-between">
+                <span>
+                    Ngày:
+                    <script>
+                        const today = new Date();
+                        const day = String(today.getDate()).padStart(2, '0'); // Lấy ngày (2 chữ số)
+                        const month = String(today.getMonth() + 1).padStart(2, '0'); // Lấy tháng (thêm 1 vì getMonth() trả về 0-11)
+                        const year = today.getFullYear(); // Lấy năm đầy đủ (4 chữ số)
+
+                        document.write(`${day}/${month}/${year}`);
+                    </script>
+                </span> <span>Giờ: 17:46</span>
+            </div>
             <div class="mb-3">
                 <hr class="new1">
             </div>
@@ -41,7 +49,7 @@
             <div class="d-flex justify-content-between"> <span>Vận chuyển</span> <span>0 ₫</span> </div>
             <div class="d-flex justify-content-between mt-3"> <span class="font-weight-bold">Thanh toán</span> <span class="font-weight-bold theme-color">@String.Format("{0:N0}", ViewBag.totalPrice) ₫</span> </div>
 
-            <div class="text-center mt-5"> <a href="/trang-chu" class="outline-btn">Back to shop</a></div>
+            <div class="text-center mt-5"> <a href="/trang-chu" class="outline-btn btn">Back to shop</a></div>
         }
     </div>
     <script src="~/Content/js/jquery-3.7.1.min.js"></script>

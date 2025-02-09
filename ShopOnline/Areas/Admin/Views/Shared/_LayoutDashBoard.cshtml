@@ -379,36 +379,11 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="~/Admin/DashBoard/Chat" aria-expanded="false">
-                                <i data-feather="message-square" class="feather-icon"></i><span class="hide-menu">Chat</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="~/Admin/DashBoard/TrackingCovid" aria-expanded="false">
-                                <i data-feather="globe" class="feather-icon"></i><span class="hide-menu">Tracking covid</span>
-                            </a>
-                        </li>
 
                         <li class="list-divider"></li>
                         <li class="nav-small-cap"><span class="hide-menu">Components</span></li>
                         @if (user.roleId == new Guid("b14d0769-e485-4455-93bc-c39007910115")) // Nếu đăng nhập với quyền quản lí thì hiển thị tất cả manage
                         {
-                            <!--<li class="sidebar-item">
-                                <a class="sidebar-link has-arrow" href="javascript:void(0)"
-                                   aria-expanded="false">
-                                    <i data-feather="server" class="feather-icon"></i><span class="hide-menu">Category</span>
-                                </a>
-                                <ul aria-expanded="false" class="collapse  first-level base-level-line">
-                                    <li class="sidebar-item">
-                                        <a href="~/Admin/CRUDcategory/Index" class="sidebar-link">
-                                            <span class="hide-menu">
-                                                Category product list
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>-->
                             <li class="sidebar-item">
                                 <a class="sidebar-link" href="~/Admin/CRUDcategory/Index" aria-expanded="false">
                                     <i data-feather="server" class="feather-icon"></i><span class="hide-menu">Category</span>
@@ -430,11 +405,6 @@
                                 </a>
                             </li>
                             <li class="sidebar-item">
-                                <a class="sidebar-link" href="~/Admin/CRUDcustomer/Index" aria-expanded="false">
-                                    <i data-feather="users" class="feather-icon"></i><span class="hide-menu">Customer</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
                                 <a class="sidebar-link" href="~/Admin/CRUDcontact/Index" aria-expanded="false">
                                     <i data-feather="message-square" class="feather-icon"></i><span class="hide-menu">Contact</span>
                                 </a>
@@ -445,27 +415,8 @@
                                 </a>
                             </li>
                             <li class="sidebar-item">
-                                <a class="sidebar-link" href="#" aria-expanded="false">
-                                    <i data-feather="list" class="feather-icon"></i><span class="hide-menu">Slider</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-                                    <i data-feather="pie-chart" class="feather-icon"></i><span class="hide-menu">Statistic</span>
-                                </a>
-                                <ul aria-expanded="false" class="collapse  first-level base-level-line">
-                                    <li class="sidebar-item">
-                                        <a href="#" class="sidebar-link">
-                                            <span class="hide-menu">
-                                                Statistic profit
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-item">
                                 <a class="sidebar-link" href="~/Admin/CRUDmenus/Index" aria-expanded="false">
-                                    <i data-feather="shopping-cart" class="feather-icon"></i><span class="hide-menu">Menu</span>
+                                    <i data-feather="grid" class="feather-icon"></i><span class="hide-menu">Menu</span>
                                 </a>
                             </li>
                         }

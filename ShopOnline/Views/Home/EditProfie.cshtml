@@ -6,10 +6,9 @@
 
 <div class="container info spad">
     <div class="singinBx">
-        @using (Html.BeginForm("EditProfie", "Home", FormMethod.Post, new { @id = "form-1", @style="width:100%", @enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("EditProfie", "Home", FormMethod.Post, new { @id = "form-1", @style = "width:100%", @enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
-
             <div class="form-group">
                 <h2>@ViewBag.Title</h2>
             </div>
@@ -29,7 +28,7 @@
                     <div class="form-group mt-2 position-relative">
                         <input type="file"
                                id="avatarInput"
-                               name="avatar"
+                               name="uploadFile"
                                accept=".png,.jpg,.jpeg"
                                onchange="document.getElementById('picture').src = window.URL.createObjectURL(this.files[0])"
                                style="display: none;" />
@@ -89,10 +88,14 @@
                     </div>
                 </div>
             </div>
-
         }
     </div>
 </div>
+
+<script>
+    var obj = document.querySelector(".navbar li:nth-child(1)");
+    obj.classList.remove("active");
+</script>
 <script src="~/Content/js/validator.js"></script>
 <script>
     Validator({
@@ -104,7 +107,7 @@
             Validator.isRequired('#lastName'),
             Validator.isEmail('#email'),
             Validator.isRequired('#phone'),
-            Validator.isDate('#birthday'),           
+            Validator.isDate('#birthday'),
             Validator.isRequired('#address')
         ],
     });

@@ -111,14 +111,7 @@
                         <li>Giảm giá <span>@String.Format("{0:N0}", ViewBag.discount) ₫</span></li>
                         <li>Tổng cộng <span class="text-danger font-weight-bold">@String.Format("{0:N0}", ViewBag.totalPrice) ₫</span></li>
                     </ul>
-                    @if (Session["info"] != null)
-                    {
-                        <a href="@Url.Action("Checkout","Cart")" class="btn site-btn">Mua hàng</a>
-                    }
-                    else
-                    {
-                        <a href="@Url.Action("CheckoutNoAccount","Cart")" class="btn site-btn">Mua hàng</a>
-                    }
+                    <a href="@Url.Action("Checkout","Cart")" class="btn site-btn">Mua hàng</a>
                 </div>
             </div>
         </div>

@@ -3,14 +3,11 @@
     ViewBag.Title = "Tạo tài khoản";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
-
 <div class="container info spad">
     <div class="singinBx">
         @using (Html.BeginForm("Register", "User", FormMethod.Post, new { @id = "form-1" }))
         {
             @Html.AntiForgeryToken()
-            @*@Html.HiddenFor(model => model.birthday)*@
-
             <div class="form-group">
                 <h2>@ViewBag.Title</h2>
             </div>
@@ -18,18 +15,15 @@
             <div class="d-flex justify-content-between">
                 <div class="form-group mr-2">
                     <input type="text" name="firstName" id="firstname" placeholder="Họ" />
-                    @Html.ValidationMessageFor(model => model.firstName, "", new { @class = "text-danger" })
                     <span class="form-message"></span>
                 </div>
                 <div class="form-group">
                     <input type="text" name="lastName" id="lastname" placeholder="Tên" />
-                    @Html.ValidationMessageFor(model => model.lastName, "", new { @class = "text-danger" })
                     <span class="form-message"></span>
                 </div>
             </div>
             <div class="form-group">
                 <input type="password" name="password" id="password" placeholder="Mật khẩu" />
-                @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
                 <span class="form-message"></span>
             </div>
             <div class="form-group">
@@ -38,12 +32,10 @@
             </div>
             <div class="form-group">
                 <input type="number" name="phone" id="phone" placeholder="Số điện thoại" />
-                @Html.ValidationMessageFor(model => model.phone, "", new { @class = "text-danger" })
                 <span class="form-message"></span>
             </div>
             <div class="form-group">
                 <input type="text" name="email" id="email" placeholder="Email" />
-                @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
                 <span class="form-message"></span>
             </div>
             <div class="form-group">
@@ -59,7 +51,7 @@
 </div>
 
 <script>
-    var obj = document.querySelector(".navlist li:nth-child(1)");
+    var obj = document.querySelector(".navbar li:nth-child(1)");
     obj.classList.remove("active");
 </script>
 <script src="~/Content/js/validator.js"></script>
