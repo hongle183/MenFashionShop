@@ -21,12 +21,14 @@ namespace ShopOnline.Models
         }
     
         public System.Guid invoinceId { get; set; }
-        public Nullable<bool> deliveryStatus { get; set; }
-        public Nullable<System.DateTime> deliveryDate { get; set; }
-        public int totalMoney { get; set; }
-        public Nullable<System.Guid> memberId { get; set; }
+        public System.Guid memberId { get; set; }
+        public Nullable<int> totalMoney { get; set; }
+        public string paymentMethod { get; set; }
+        public string paymentStatus { get; set; }
+        public string transactionId { get; set; }
+        public string note { get; set; }
         public string meta { get; set; }
-        public Nullable<bool> status { get; set; }
+        public string status { get; set; }
         public Nullable<System.DateTime> dateCreate { get; set; }
     
         public virtual Member Member { get; set; }

@@ -5,7 +5,7 @@ namespace ShopOnline.Models
 {
     public class Cart
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
         public Guid idItem { get; set; }
         public string nameItem { get; set; }
         public string metaItem { get; set; }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5b3d8c900c1b49f0a4c4eee0b4d79ad2" Name="Diagram1">
+        <EntityTypeShape EntityType="menfsModel.Article" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.Contact" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.InvoinceDetail" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.Member" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.Menu" Width="1.5" PointX="6.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.Product" Width="1.5" PointX="0.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.ProductCategory" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.Role" Width="1.5" PointX="2.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.Slide" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.vDoanhThuTheoNgay" Width="1.5" PointX="4.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="menfsModel.vHoaDonTrongNgay" Width="1.5" PointX="6.75" PointY="8.75" IsExpanded="true" />
+        <AssociationConnector Association="menfsModel.FK_INVOINCEDETAIL_PRODUCT" ManuallyRouted="false" />
+        <AssociationConnector Association="menfsModel.FK_MEMBER_ROLE" />
+        <AssociationConnector Association="menfsModel.FK_PRODUCT_MEMBER" />
+        <AssociationConnector Association="menfsModel.FK_PRODUCT_CATEGORY" />
+        <AssociationConnector Association="menfsModel.FK_ARTICLE_MEMBER" />
+        <EntityTypeShape EntityType="menfsModel.Invoince" Width="1.5" PointX="9" PointY="7.25" />
+        <AssociationConnector Association="menfsModel.FK_INVOINCE_MEMBER" />
+        <AssociationConnector Association="menfsModel.FK_INVOINCEDETAIL_INVOINCE" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -21,7 +21,7 @@ namespace ShopOnline.Models
         public Nullable<int> price { get; set; }
         public Nullable<int> discount { get; set; }
     
-        public virtual Invoince Invoince { get; set; }
         public virtual Product Product { get; set; }
+        public virtual Invoince Invoince { get; set; }
     }
 }

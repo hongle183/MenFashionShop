@@ -17,9 +17,9 @@ namespace ShopOnline.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Member()
         {
+            this.Products = new HashSet<Product>();
             this.Articles = new HashSet<Article>();
             this.Invoinces = new HashSet<Invoince>();
-            this.Products = new HashSet<Product>();
         }
     
         public System.Guid memberId { get; set; }
@@ -36,12 +36,12 @@ namespace ShopOnline.Models
         public Nullable<bool> status { get; set; }
         public Nullable<System.DateTime> dateCreate { get; set; }
     
+        public virtual Role Role { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Product> Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Article> Articles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Invoince> Invoinces { get; set; }
-        public virtual Role Role { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Product> Products { get; set; }
     }
 }

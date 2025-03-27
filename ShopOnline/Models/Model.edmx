@@ -9,7 +9,7 @@
           <Key>
             <PropertyRef Name="articleId" />
           </Key>
-          <Property Name="articleId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="articleId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="title" Type="nvarchar" MaxLength="250" />
           <Property Name="description" Type="nvarchar" MaxLength="2000" />
           <Property Name="image" Type="nvarchar" MaxLength="2000" />
@@ -23,7 +23,7 @@
           <Key>
             <PropertyRef Name="contactId" />
           </Key>
-          <Property Name="contactId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="contactId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="250" />
           <Property Name="email" Type="varchar" MaxLength="50" />
           <Property Name="message" Type="nvarchar" MaxLength="2000" />
@@ -35,13 +35,15 @@
           <Key>
             <PropertyRef Name="invoinceId" />
           </Key>
-          <Property Name="invoinceId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="deliveryStatus" Type="bit" />
-          <Property Name="deliveryDate" Type="smalldatetime" />
-          <Property Name="totalMoney" Type="int" Nullable="false" />
-          <Property Name="memberId" Type="uniqueidentifier" />
+          <Property Name="invoinceId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="memberId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="totalMoney" Type="int" />
+          <Property Name="paymentMethod" Type="nvarchar" MaxLength="50" />
+          <Property Name="paymentStatus" Type="nvarchar" MaxLength="20" />
+          <Property Name="transactionId" Type="nvarchar" MaxLength="50" />
+          <Property Name="note" Type="nvarchar(max)" />
           <Property Name="meta" Type="nvarchar" MaxLength="50" />
-          <Property Name="status" Type="bit" />
+          <Property Name="status" Type="nvarchar" MaxLength="20" />
           <Property Name="dateCreate" Type="smalldatetime" />
         </EntityType>
         <EntityType Name="InvoinceDetail">
@@ -60,7 +62,7 @@
           <Key>
             <PropertyRef Name="memberId" />
           </Key>
-          <Property Name="memberId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="memberId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="phone" Type="varchar" MaxLength="20" />
           <Property Name="password" Type="varchar" MaxLength="50" />
           <Property Name="firstName" Type="nvarchar" MaxLength="250" />
@@ -78,7 +80,7 @@
           <Key>
             <PropertyRef Name="menuId" />
           </Key>
-          <Property Name="menuId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="menuId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="255" />
           <Property Name="meta" Type="varchar" MaxLength="255" />
           <Property Name="status" Type="bit" />
@@ -89,7 +91,7 @@
           <Key>
             <PropertyRef Name="productId" />
           </Key>
-          <Property Name="productId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="productId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="productName" Type="nvarchar" MaxLength="250" />
           <Property Name="image" Type="varchar" MaxLength="2000" />
           <Property Name="price" Type="int" />
@@ -108,7 +110,7 @@
           <Key>
             <PropertyRef Name="categoryId" />
           </Key>
-          <Property Name="categoryId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="categoryId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="categoryName" Type="nvarchar" MaxLength="250" />
           <Property Name="meta" Type="nvarchar" MaxLength="50" />
           <Property Name="status" Type="bit" />
@@ -119,7 +121,7 @@
           <Key>
             <PropertyRef Name="roleId" />
           </Key>
-          <Property Name="roleId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="roleId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="roleName" Type="nvarchar" MaxLength="50" />
           <Property Name="meta" Type="nvarchar" MaxLength="50" />
           <Property Name="status" Type="bit" />
@@ -129,7 +131,7 @@
           <Key>
             <PropertyRef Name="slideId" />
           </Key>
-          <Property Name="slideId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="slideId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="50" />
           <Property Name="description" Type="nvarchar" MaxLength="250" />
           <Property Name="url" Type="varchar" MaxLength="50" />
@@ -163,241 +165,7 @@ warning 6002: The table/view 'menfs.dbo.vHoaDonTrongNgay' does not have a primar
           <Property Name="status" Type="bit" />
           <Property Name="dateCreate" Type="smalldatetime" />
         </EntityType>
-        <Association Name="FK_INVOINCEDETAIL_INVOINCE">
-          <End Role="Invoince" Type="Self.Invoince" Multiplicity="1" />
-          <End Role="InvoinceDetail" Type="Self.InvoinceDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Invoince">
-              <PropertyRef Name="invoinceId" />
-            </Principal>
-            <Dependent Role="InvoinceDetail">
-              <PropertyRef Name="invoinceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_INVOINCEDETAIL_PRODUCT">
-          <End Role="Product" Type="Self.Product" Multiplicity="1" />
-          <End Role="InvoinceDetail" Type="Self.InvoinceDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="productId" />
-            </Principal>
-            <Dependent Role="InvoinceDetail">
-              <PropertyRef Name="productId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="menfsModelStoreContainer">
-          <EntitySet Name="Article" EntityType="Self.Article" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Contact" EntityType="Self.Contact" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Invoince" EntityType="Self.Invoince" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InvoinceDetail" EntityType="Self.InvoinceDetail" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ProductCategory" EntityType="Self.ProductCategory" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Slide" EntityType="Self.Slide" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="vDoanhThuTheoNgay" EntityType="Self.vDoanhThuTheoNgay" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [vDoanhThuTheoNgay].[dateCreate] AS [dateCreate], 
-    [vDoanhThuTheoNgay].[income] AS [income]
-    FROM [dbo].[vDoanhThuTheoNgay] AS [vDoanhThuTheoNgay]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="vHoaDonTrongNgay" EntityType="Self.vHoaDonTrongNgay" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [vHoaDonTrongNgay].[invoinceId] AS [invoinceId], 
-    [vHoaDonTrongNgay].[deliveryStatus] AS [deliveryStatus], 
-    [vHoaDonTrongNgay].[deliveryDate] AS [deliveryDate], 
-    [vHoaDonTrongNgay].[totalMoney] AS [totalMoney], 
-    [vHoaDonTrongNgay].[memberId] AS [memberId], 
-    [vHoaDonTrongNgay].[meta] AS [meta], 
-    [vHoaDonTrongNgay].[status] AS [status], 
-    [vHoaDonTrongNgay].[dateCreate] AS [dateCreate]
-    FROM [dbo].[vHoaDonTrongNgay] AS [vHoaDonTrongNgay]</DefiningQuery>
-          </EntitySet>
-          <AssociationSet Name="FK_INVOINCEDETAIL_INVOINCE" Association="Self.FK_INVOINCEDETAIL_INVOINCE">
-            <End Role="Invoince" EntitySet="Invoince" />
-            <End Role="InvoinceDetail" EntitySet="InvoinceDetail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_INVOINCEDETAIL_PRODUCT" Association="Self.FK_INVOINCEDETAIL_PRODUCT">
-            <End Role="Product" EntitySet="Product" />
-            <End Role="InvoinceDetail" EntitySet="InvoinceDetail" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema></edmx:StorageModels>
-    <!-- CSDL content -->
-    <edmx:ConceptualModels>
-      <Schema Namespace="menfsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Article">
-          <Key>
-            <PropertyRef Name="articleId" />
-          </Key>
-          <Property Name="articleId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="title" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="description" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="image" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="memberId" Type="Guid" Nullable="false" />
-          <Property Name="meta" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Member" Relationship="Self.FK_POST_MEMBER" FromRole="Article" ToRole="Member" />
-        </EntityType>
-        <EntityType Name="Contact">
-          <Key>
-            <PropertyRef Name="contactId" />
-          </Key>
-          <Property Name="contactId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="message" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="dateContact" Type="DateTime" Precision="0" />
-        </EntityType>
-        <EntityType Name="Invoince">
-          <Key>
-            <PropertyRef Name="invoinceId" />
-          </Key>
-          <Property Name="invoinceId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="deliveryStatus" Type="Boolean" />
-          <Property Name="deliveryDate" Type="DateTime" Precision="0" />
-          <Property Name="totalMoney" Type="Int32" Nullable="false" />
-          <Property Name="memberId" Type="Guid" />
-          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Member" Relationship="Self.FK_INVOINCE_CUSTOMER" FromRole="Invoince" ToRole="Member" />
-          <NavigationProperty Name="InvoinceDetails" Relationship="Self.FK_INVOINCEDETAIL_INVOINCE" FromRole="Invoince" ToRole="InvoinceDetail" />
-        </EntityType>
-        <EntityType Name="InvoinceDetail">
-          <Key>
-            <PropertyRef Name="invoinceId" />
-            <PropertyRef Name="productId" />
-          </Key>
-          <Property Name="invoinceId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="productId" Type="Guid" Nullable="false" />
-          <Property Name="size" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="quanlity" Type="Int32" />
-          <Property Name="price" Type="Int32" />
-          <Property Name="discount" Type="Int32" />
-          <NavigationProperty Name="Invoince" Relationship="Self.FK_INVOINCEDETAIL_INVOINCE" FromRole="InvoinceDetail" ToRole="Invoince" />
-          <NavigationProperty Name="Product" Relationship="Self.FK_INVOINCEDETAIL_PRODUCT" FromRole="InvoinceDetail" ToRole="Product" />
-        </EntityType>
-        <EntityType Name="Member">
-          <Key>
-            <PropertyRef Name="memberId" />
-          </Key>
-          <Property Name="memberId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="firstName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="lastName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="birthday" Type="DateTime" Precision="0" />
-          <Property Name="address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="avatar" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="roleId" Type="Guid" Nullable="false" />
-          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Articles" Relationship="Self.FK_POST_MEMBER" FromRole="Member" ToRole="Article" />
-          <NavigationProperty Name="Invoinces" Relationship="Self.FK_INVOINCE_CUSTOMER" FromRole="Member" ToRole="Invoince" />
-          <NavigationProperty Name="Role" Relationship="Self.FK_MEMBER_ROLE" FromRole="Member" ToRole="Role" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_PRODUCT_MEMBER" FromRole="Member" ToRole="Product" />
-        </EntityType>
-        <EntityType Name="Menu">
-          <Key>
-            <PropertyRef Name="menuId" />
-          </Key>
-          <Property Name="menuId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="meta" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="order" Type="Int32" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-        </EntityType>
-        <EntityType Name="Product">
-          <Key>
-            <PropertyRef Name="productId" />
-          </Key>
-          <Property Name="productId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="productName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="image" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
-          <Property Name="price" Type="Int32" />
-          <Property Name="discount" Type="Int32" />
-          <Property Name="characteristic" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="description" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="quanlity" Type="Int32" />
-          <Property Name="brand" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="categoryId" Type="Guid" Nullable="false" />
-          <Property Name="memberId" Type="Guid" Nullable="false" />
-          <Property Name="meta" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="InvoinceDetails" Relationship="Self.FK_INVOINCEDETAIL_PRODUCT" FromRole="Product" ToRole="InvoinceDetail" />
-          <NavigationProperty Name="Member" Relationship="Self.FK_PRODUCT_MEMBER" FromRole="Product" ToRole="Member" />
-          <NavigationProperty Name="ProductCategory" Relationship="Self.FK_PRODUCT_CATEGORY" FromRole="Product" ToRole="ProductCategory" />
-        </EntityType>
-        <EntityType Name="ProductCategory">
-          <Key>
-            <PropertyRef Name="categoryId" />
-          </Key>
-          <Property Name="categoryId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="categoryName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="order" Type="Int32" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Products" Relationship="Self.FK_PRODUCT_CATEGORY" FromRole="ProductCategory" ToRole="Product" />
-        </EntityType>
-        <EntityType Name="Role">
-          <Key>
-            <PropertyRef Name="roleId" />
-          </Key>
-          <Property Name="roleId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="roleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Members" Relationship="Self.FK_MEMBER_ROLE" FromRole="Role" ToRole="Member" />
-        </EntityType>
-        <EntityType Name="Slide">
-          <Key>
-            <PropertyRef Name="slideId" />
-          </Key>
-          <Property Name="slideId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="url" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="order" Type="Int32" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-        </EntityType>
-        <EntityType Name="vDoanhThuTheoNgay">
-          <Key>
-            <PropertyRef Name="dateCreate" />
-          </Key>
-          <Property Name="dateCreate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="income" Type="Int32" />
-        </EntityType>
-        <EntityType Name="vHoaDonTrongNgay">
-          <Key>
-            <PropertyRef Name="invoinceId" />
-            <PropertyRef Name="totalMoney" />
-          </Key>
-          <Property Name="invoinceId" Type="Guid" Nullable="false" />
-          <Property Name="deliveryStatus" Type="Boolean" />
-          <Property Name="deliveryDate" Type="DateTime" Precision="0" />
-          <Property Name="totalMoney" Type="Int32" Nullable="false" />
-          <Property Name="memberId" Type="Guid" />
-          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-        </EntityType>
-        <Association Name="FK_POST_MEMBER">
+        <Association Name="FK_ARTICLE_MEMBER">
           <End Role="Member" Type="Self.Member" Multiplicity="1" />
           <End Role="Article" Type="Self.Article" Multiplicity="*" />
           <ReferentialConstraint>
@@ -409,8 +177,8 @@ warning 6002: The table/view 'menfs.dbo.vHoaDonTrongNgay' does not have a primar
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_INVOINCE_CUSTOMER">
-          <End Role="Member" Type="Self.Member" Multiplicity="0..1" />
+        <Association Name="FK_INVOINCE_MEMBER">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
           <End Role="Invoince" Type="Self.Invoince" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Member">
@@ -457,18 +225,6 @@ warning 6002: The table/view 'menfs.dbo.vHoaDonTrongNgay' does not have a primar
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_PRODUCT_MEMBER">
-          <End Role="Member" Type="Self.Member" Multiplicity="1" />
-          <End Role="Product" Type="Self.Product" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Member">
-              <PropertyRef Name="memberId" />
-            </Principal>
-            <Dependent Role="Product">
-              <PropertyRef Name="memberId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PRODUCT_CATEGORY">
           <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
@@ -481,10 +237,248 @@ warning 6002: The table/view 'menfs.dbo.vHoaDonTrongNgay' does not have a primar
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="menfsEntities1" annotation:LazyLoadingEnabled="true">
+        <Association Name="FK_PRODUCT_MEMBER">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="memberId" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="memberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="menfsModelStoreContainer">
+          <EntitySet Name="Article" EntityType="Self.Article" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contact" EntityType="Self.Contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Invoince" EntityType="Self.Invoince" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InvoinceDetail" EntityType="Self.InvoinceDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductCategory" EntityType="Self.ProductCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Slide" EntityType="Self.Slide" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vDoanhThuTheoNgay" EntityType="Self.vDoanhThuTheoNgay" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vDoanhThuTheoNgay].[dateCreate] AS [dateCreate], 
+    [vDoanhThuTheoNgay].[income] AS [income]
+    FROM [dbo].[vDoanhThuTheoNgay] AS [vDoanhThuTheoNgay]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vHoaDonTrongNgay" EntityType="Self.vHoaDonTrongNgay" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vHoaDonTrongNgay].[invoinceId] AS [invoinceId], 
+    [vHoaDonTrongNgay].[deliveryStatus] AS [deliveryStatus], 
+    [vHoaDonTrongNgay].[deliveryDate] AS [deliveryDate], 
+    [vHoaDonTrongNgay].[totalMoney] AS [totalMoney], 
+    [vHoaDonTrongNgay].[memberId] AS [memberId], 
+    [vHoaDonTrongNgay].[meta] AS [meta], 
+    [vHoaDonTrongNgay].[status] AS [status], 
+    [vHoaDonTrongNgay].[dateCreate] AS [dateCreate]
+    FROM [dbo].[vHoaDonTrongNgay] AS [vHoaDonTrongNgay]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_ARTICLE_MEMBER" Association="Self.FK_ARTICLE_MEMBER">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Article" EntitySet="Article" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOINCE_MEMBER" Association="Self.FK_INVOINCE_MEMBER">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Invoince" EntitySet="Invoince" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOINCEDETAIL_INVOINCE" Association="Self.FK_INVOINCEDETAIL_INVOINCE">
+            <End Role="Invoince" EntitySet="Invoince" />
+            <End Role="InvoinceDetail" EntitySet="InvoinceDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOINCEDETAIL_PRODUCT" Association="Self.FK_INVOINCEDETAIL_PRODUCT">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="InvoinceDetail" EntitySet="InvoinceDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MEMBER_ROLE" Association="Self.FK_MEMBER_ROLE">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="Member" EntitySet="Member" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PRODUCT_CATEGORY" Association="Self.FK_PRODUCT_CATEGORY">
+            <End Role="ProductCategory" EntitySet="ProductCategory" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PRODUCT_MEMBER" Association="Self.FK_PRODUCT_MEMBER">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="menfsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Article">
+          <Key>
+            <PropertyRef Name="articleId" />
+          </Key>
+          <Property Name="articleId" Type="Guid" Nullable="false" />
+          <Property Name="title" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="description" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="image" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="memberId" Type="Guid" Nullable="false" />
+          <Property Name="meta" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Member" Relationship="menfsModel.FK_ARTICLE_MEMBER" FromRole="Article" ToRole="Member" />
+        </EntityType>
+        <EntityType Name="Contact">
+          <Key>
+            <PropertyRef Name="contactId" />
+          </Key>
+          <Property Name="contactId" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="message" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="dateContact" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="InvoinceDetail">
+          <Key>
+            <PropertyRef Name="invoinceId" />
+            <PropertyRef Name="productId" />
+          </Key>
+          <Property Name="invoinceId" Type="Guid" Nullable="false" />
+          <Property Name="productId" Type="Guid" Nullable="false" />
+          <Property Name="size" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="quanlity" Type="Int32" />
+          <Property Name="price" Type="Int32" />
+          <Property Name="discount" Type="Int32" />
+          <NavigationProperty Name="Product" Relationship="Self.FK_INVOINCEDETAIL_PRODUCT" FromRole="InvoinceDetail" ToRole="Product" />
+          <NavigationProperty Name="Invoince" Relationship="menfsModel.FK_INVOINCEDETAIL_INVOINCE" FromRole="InvoinceDetail" ToRole="Invoince" />
+        </EntityType>
+        <EntityType Name="Member">
+          <Key>
+            <PropertyRef Name="memberId" />
+          </Key>
+          <Property Name="memberId" Type="Guid" Nullable="false" />
+          <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="firstName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="lastName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="birthday" Type="DateTime" Precision="0" />
+          <Property Name="address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="avatar" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="roleId" Type="Guid" Nullable="false" />
+          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Role" Relationship="menfsModel.FK_MEMBER_ROLE" FromRole="Member" ToRole="Role" />
+          <NavigationProperty Name="Products" Relationship="menfsModel.FK_PRODUCT_MEMBER" FromRole="Member" ToRole="Product" />
+          <NavigationProperty Name="Articles" Relationship="menfsModel.FK_ARTICLE_MEMBER" FromRole="Member" ToRole="Article" />
+          <NavigationProperty Name="Invoinces" Relationship="menfsModel.FK_INVOINCE_MEMBER" FromRole="Member" ToRole="Invoince" />
+        </EntityType>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="menuId" />
+          </Key>
+          <Property Name="menuId" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="meta" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="order" Type="Int32" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="productId" />
+          </Key>
+          <Property Name="productId" Type="Guid" Nullable="false" />
+          <Property Name="productName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="image" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="price" Type="Int32" />
+          <Property Name="discount" Type="Int32" />
+          <Property Name="characteristic" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="description" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="quanlity" Type="Int32" />
+          <Property Name="brand" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="categoryId" Type="Guid" Nullable="false" />
+          <Property Name="memberId" Type="Guid" Nullable="false" />
+          <Property Name="meta" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="InvoinceDetails" Relationship="Self.FK_INVOINCEDETAIL_PRODUCT" FromRole="Product" ToRole="InvoinceDetail" />
+          <NavigationProperty Name="Member" Relationship="menfsModel.FK_PRODUCT_MEMBER" FromRole="Product" ToRole="Member" />
+          <NavigationProperty Name="ProductCategory" Relationship="menfsModel.FK_PRODUCT_CATEGORY" FromRole="Product" ToRole="ProductCategory" />
+        </EntityType>
+        <EntityType Name="ProductCategory">
+          <Key>
+            <PropertyRef Name="categoryId" />
+          </Key>
+          <Property Name="categoryId" Type="Guid" Nullable="false" />
+          <Property Name="categoryName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="order" Type="Int32" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Products" Relationship="menfsModel.FK_PRODUCT_CATEGORY" FromRole="ProductCategory" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="roleId" />
+          </Key>
+          <Property Name="roleId" Type="Guid" Nullable="false" />
+          <Property Name="roleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Members" Relationship="menfsModel.FK_MEMBER_ROLE" FromRole="Role" ToRole="Member" />
+        </EntityType>
+        <EntityType Name="Slide">
+          <Key>
+            <PropertyRef Name="slideId" />
+          </Key>
+          <Property Name="slideId" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="url" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="order" Type="Int32" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="vDoanhThuTheoNgay">
+          <Key>
+            <PropertyRef Name="dateCreate" />
+          </Key>
+          <Property Name="dateCreate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="income" Type="Int32" />
+        </EntityType>
+        <EntityType Name="vHoaDonTrongNgay">
+          <Key>
+            <PropertyRef Name="invoinceId" />
+            <PropertyRef Name="totalMoney" />
+          </Key>
+          <Property Name="invoinceId" Type="Guid" Nullable="false" />
+          <Property Name="deliveryStatus" Type="Boolean" />
+          <Property Name="deliveryDate" Type="DateTime" Precision="0" />
+          <Property Name="totalMoney" Type="Int32" Nullable="false" />
+          <Property Name="memberId" Type="Guid" />
+          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <Association Name="FK_INVOINCEDETAIL_PRODUCT">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="InvoinceDetail" Type="Self.InvoinceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="productId" />
+            </Principal>
+            <Dependent Role="InvoinceDetail">
+              <PropertyRef Name="productId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="menfsEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Articles" EntityType="Self.Article" />
           <EntitySet Name="Contacts" EntityType="Self.Contact" />
-          <EntitySet Name="Invoinces" EntityType="Self.Invoince" />
           <EntitySet Name="InvoinceDetails" EntityType="Self.InvoinceDetail" />
           <EntitySet Name="Members" EntityType="Self.Member" />
           <EntitySet Name="Menus" EntityType="Self.Menu" />
@@ -494,82 +488,131 @@ warning 6002: The table/view 'menfs.dbo.vHoaDonTrongNgay' does not have a primar
           <EntitySet Name="Slides" EntityType="Self.Slide" />
           <EntitySet Name="vDoanhThuTheoNgays" EntityType="Self.vDoanhThuTheoNgay" />
           <EntitySet Name="vHoaDonTrongNgays" EntityType="Self.vHoaDonTrongNgay" />
-          <AssociationSet Name="FK_POST_MEMBER" Association="Self.FK_POST_MEMBER">
-            <End Role="Member" EntitySet="Members" />
-            <End Role="Article" EntitySet="Articles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_INVOINCE_CUSTOMER" Association="Self.FK_INVOINCE_CUSTOMER">
-            <End Role="Member" EntitySet="Members" />
-            <End Role="Invoince" EntitySet="Invoinces" />
-          </AssociationSet>
-          <AssociationSet Name="FK_INVOINCEDETAIL_INVOINCE" Association="Self.FK_INVOINCEDETAIL_INVOINCE">
-            <End Role="Invoince" EntitySet="Invoinces" />
-            <End Role="InvoinceDetail" EntitySet="InvoinceDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_INVOINCEDETAIL_PRODUCT" Association="Self.FK_INVOINCEDETAIL_PRODUCT">
             <End Role="Product" EntitySet="Products" />
             <End Role="InvoinceDetail" EntitySet="InvoinceDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_MEMBER_ROLE" Association="Self.FK_MEMBER_ROLE">
+          <AssociationSet Name="FK_MEMBER_ROLE" Association="menfsModel.FK_MEMBER_ROLE">
             <End Role="Role" EntitySet="Roles" />
             <End Role="Member" EntitySet="Members" />
           </AssociationSet>
-          <AssociationSet Name="FK_PRODUCT_MEMBER" Association="Self.FK_PRODUCT_MEMBER">
+          <AssociationSet Name="FK_PRODUCT_MEMBER" Association="menfsModel.FK_PRODUCT_MEMBER">
             <End Role="Member" EntitySet="Members" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
-          <AssociationSet Name="FK_PRODUCT_CATEGORY" Association="Self.FK_PRODUCT_CATEGORY">
+          <AssociationSet Name="FK_PRODUCT_CATEGORY" Association="menfsModel.FK_PRODUCT_CATEGORY">
             <End Role="ProductCategory" EntitySet="ProductCategories" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
-          <FunctionImport Name="sp_alterdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_creatediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_dropdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(menfsModel.sp_helpdiagramdefinition_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(menfsModel.sp_helpdiagrams_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_renamediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="new_diagramname" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="sp_upgraddiagrams" />
+          <AssociationSet Name="FK_ARTICLE_MEMBER" Association="menfsModel.FK_ARTICLE_MEMBER">
+            <End Role="Member" EntitySet="Members" />
+            <End Role="Article" EntitySet="Articles" />
+          </AssociationSet>
+          <EntitySet Name="Invoinces" EntityType="menfsModel.Invoince" />
+          <AssociationSet Name="FK_INVOINCE_MEMBER" Association="menfsModel.FK_INVOINCE_MEMBER">
+            <End Role="Member" EntitySet="Members" />
+            <End Role="Invoince" EntitySet="Invoinces" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOINCEDETAIL_INVOINCE" Association="menfsModel.FK_INVOINCEDETAIL_INVOINCE">
+            <End Role="Invoince" EntitySet="Invoinces" />
+            <End Role="InvoinceDetail" EntitySet="InvoinceDetails" />
+          </AssociationSet>
         </EntityContainer>
-        <ComplexType Name="sp_helpdiagramdefinition_Result">
-          <Property Type="Int32" Name="version" Nullable="true" />
-          <Property Type="Binary" Name="definition" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="sp_helpdiagrams_Result">
-          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
-          <Property Type="Int32" Name="ID" Nullable="false" />
-          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
-          <Property Type="Int32" Name="OwnerID" Nullable="false" />
-        </ComplexType>
+        <Association Name="FK_MEMBER_ROLE">
+          <End Type="menfsModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="menfsModel.Member" Role="Member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="roleId" />
+            </Principal>
+            <Dependent Role="Member">
+              <PropertyRef Name="roleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PRODUCT_MEMBER">
+          <End Type="menfsModel.Member" Role="Member" Multiplicity="1" />
+          <End Type="menfsModel.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="memberId" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="memberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PRODUCT_CATEGORY">
+          <End Type="menfsModel.ProductCategory" Role="ProductCategory" Multiplicity="1" />
+          <End Type="menfsModel.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductCategory">
+              <PropertyRef Name="categoryId" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="categoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ARTICLE_MEMBER">
+          <End Type="menfsModel.Member" Role="Member" Multiplicity="1" />
+          <End Type="menfsModel.Article" Role="Article" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="memberId" />
+            </Principal>
+            <Dependent Role="Article">
+              <PropertyRef Name="memberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Invoince">
+          <Key>
+            <PropertyRef Name="invoinceId" />
+          </Key>
+          <Property Name="invoinceId" Type="Guid" Nullable="false" />
+          <Property Name="memberId" Type="Guid" Nullable="false" />
+          <Property Name="totalMoney" Type="Int32" />
+          <Property Name="paymentMethod" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="paymentStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="transactionId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Member" Relationship="menfsModel.FK_INVOINCE_MEMBER" FromRole="Invoince" ToRole="Member" />
+          <NavigationProperty Name="InvoinceDetails" Relationship="menfsModel.FK_INVOINCEDETAIL_INVOINCE" FromRole="Invoince" ToRole="InvoinceDetail" />
+        </EntityType>
+        <Association Name="FK_INVOINCE_MEMBER">
+          <End Type="menfsModel.Member" Role="Member" Multiplicity="1" />
+          <End Type="menfsModel.Invoince" Role="Invoince" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="memberId" />
+            </Principal>
+            <Dependent Role="Invoince">
+              <PropertyRef Name="memberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_INVOINCEDETAIL_INVOINCE">
+          <End Type="menfsModel.Invoince" Role="Invoince" Multiplicity="1" />
+          <End Type="menfsModel.InvoinceDetail" Role="InvoinceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Invoince">
+              <PropertyRef Name="invoinceId" />
+            </Principal>
+            <Dependent Role="InvoinceDetail">
+              <PropertyRef Name="invoinceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="menfsModelStoreContainer" CdmEntityContainer="menfsEntities1">
+        <EntityContainerMapping StorageEntityContainer="menfsModelStoreContainer" CdmEntityContainer="menfsEntities">
           <EntitySetMapping Name="Articles">
             <EntityTypeMapping TypeName="menfsModel.Article">
               <MappingFragment StoreEntitySet="Article">
@@ -595,20 +638,6 @@ warning 6002: The table/view 'menfs.dbo.vHoaDonTrongNgay' does not have a primar
                 <ScalarProperty Name="meta" ColumnName="meta" />
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="dateContact" ColumnName="dateContact" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Invoinces">
-            <EntityTypeMapping TypeName="menfsModel.Invoince">
-              <MappingFragment StoreEntitySet="Invoince">
-                <ScalarProperty Name="invoinceId" ColumnName="invoinceId" />
-                <ScalarProperty Name="deliveryStatus" ColumnName="deliveryStatus" />
-                <ScalarProperty Name="deliveryDate" ColumnName="deliveryDate" />
-                <ScalarProperty Name="totalMoney" ColumnName="totalMoney" />
-                <ScalarProperty Name="memberId" ColumnName="memberId" />
-                <ScalarProperty Name="meta" ColumnName="meta" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -734,7 +763,23 @@ warning 6002: The table/view 'menfs.dbo.vHoaDonTrongNgay' does not have a primar
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          </EntityContainerMapping>
+          <EntitySetMapping Name="Invoinces">
+            <EntityTypeMapping TypeName="menfsModel.Invoince">
+              <MappingFragment StoreEntitySet="Invoince">
+                <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="meta" ColumnName="meta" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="transactionId" ColumnName="transactionId" />
+                <ScalarProperty Name="paymentStatus" ColumnName="paymentStatus" />
+                <ScalarProperty Name="paymentMethod" ColumnName="paymentMethod" />
+                <ScalarProperty Name="totalMoney" ColumnName="totalMoney" />
+                <ScalarProperty Name="memberId" ColumnName="memberId" />
+                <ScalarProperty Name="invoinceId" ColumnName="invoinceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
