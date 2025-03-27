@@ -1,66 +1,68 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using ShopOnline.Models;
-using CaptchaMvc.HtmlHelpers;
 using System.Web.Security;
+using System.Net;
+using System.Web.Script.Serialization;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
     public class LoginMemberController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
         [HttpGet]
         public ActionResult Login()
         {
+            if (Session["infoAdmin"] != null)
+            {
+                return RedirectToAction("Index", "DashBoard");
+            }
             return View();
         }
 
         [HttpPost]
-        public ActionResult Login(FormCollection collection)
+        public ActionResult Login(string username, string password, string recaptchaToken)
         {
-            var tk = collection["username"];
-            var mk = collection["password"];
-            mk = Encryptor.MD5Hash(mk);
-
-            var notMember = db.Members.SingleOrDefault(model => model.phone == tk && model.password == "");
-            var check = db.Members.SingleOrDefault(model => model.phone == tk && model.password == mk);
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(recaptchaToken) || !VerifyRecaptcha(recaptchaToken))
             {
-                if (check == null)
-                {
-                    if (notMember != null)
-                    {
-                        ModelState.AddModelError("", "Role not invalid.");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "There was a problem logging in. Check your username and password or create an account.");
-                    }
-                }
-
-                else
-                {
-                    if (!this.IsCaptchaValid(""))
-                    {
-                        ViewBag.captcha = "Captcha is not valid";
-                    }
-                    else
-                    {
-                        FormsAuthentication.SetAuthCookie(check.memberId.ToString(), false);
-                        Session["userNameAdmin"] = check.memberId;
-                        Session["infoAdmin"] = check;
-                        return RedirectToAction("Index", "DashBoard");
-                    }
-                }
+                TempData["msgFailed"] = "Xác minh reCAPTCHA không thành công. Vui lòng thử lại.";
+                return RedirectToAction("Login");
             }
-            return View();
+
+            password = Encryptor.MD5Hash(password);
+            var check = db.Members.Where(model => model.phone == "admin" && model.password == password).SingleOrDefault();
+
+            // Tiếp tục xử lý logic login
+            if (check == null)
+            {
+                TempData["msgFailed"] = "Username or password is incorrect.";
+                return View();
+            }
+
+            FormsAuthentication.SetAuthCookie(check.phone, false);
+            Session["UserRole"] = "Admin";
+            Session["infoAdmin"] = check;
+
+            return RedirectToAction("Index", "DashBoard");
         }
         public ActionResult Logout()
         {
-            Session.Clear();
-            Session.Abandon();
             FormsAuthentication.SignOut();
+            Session.Clear();
             return RedirectToAction("Login");
+        }
+
+        private bool VerifyRecaptcha(string token)
+        {
+            string secretKey = "6LcwOrIqAAAAAEcsgF-BkkfPmckoqbwfMOI57L_G";
+            string apiUrl = $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={token}";
+
+            using (var client = new WebClient())
+            {
+                var result = client.DownloadString(apiUrl);
+                var recaptchaResult = new JavaScriptSerializer().Deserialize<ReCaptchaResponse>(result);
+                return recaptchaResult.Success && recaptchaResult.Score >= 0.5; // Kiểm tra điểm số
+            }
         }
     }
 }

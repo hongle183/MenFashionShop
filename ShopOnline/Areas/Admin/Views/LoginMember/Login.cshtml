@@ -1,8 +1,6 @@
 ﻿@using System.Web.Optimization;
-@using CaptchaMvc.HtmlHelpers
 <!DOCTYPE html>
 <html dir="ltr">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,8 +11,11 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="~/Areas/Admin/Content/assets/images/favicon.png">
     <title>Login</title>
+
     <!-- Custom CSS -->
-    @Styles.Render("~/bundle/admin/login/css")
+    @Styles.Render("~/bundles/admin/login/css")
+    @Scripts.Render("~/bundles/jquery")
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcwOrIqAAAAABgzNqIKLwBNnL9oNXltz63sLozY"></script>
 </head>
 
 <body>
@@ -26,11 +27,11 @@
             </div>
         </div>
         <div class="auth-wrapper d-flex no-block justify-content-center align-items-center position-relative"
-             style="background:url(@Url.Content("~/Areas/Admin/Content/assets/images/big/bg.png")) no-repeat center center;">
+             style="background: url( @Url.Content("~/Areas/Admin/Content/assets/images/background/pexels-luis-gomes-546819.jpg") ) no-repeat center center; background-size: cover;">
             <div class="auth-box row">
-                <div class="col-lg-7 col-md-5 modal-bg-img" style="border-top-left-radius:4px; border-bottom-left-radius:4px; background-image: url(@Url.Content("~/Areas/Admin/Content/assets/images/big/login.jpg"));">
+                <div class="col-lg-7 col-md-5 modal-bg-img" style="border-top-left-radius:5px; border-bottom-left-radius:5px; background-image: url(@Url.Content("~/Areas/Admin/Content/assets/images/pexels-pixabay-459654.jpg"));">
                 </div>
-                <div class="col-lg-5 col-md-7 bg-white" style="border-top-right-radius:4px; border-bottom-right-radius: 4px;">
+                <div class="col-lg-5 col-md-7 bg-white" style="border-top-right-radius:5px; border-bottom-right-radius:5px;">
                     <div class="p-3">
                         <div class="text-center">
                             <img src=@Url.Content("/Areas/Admin/Content/assets/images/logo-icon.png") alt="wrapkit">
@@ -40,33 +41,38 @@
                         @using (Html.BeginForm("Login", "LoginMember", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data", @class = "form mt-4" }))
                         {
                             @Html.AntiForgeryToken()
+                            if (TempData["msgFailed"] != null)
+                            {
+                                <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    @TempData["msgFailed"]
+                                </div>
+                            }                            
+
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label class="text-dark" for="uname">Username</label>
-                                        <input type="text" id="username" name="username" class="form-control" placeholder="User name">
+                                        <input type="text" id="username" name="username" class="form-control">
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label class="text-dark" for="pwd">Password</label>
-                                        <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+                                        <input type="password" id="password" name="password" class="form-control">
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
-                                @Html.ValidationSummary(true, "", new { @class = "small text-danger" })
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <div class="capcha wrap-input100 validate-input" data-validate="Password is required" style="color:black">
-                                            @Html.Captcha("Try-Another", "Enter the text you see above", 4, "Is required field", true)
-                                            <span class="form-message"></span>
-                                            <p style="color:red; font-size: 80%">@ViewBag.captcha</p>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="col-lg-12 text-center">
-                                    <button type="submit" class="btn btn-block btn-dark">Sign In</button>
+                                    <div class="form-group">
+                                        <input type="hidden" id="recaptchaToken" name="recaptchaToken" />
+                                        <button class="g-recaptcha btn btn-block btn-primary" type="submit">
+                                            Sign In
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         }
@@ -76,20 +82,27 @@
         </div>
     </div>
 
-    @Scripts.Render("~/bundle/admin/login/js")
+    @Scripts.Render("~/bundles/admin/login/js")
     <script>
         $(".preloader ").fadeOut();
     </script>
     <script src="~/Content/js/validator.js"></script>
     <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('6LcwOrIqAAAAABgzNqIKLwBNnL9oNXltz63sLozY', { action: 'SignIn' }).then(function (token) {
+                // Gửi token vào input hidden để server xử lý
+                document.getElementById('recaptchaToken').value = token;
+            });
+        });
+
         Validator({
             form: '#form-1',
             formGroupSelector: '.form-group',
             errorSelector: '.form-message',
             rules: [
-                Validator.isRequired('#username'),
-                Validator.isRequired('#password'),
-                Validator.isRequired('#CaptchaInputText'),
+                Validator.isRequired('#username', 'Enter your username'),
+                Validator.isRequired('#password', 'Enter your password'),
+                //Validator.isReCaptchaValid('.g-recaptcha', 'Vui lòng xác nhận reCAPTCHA.')
             ],
         });
     </script>

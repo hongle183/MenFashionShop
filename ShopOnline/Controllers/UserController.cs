@@ -4,12 +4,13 @@ using System.Web.Mvc;
 using ShopOnline.Models;
 using System.Net;
 using System.Web.Script.Serialization;
+using System.Web.Security;
 
 namespace ShopOnline.Controllers
 {
     public class UserController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
         [HttpGet]
         public ActionResult SignIn()
         {
@@ -35,6 +36,8 @@ namespace ShopOnline.Controllers
             var check = db.Members.Where(model => (model.phone == username || model.email == username) && model.password == password).SingleOrDefault();
             if (check != null)
             {
+                FormsAuthentication.SetAuthCookie(check.phone, false);
+                Session["UserRole"] = "User";
                 Session["info"] = check;
                 TempData["msgSuccess"] = "Đăng nhập thành công!";
                 return RedirectToAction("Index", "Home");
@@ -93,10 +96,9 @@ namespace ShopOnline.Controllers
         }
         public ActionResult LogOut()
         {
-            //Session.Remove("info");
-            //Session["info"] = null;
+            FormsAuthentication.SignOut();
             Session.Clear();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login");
         }
 
         private bool VerifyRecaptcha(string token)
