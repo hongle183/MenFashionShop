@@ -29,15 +29,6 @@
         @TempData["msgEditProfieFailed"]
     </div>
 }
-@if (TempData["msgDeleteOrder"] != null)
-{
-    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        @TempData["msgDeleteOrder"]
-    </div>
-}
 <!-- Hero Section Begin -->
 <section class="hero">
     <div class="hero__slider owl-carousel">
@@ -77,7 +68,7 @@
 </section>
 <!-- Hero Section End -->
 <!-- Banner Section Begin -->
-<section class="banner spad">
+<section class="banner spad" style="background-color: #f0f0f0;">
     <div class="container">
         <div class="row">
             <div class="col-lg-7 offset-lg-4">
@@ -122,66 +113,22 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <ul class="filter__controls text-uppercase">
-                    <li class="filter-control-item active" data-filter="*">Best Seller</li>
-                    <li class="filter-control-item" data-filter=".new-arrivals">New Arrival</li>
-                    <li class="filter-control-item" data-filter=".hot-sales">Hot Sale</li>
-                </ul>
+                <div class="section-title">
+                    <span>Sản phẩm</span>
+                    <ul class="filter__controls">
+                        <li class="filter-control-item active" data-filter="*">Best Seller</li>
+                        <li class="filter-control-item" data-filter=".new-arrivals">New Arrival</li>
+                        <li class="filter-control-item" data-filter=".hot-sales">Hot Sale</li>
+                    </ul>
+                </div>
             </div>
         </div>
         @Html.Action("ProductHome", "Home")
     </div>
 </section>
 <!-- Product Section End -->
-<!-- Categories Section Begin -->
-<section class="categories spad">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="categories__text">
-                    <h2>Clothings Hot <br /> <span>Shoe Collection</span> <br /> Accessories</h2>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="categories__hot__deal">
-                    <img src="~/Content/img/product-sale.png" alt="">
-                    <div class="hot__deal__sticker">
-                        <span>Sale Of</span>
-                        <h5>$29.99</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 offset-lg-1">
-                <div class="categories__deal__countdown">
-                    <span>Deal Of The Week</span>
-                    <h2>Multi-pocket Chest Bag Black</h2>
-                    <div class="categories__deal__countdown__timer" id="countdown">
-                        <div class="cd-item">
-                            <span>3</span>
-                            <p>Days</p>
-                        </div>
-                        <div class="cd-item">
-                            <span>1</span>
-                            <p>Hours</p>
-                        </div>
-                        <div class="cd-item">
-                            <span>50</span>
-                            <p>Minutes</p>
-                        </div>
-                        <div class="cd-item">
-                            <span>18</span>
-                            <p>Seconds</p>
-                        </div>
-                    </div>
-                    <a href="/san-pham" class="btn site-btn">Shop now</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Categories Section End -->
 <!-- Latest Blog Section Begin -->
-<section class="latest spad">
+<section class="latest spad" style="background-color: #f0f0f0;">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">

@@ -112,7 +112,7 @@
                                         <span class="form-message"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="status">Public</label>
+                                        <label for="status">Status</label>
                                         @{
                                             bool status = (Model.status.GetValueOrDefault(false) ? true : false);
                                         }
@@ -123,8 +123,8 @@
                         </div>
                         <div class="form-actions">
                             <div class="text-right">
-                                <button type="submit" class="btn waves-effect waves-light btn-info">Save changes</button>
-                                <a href="~/Admin/CRUDmember/Index" class="btn btn-secondary">Back to list</a>
+                                <button type="submit" class="btn btn-info">Save changes</button>
+                                <a href="~/Admin/CRUDmember/Index" class="btn btn-dark">Back to list</a>
                             </div>
                         </div>
                     }

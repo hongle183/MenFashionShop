@@ -6,7 +6,7 @@ namespace ShopOnline.Controllers
 {
     public class MenusController : Controller
     {
-        private menfsEntities1 db = new menfsEntities1();
+        private menfsEntities db = new menfsEntities();
 
         // GET: Menus
         public ActionResult Index()

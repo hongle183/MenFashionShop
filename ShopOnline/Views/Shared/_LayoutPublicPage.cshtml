@@ -4,29 +4,27 @@
     Member user = (Member)Session["info"];
 }
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Male_Fashion Template">
-    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="description" content="Male Fashion Store">
+    <meta name="keywords" content="Male Fashion, FashionStore, Fashion Store">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--Cho phép công cụ tìm kiếm lập chỉ mục và theo dõi các liên kết.-->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="FashionStore">
+    <meta name="copyright" content="FashionStore">
+
     <title>@ViewBag.Title - FashionStore</title>
 
     <!--favicon-->
     <link rel="shortcut icon" type="image/png" href="~/Content/img/icon/favicon.png" />
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..1000&display=swap" rel="stylesheet">
-
     <!-- Css Styles -->
-    @Styles.Render("~/bundle/css")
+    @Styles.Render("~/bundles/css")
+    @Scripts.Render("~/bundles/jquery")
     <script src="https://www.google.com/recaptcha/api.js?render=6LcwOrIqAAAAABgzNqIKLwBNnL9oNXltz63sLozY"></script>
-    <!--<script>(function (w, d) { w.CollectId = "60827f2b34b8b76f099ef81c"; var h = d.head || d.getElementsByTagName("head")[0]; var s = d.createElement("script"); s.setAttribute("type", "text/javascript"); s.async = true; s.setAttribute("src", "https://collectcdn.com/launcher.js"); h.appendChild(s); })(window, document);</script>-->
 </head>
 
 <body>
@@ -42,7 +40,7 @@
             <div class="offcanvas__links">
                 <a href="/dang-nhap">Đăng nhập</a>
                 <a href="#">FAQs</a>e
-            </div>          
+            </div>
         </div>
         <div class="offcanvas__nav__option">
             <a href="#" class="search-switch"><i class="fa-solid fa-magnifying-glass"></i></a>
@@ -82,7 +80,7 @@
                             <a href="#"><img src="~/Content/img/footer-logo.png" alt="Footer logo"></a>
                         </div>
                         <p>Khách hàng – nguồn cảm hứng cho mô hình kinh doanh và thiết kế sáng tạo của chúng tôi.</p>
-                        <a href="#"><img src="~/Content/img/payment.png" alt="" style="width:80%;"></a>
+                        <a href="#"><img src="~/Content/img/result.svg" alt="" style="width:90%;"></a>
                     </div>
                 </div>
                 <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
@@ -127,7 +125,7 @@
                             <p>Cập nhật ngay sản phẩm mới, ưu đãi và khuyến mãi đặc biệt!</p>
                             <form action="#">
                                 <input type="text" placeholder="Email của bạn">
-                                <button type="submit"><img src="~/Content/img/icon/send.png" style="width:80%;" alt=""/></button>
+                                <button type="submit"><img src="~/Content/img/icon/send.png" style="width:80%;" alt="" /></button>
                             </form>
                         </div>
                     </div>
@@ -160,7 +158,7 @@
     </div>
     <!-- Search End -->
     <!-- Js Plugins -->
-    @Scripts.Render("~/bundle/js")
+    @Scripts.Render("~/bundles/js")
     <script>
     //session end
     var sessionTimeoutWarning = @Session.Timeout- 1;
@@ -172,6 +170,7 @@
         window.location = "/User/LogOut";
     }
     </script>
+    @RenderSection("scripts", required: false)
 </body>
 
 </html>

@@ -13,12 +13,12 @@ namespace ShopOnline.Areas.Admin.Controllers
     [Authorize]
     public class DashBoardController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
         public ActionResult Index()
         {
             /*---------------------------------------THỐNG KÊ------------------------------*/
             // Lấy ra tổng số tiền các đơn hàng - lợi nhuận
-            ViewBag.profit = db.InvoinceDetails.Sum(model => model.price);
+            ViewBag.profit = db.InvoinceDetails.Sum(model => model.price) ?? 0;
             // Lấy ra tổng số lượng các user khách hàng đang có trong database - tổng số tài khoản hiện tại
             ViewBag.users = db.Members.Where(model => model.roleId == new Guid("54ed1855-5103-4121-811c-3997ce4c2241")).Count();
             // Lấy ra tổng số các đơn đặt hàng đang có trong database - tổng số đơn hàng 
@@ -95,14 +95,6 @@ namespace ShopOnline.Areas.Admin.Controllers
             var list = db.Invoinces.OrderByDescending(model => model.dateCreate).ToList();
             return PartialView(list);
         }
-        public ActionResult TrackingCovid()
-        {
-            return View();
-        }        
-        public ActionResult Chat()
-        {
-            return View();
-        }
         [HttpGet]
         public ActionResult EditProfie(Guid memberId)
         {
@@ -138,7 +130,8 @@ namespace ShopOnline.Areas.Admin.Controllers
                             }
                             var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();
                             Session["infoAdmin"] = info; // Lấy thông tin mới của member lưu lại vào session hiển thị
-                            return RedirectToAction("Index");
+                            TempData["msgEditProfie"] = "Successfully update your profile!";
+                            return View(member);
                         }
 
                     }
@@ -150,7 +143,8 @@ namespace ShopOnline.Areas.Admin.Controllers
                         {
                             var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();
                             Session["infoAdmin"] = info;
-                            return RedirectToAction("Index");
+                            TempData["msgEditProfie"] = "Successfully update your profile!";
+                            return View(member);
                         }
                     }
                 }
@@ -160,14 +154,8 @@ namespace ShopOnline.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 TempData["msgEditProfieFailed"] = "Edit failed! " + ex.Message;
-                return RedirectToAction("Index");
+                return View(member);
             }
-        }
-        [HttpGet]
-        public ActionResult ChangePassword(Guid memberId)
-        {
-            Member member = db.Members.Find(memberId);
-            return View(member);
         }
         [HttpPost]
         public ActionResult ChangePassword(Member member, FormCollection collection)
@@ -187,18 +175,18 @@ namespace ShopOnline.Areas.Admin.Controllers
                     check.password = NewPassword;
                     db.SaveChanges();
                     TempData["msgChangePassword"] = "Successfully change password!";
-                    return RedirectToAction("index");
+                    return RedirectToAction("EditProfie", new { memberId = member.memberId });
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Incorrect your password!");
-                    return View(member);
+                    TempData["msgChangePasswordFailed"] = "Incorrect your password!";
+                    return RedirectToAction("EditProfile", new { memberId = member.memberId });
                 }
             }
             catch(Exception ex)
             {
                 TempData["msgChangePasswordFailed"] = "Edit failed! " + ex.Message;
-                return RedirectToAction("Index");
+                return RedirectToAction("EditProfie", new { memberId = member.memberId });
             }
         }
     }

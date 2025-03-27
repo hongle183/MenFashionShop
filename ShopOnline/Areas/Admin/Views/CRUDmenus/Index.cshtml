@@ -21,9 +21,9 @@
         <div class="col-5 align-self-center">
             <div class="customize-input float-right">
                 <select class="custom-select custom-select-set form-control bg-white border-0 custom-shadow custom-radius">
-                    <option selected>Aug 19</option>
-                    <option value="1">July 19</option>
-                    <option value="2">Jun 19</option>
+                    <option selected>Nov 25</option>
+                    <option value="1">Oct 25</option>
+                    <option value="2">Sep 25</option>
                 </select>
             </div>
         </div>
@@ -32,7 +32,7 @@
 
 <div class="card-body">
     <h3 class="text-dark text-uppercase card-title">Menu</h3>
-    <a href="@Url.Action("Create", "CRUDmenus")" class="btn waves-effect waves-light btn-success">Add menu</a>
+    <a href="@Url.Action("Create", "CRUDmenus")" class="btn btn-success">Add menu</a>
     @if (TempData["msgCreate"] != null)
     {
         <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
@@ -71,40 +71,16 @@
     }
 
     <hr />
-    <div class="row">
-        <div class="col-sm-12 col-md-6">
-            <div class="dataTables_length " id="zero_config_length">
-                <label class="d-flex align-items-center">
-                    Show &nbsp;
-                    <select name="zero_config_length" aria-controls="zero_config" class="form-control" style="bottom:3px; width:auto; height:auto;">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                    &nbsp; entries
-                </label>
-            </div>
-        </div>
-        <div class="col-sm-12 col-md-6">
-            <div id="zero_config_filter" class="dataTables_filter text-right">
-                <label class="d-flex align-items-center justify-content-end">
-                    Search &nbsp;
-                    <input type="search" id="search" name="searching" class="form-control form-control-sm" aria-controls="zero_config" style="width:auto" />
-                </label>
-            </div>
-
-        </div>
-    </div>
     <div class="table-responsive">
         <table class="table">
             <thead class="thead-light">
                 <tr>
-                    <th scope="col">Name</th>
-                    <th>Meta</th>
+                    <th scope="col" class="text-center">NO</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Meta</th>
                     <th class="text-center">Public</th>
                     <th class="text-center">Order</th>
-                    <th>Date Update</th>
+                    <th class="text-center">Date Update</th>
                     <th class="text-center">Feature</th>
                 </tr>
             </thead>
@@ -117,12 +93,15 @@
                 }
                 else
                 {
+                    int stt = 0;
                     foreach (var i in Model)
                     {
+                        stt++;
                         <tr>
-                            <th scope="row" class="font-weight-medium">@i.name</th>
-                            <td>@i.meta</td>
-                            <td class="text-center">
+                            <th scope="row" class="align-middle font-weight-medium">@stt </th>
+                            <th class="align-middle">@i.name</th>
+                            <td class="align-middle">@i.meta</td>
+                            <td class="align-middle">
                                 @if (i.status == true)
                                 {
                                     <i class="fa fa-circle text-success font-12" data-toggle="tooltip" data-placement="top" title="Checked"></i>
@@ -132,17 +111,23 @@
                                     <i class="fa fa-circle text-danger font-12" data-toggle="tooltip" data-placement="top" title="Unchecked"></i>
                                 }
                             </td>
-                            <td class="text-center">@i.order</td>
-                            <td>@String.Format("{0:dd/MM/yyyy}", i.dateCreate)</td>
+                            <td class="align-middle">@i.order</td>
+                            <td class="align-middle">@String.Format("{0:dd/MM/yyyy}", i.dateCreate)</td>
                             <td width="170px">
-                                <a href="@Url.Action("Edit", "CRUDmenus", new { id = i.menuId})" class="btn waves-effect waves-light btn-warning">Edit</a>
-                                <a href="@Url.Action("Delete", "CRUDmenus", new { id = i.menuId})" class="btn waves-effect waves-light btn-danger" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
+                                <a href="@Url.Action("Edit", "CRUDmenus", new { id = i.menuId})" class="btn btn-warning">Edit</a>
+                                <a href="@Url.Action("Delete", "CRUDmenus", new { id = i.menuId})" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
                             </td>
                         </tr>
                     }
                 }
-
             </tbody>
         </table>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        dataTable = $('.table').DataTable($.extend(true, {}, defaultDataTableSettings, {
+            ordering: false
+        }));
+    });
+</script>

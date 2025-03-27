@@ -8,7 +8,7 @@ namespace ShopOnline.Areas.Admin.Controllers
     [Authorize]
     public class CRUDcategoryController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
         public ActionResult Index()
         {
             return View();
@@ -18,13 +18,13 @@ namespace ShopOnline.Areas.Admin.Controllers
         {
             try
             {
-                var dsCategory = (from i in db.ProductCategories
-                                  select new
-                                  {
-                                      categoryId = i.categoryId,
-                                      categoryName = i.categoryName,
-                                      dateCreate = i.dateCreate
-            }).ToList();
+                var dsCategory = db.ProductCategories.OrderByDescending(i => i.dateCreate)
+                                                      .Select(i => new
+                                                      {
+                                                          categoryId = i.categoryId,
+                                                          categoryName = i.categoryName,
+                                                          dateCreate = i.dateCreate
+                                                      }).ToList();
 
                 return Json(new { code = 200, dsCategory = dsCategory, msg = "Successfully get list Category!" }, JsonRequestBehavior.AllowGet);
             }
@@ -59,12 +59,13 @@ namespace ShopOnline.Areas.Admin.Controllers
         {
             try
             {
-                var detail = (from i in db.ProductCategories
-                              select new
-                              {
-                                  categoryId = i.categoryId,
-                                  categoryName = i.categoryName
-                              }).SingleOrDefault(model => model.categoryId == categoryId);
+                var detail = db.ProductCategories.Where(i => i.categoryId == categoryId)
+                                                   .Select(i => new
+                                                   {
+                                                       categoryId = i.categoryId,
+                                                       categoryName = i.categoryName
+                                                   }).SingleOrDefault();
+
                 return Json(new { code = 200, detail = detail, msg = "Successfully get detail!" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -77,8 +78,8 @@ namespace ShopOnline.Areas.Admin.Controllers
         {
             try
             {
-                var category = (from i in db.ProductCategories
-                                select i).SingleOrDefault(model => model.categoryId == categoryId);
+                var category = db.ProductCategories.Where(i => i.categoryId == categoryId)
+                                                   .SingleOrDefault();
                 category.categoryName = (string)categoryName;
                 category.dateCreate = DateTime.Now;
                 db.SaveChanges();
@@ -94,8 +95,8 @@ namespace ShopOnline.Areas.Admin.Controllers
         {
             try
             {
-                ProductCategory category = (from i in db.ProductCategories
-                                            select i).SingleOrDefault(model => model.categoryId == categoryId);
+                ProductCategory category = db.ProductCategories.Where(i => i.categoryId == categoryId)
+                                                                .SingleOrDefault();
                 db.ProductCategories.Remove(category);
                 db.SaveChanges();
                 return Json(new { code = 200, msg = "Successfully delete!" }, JsonRequestBehavior.AllowGet);

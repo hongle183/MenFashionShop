@@ -1,64 +1,108 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using Rotativa.Options;
 using ShopOnline.Models;
-using PagedList;
-
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [Authorize]
     public class CRUDinvoinceController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
-        public ActionResult Index(int? page)
+        menfsEntities db = new menfsEntities();
+
+        [CustomAuthorize("Admin")]
+        public ActionResult Index()
         {
-            var pageNumber = page ?? 1;
-            var pageSize = 10;
-            var orderlist = db.Invoinces.OrderByDescending(model => model.dateCreate).Include(model => model.Member).ToPagedList(pageNumber, pageSize);
+            var orderlist = db.Invoinces.OrderByDescending(model => model.dateCreate).ToList();
             return View(orderlist);
         }
+
+        [CustomAuthorize("Admin")]
         public ActionResult InvoinceDetail(Guid invoinceNo)
         {
 
-            var infor = db.Invoinces.Where(model => model.invoinceId == invoinceNo).Include(model => model.Member).FirstOrDefault();
-            Session["information"] = infor;
-            ViewBag.invoinceNo = invoinceNo;
-            var detail = db.InvoinceDetails.Where(model => model.invoinceId == invoinceNo).Include(model => model.Product).ToList();
-            return View(detail);
+            Invoince invoince = db.Invoinces.Where(model => model.invoinceId == invoinceNo).FirstOrDefault();
+            return View(invoince);
         }
-        public ActionResult Delete(Guid id)
-        {
-            List<InvoinceDetail> ctdh = db.InvoinceDetails.Where(model => model.invoinceId == id).ToList();
-            foreach (var i in ctdh)
-            {
-                db.InvoinceDetails.Remove(i);
-            }
-            db.SaveChanges();
-            Invoince invoince = db.Invoinces.Find(id);
-            db.Invoinces.Remove(invoince);
-            TempData["DeleteOrder"] = "Successfully delete!";
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-        public ActionResult DeliverySuccess(Guid id)
+
+        [CustomAuthorize("Admin")]
+        public ActionResult Comfirmed(Guid id)
         {
             Invoince invoince = db.Invoinces.Find(id);
-            invoince.deliveryDate = DateTime.Now;
-            invoince.deliveryStatus = true;
-            TempData["Delivery"] = "Order ID " + invoince.invoinceId + " has been successfully delivered ";
+            invoince.status = "comfirmed";
+            TempData["Delivery"] = "Order ID " + invoince.invoinceId + " has been comfirmed";
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        public ActionResult ExportPDF()
+        [CustomAuthorize("Admin")]
+        public ActionResult Shipping(Guid id)
         {
-            return new Rotativa.ActionAsPdf("InvoinceDetail")
+            Invoince invoince = db.Invoinces.Find(id);
+            invoince.status = "shipping";
+            TempData["Delivery"] = "Order ID " + invoince.invoinceId + " is shipping";
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [CustomAuthorize("Admin")]
+        public ActionResult Completed(Guid id)
+        {
+            Invoince invoince = db.Invoinces.Find(id);
+            invoince.status = "completed";
+            invoince.paymentStatus = "paid";
+            TempData["Delivery"] = "Order ID " + invoince.invoinceId + " has been successfully delivered";
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [CustomAuthorize("Admin")]
+        public ActionResult Cancel(Guid id)
+        {
+            Invoince invoince = db.Invoinces.Find(id);
+            if (invoince.status == "cancelled" || invoince.status == "completed" || invoince.paymentStatus == "paid")
             {
-                FileName = "Invoice.pdf" // Tùy chọn đặt tên file PDF
+                TempData["msgCancelOrder"] = "Order ID " + invoince.invoinceId + " isn't cancel";
+                return RedirectToAction("Index");
+            }
+            invoince.status = "cancelled";
+            TempData["Delivery"] = "Order ID " + invoince.invoinceId + " has been cancelled";
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        //public ActionResult Delete(Guid id)
+        //{
+        //    List<InvoinceDetail> ctdh = db.InvoinceDetails.Where(model => model.invoinceId == id).ToList();
+        //    foreach (var i in ctdh)
+        //    {
+        //        db.InvoinceDetails.Remove(i);
+        //    }
+        //    db.SaveChanges();
+        //    Invoince invoince = db.Invoinces.Find(id);
+        //    db.Invoinces.Remove(invoince);
+        //    TempData["DeleteOrder"] = "Successfully delete!";
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
+
+        [CustomAuthorize("Admin")]
+        public ActionResult ExportPDF(Guid id)
+        {
+            return new Rotativa.ActionAsPdf("PrintInvoince", new { id = id })
+            {
+                FileName = "Invoice.pdf", // Tùy chọn đặt tên file PDF
+                PageSize = Size.A5,
+                PageMargins = new Margins(5, 5, 5, 5),
+                IsLowQuality = false
             };
         }
+        
+        public ActionResult PrintInvoince(Guid id)
+        {
+            Invoince invoince = db.Invoinces.Where(model => model.invoinceId == id).FirstOrDefault();
+            return View(invoince);
+        }        
     }
 }

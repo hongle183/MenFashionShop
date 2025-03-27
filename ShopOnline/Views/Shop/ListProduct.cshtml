@@ -40,7 +40,7 @@
     <div class="row">
         <div class="col">
             <div class="product__pagination">
-                @Html.PagedListPager(Model, page => Url.Action("Shop", new { page = page, searching = ViewBag.searching, brand = ViewBag.brand, minPrice = ViewBag.minPrice, maxPrice = ViewBag.maxPrice }))
+                @Html.PagedListPager(Model, page => Url.Action("Shop", new { page = page, searching = ViewBag.searching, minPrice = ViewBag.minPrice, maxPrice = ViewBag.maxPrice }))
             </div>
         </div>
     </div>

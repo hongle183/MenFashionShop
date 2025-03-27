@@ -1,10 +1,10 @@
-﻿@{
+﻿@using PagedList.Mvc
+@using ShopOnline.Models
+@model PagedList.PagedList < Article >
+@{
     ViewBag.Title = "Bài viết";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
-@using PagedList.Mvc
-@using ShopOnline.Models
-@model PagedList.PagedList<Article>
 
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">

@@ -1,26 +1,42 @@
 ﻿@using System.Web.Optimization;
 @using ShopOnline.Models
-@{ 
-    Member user = (Member)Session["infoAdmin"]; 
+@{
+    Member user = (Member)Session["infoAdmin"];
 }
 <!DOCTYPE html>
-<html dir="ltr" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" ) sizes="16x16" href="~/Areas/Admin/Content/assets/images/favicon.png">
     <title>@ViewBag.Title - Admin</title>
 
-    @Styles.Render("~/bundle/adminCss")
-
+    @Styles.Render("~/bundles/adminCss")
+    @Scripts.Render("~/bundles/jquery")
     <script src="~/Areas/Admin/Content/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
+        // datatable
+        window.defaultDataTableSettings = {
+            paging: true,
+            pageLength: 5,
+            responsive: true,
+            layout: {
+                topStart: {
+                    search: {
+                        placeholder: ''
+                    }
+                },
+                topEnd: null,
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            }, search: {
+                return: true
+            }
+        };
+
         tinymce.init({
             selector: 'textarea',
             max_height: 400,
@@ -49,7 +65,7 @@
             style_formats: [
                 // Adds a h1 format to style_formats that applies a class of heading
                 { title: 'Heading 1', block: 'h3', classes: 'heading' },
-                { title: 'Heading 2', block: 'h4', classes: 'heading'}
+                { title: 'Heading 2', block: 'h4', classes: 'heading' }
             ],
             image_dimensions: false,
             image_caption: true,
@@ -125,7 +141,7 @@
             <nav class="navbar top-navbar navbar-expand-md">
                 <div class="navbar-header" data-logobg="skin6">
                     <!-- This is for the sidebar toggle which is visible on mobile only -->
-                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)">
+                    <a class="nav-toggler  d-block d-md-none" href="javascript:void(0)">
                         <i class="ti-menu ti-close"></i>
                     </a>
                     <!-- ============================================================== -->
@@ -156,7 +172,7 @@
                     <!-- ============================================================== -->
                     <!-- Toggle which is visible on mobile only -->
                     <!-- ============================================================== -->
-                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)"
+                    <a class="topbartoggler d-block d-md-none " href="javascript:void(0)"
                        data-toggle="collapse" data-target="#navbarSupportedContent"
                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <i class="ti-more"></i>
@@ -273,7 +289,7 @@
                         <li class="nav-item d-none d-md-block">
                             <a class="nav-link" href="javascript:void(0)">
                                 <div class="customize-input">
-                                    <select class="custom-select form-control bg-white custom-radius custom-shadow border-0">
+                                    <select class="custom-select custom-select-set form-control bg-white custom-radius custom-shadow border-0">
                                         <option selected>EN</option>
                                         <option value="1">VN</option>
                                         <option value="2">UK</option>
@@ -304,45 +320,25 @@
                         <!-- User profile and search -->
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src=@Url.Content(""+user.avatar) class="avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                                @if (User.Identity.IsAuthenticated)
-                                {
-                                <span class="ml-2 d-none d-lg-inline-block">
-                                    <span>Hello,</span> <span class="text-dark">@user.lastName</span> <i data-feather="chevron-down" class="svg-icon"></i>
-                                </span>
-                                 }
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                                <a class="dropdown-item" href="@Url.Action("EditProfie", "DashBoard", new { memberId = user.memberId})">
-                                    <i data-feather="user" class="svg-icon mr-2 ml-1"></i>
-                                    My Profile
+                            @if (user != null)
+                            {
+                                <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img src=@Url.Content("" + user.avatar) class="avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                    <span class="ml-2 d-none d-lg-inline-block">
+                                        <span>Hello,</span> <span class="text-dark">@user.lastName</span> <i data-feather="chevron-down" class="svg-icon"></i>
+                                    </span>
                                 </a>
-                                <a class="dropdown-item" href="javascript:void(0)">
-                                    <i data-feather="credit-card" class="svg-icon mr-2 ml-1"></i>
-                                    My Balance
-                                </a>
-                                <a class="dropdown-item" href="javascript:void(0)">
-                                    <i data-feather="mail" class="svg-icon mr-2 ml-1"></i>
-                                    Inbox
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:void(0)">
-                                    <i data-feather="settings" class="svg-icon mr-2 ml-1"></i>
-                                    Account Setting
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="@Url.Action("Logout", "LoginMember")">
-                                    <i data-feather="power" class="svg-icon mr-2 ml-1"></i>
-                                    Logout
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <div class="pl-4 p-3">
-                                    <a href="@Url.Action("ChangePassword", "DashBoard", new { memberId = user.memberId})" class="btn btn-sm btn-info">
-                                        Change password
+                                <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
+                                    <a class="dropdown-item" href="@Url.Action("EditProfie", "DashBoard", new { memberId = user.memberId })">
+                                        <i data-feather="user" class="svg-icon mr-2 ml-1"></i>
+                                        My Profile
+                                    </a>
+                                    <a class="dropdown-item" href="@Url.Action("Logout", "LoginMember")">
+                                        <i data-feather="power" class="svg-icon mr-2 ml-1"></i>
+                                        Logout
                                     </a>
                                 </div>
-                            </div>
+                            }
                         </li>
                         <!-- ============================================================== -->
                         <!-- User profile and search -->
@@ -364,14 +360,10 @@
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
                         <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="~/Admin/DashBoard/Index"
-                               aria-expanded="false">
+                            <a class="sidebar-link" href="~/Admin/DashBoard/Index" aria-expanded="false">
                                 <i data-feather="home" class="feather-icon"></i><span class="hide-menu">Dashboard</span>
                             </a>
                         </li>
-                        <li class="list-divider"></li>
-                        <li class="nav-small-cap"><span class="hide-menu">Applications</span></li>
-
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="~/Home/Index" aria-expanded="false" target="_blank">
                                 <i data-feather="shopping-bag" class="feather-icon"></i><span class="hide-menu">
@@ -379,131 +371,38 @@
                                 </span>
                             </a>
                         </li>
-
                         <li class="list-divider"></li>
                         <li class="nav-small-cap"><span class="hide-menu">Components</span></li>
-                        @if (user.roleId == new Guid("b14d0769-e485-4455-93bc-c39007910115")) // Nếu đăng nhập với quyền quản lí thì hiển thị tất cả manage
-                        {
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" href="~/Admin/CRUDcategory/Index" aria-expanded="false">
-                                    <i data-feather="server" class="feather-icon"></i><span class="hide-menu">Category</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" href="~/Admin/CRUDproduct/Index" aria-expanded="false">
-                                    <i data-feather="grid" class="feather-icon"></i><span class="hide-menu">Product</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" href="~/Admin/CRUDblog/Index" aria-expanded="false">
-                                    <i data-feather="layout" class="feather-icon"></i><span class="hide-menu">Blog</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" href="~/Admin/CRUDmember/Index" aria-expanded="false">
-                                    <i data-feather="user" class="feather-icon"></i><span class="hide-menu">Member</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" href="~/Admin/CRUDcontact/Index" aria-expanded="false">
-                                    <i data-feather="message-square" class="feather-icon"></i><span class="hide-menu">Contact</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" href="~/Admin/CRUDinvoince/Index" aria-expanded="false">
-                                    <i data-feather="shopping-cart" class="feather-icon"></i><span class="hide-menu">Orders</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" href="~/Admin/CRUDmenus/Index" aria-expanded="false">
-                                    <i data-feather="grid" class="feather-icon"></i><span class="hide-menu">Menu</span>
-                                </a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="sidebar-item">
-                                <a class="sidebar-link has-arrow" href="javascript:void(0)"
-                                   aria-expanded="false">
-                                    <i data-feather="layout" class="feather-icon"></i><span class="hide-menu">Blog</span>
-                                </a>
-                                <ul aria-expanded="false" class="collapse  first-level base-level-line">
-                                    <li class="sidebar-item">
-                                        <a href="~/Admin/CRUDblog/Create" class="sidebar-link">
-                                            <span class="hide-menu">
-                                                Add Blog
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-item">
-                                        <a href="~/Admin/CRUDblog/Index" class="sidebar-link">
-                                            <span class="hide-menu">
-                                                Blog list
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link has-arrow" href="javascript:void(0)"
-                                   aria-expanded="false">
-                                    <i data-feather="message-square" class="feather-icon"></i><span class="hide-menu">Contact</span>
-                                </a>
-                                <ul aria-expanded="false" class="collapse  first-level base-level-line">
-                                    <li class="sidebar-item">
-                                        <a href="~/Admin/CRUDcontact/Index" class="sidebar-link">
-                                            <span class="hide-menu">
-                                                Contact list
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link has-arrow" href="javascript:void(0)"
-                                   aria-expanded="false">
-                                    <i data-feather="shopping-cart" class="feather-icon"></i><span class="hide-menu">Orders</span>
-                                </a>
-                                <ul aria-expanded="false" class="collapse  first-level base-level-line">
-                                    <li class="sidebar-item">
-                                        <a href="~/Admin/CRUDinvoince/Index" class="sidebar-link">
-                                            <span class="hide-menu">
-                                                Order list
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-                                    <i data-feather="pie-chart" class="feather-icon"></i><span class="hide-menu">Statistic</span>
-                                </a>
-                                <ul aria-expanded="false" class="collapse  first-level base-level-line">
-                                    <li class="sidebar-item">
-                                        <a href="#" class="sidebar-link">
-                                            <span class="hide-menu">
-                                                Statistic profit
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link has-arrow" href="javascript:void(0)"
-                                   aria-expanded="false">
-                                    <i data-feather="shopping-cart" class="feather-icon"></i><span class="hide-menu">Menu</span>
-                                </a>
-                                <ul aria-expanded="false" class="collapse  first-level base-level-line">
-                                    <li class="sidebar-item">
-                                        <a href="~/Admin/CRUDmenus/Index" class="sidebar-link">
-                                            <span class="hide-menu">
-                                                Menu list
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="~/Admin/CRUDcategory/Index" aria-expanded="false">
+                                <i data-feather="server" class="feather-icon"></i><span class="hide-menu">Category</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="~/Admin/CRUDproduct/Index" aria-expanded="false">
+                                <i data-feather="grid" class="feather-icon"></i><span class="hide-menu">Product</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="~/Admin/CRUDblog/Index" aria-expanded="false">
+                                <i data-feather="layout" class="feather-icon"></i><span class="hide-menu">Blog</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="~/Admin/CRUDmember/Index" aria-expanded="false">
+                                <i data-feather="user" class="feather-icon"></i><span class="hide-menu">Member</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="~/Admin/CRUDinvoince/Index" aria-expanded="false">
+                                <i data-feather="shopping-cart" class="feather-icon"></i><span class="hide-menu">Orders</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="~/Admin/CRUDmenus/Index" aria-expanded="false">
+                                <i data-feather="pie-chart" class="feather-icon"></i><span class="hide-menu">Menu</span>
+                            </a>
+                        </li>
                         <li class="list-divider"></li>
                     </ul>
                 </nav>
@@ -543,13 +442,7 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
-
-    @Scripts.Render("~/bundle/adminJs")
-
-    @RenderSection("ChartDashboard", required: false)
-    @RenderSection("ChartCovid", required: false)
-    @RenderSection("Chat", required: false)
-    @RenderSection("scripts", required: false)
+    @Scripts.Render("~/bundles/adminJs")
     <script>
         //session end
         var sessionTimeoutWarning = @Session.Timeout- 1;
@@ -561,6 +454,8 @@
             window.location = "/Admin/LoginMember/Logout";
         }
     </script>
+    @RenderSection("ChartDashboard", required: false)
+    @RenderSection("scripts", required: false)
 </body>
 
 </html>

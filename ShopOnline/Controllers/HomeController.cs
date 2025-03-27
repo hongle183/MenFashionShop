@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.IO;
@@ -12,12 +11,8 @@ namespace shopOnline.Controllers
 {
     public class HomeController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
         public ActionResult Index()
-        {
-            return View();
-        }
-        public ActionResult About()
         {
             return View();
         }
@@ -148,27 +143,39 @@ namespace shopOnline.Controllers
         [HttpGet]
         public ActionResult InvoinceDetail(Guid invoinceId)
         {
-            var detail = db.InvoinceDetails.Where(model => model.invoinceId == invoinceId).Include(model => model.Product).ToList();
-            var infor = db.Invoinces.Where(model => model.invoinceId == invoinceId).Include(model => model.Member).FirstOrDefault();
-            ViewBag.invoinceId = invoinceId;
-            Session["information"] = infor;
+            var orders = db.Invoinces.Where(model => model.invoinceId == invoinceId).FirstOrDefault();
+            return View(orders);
+        }
 
-            return View(detail);
-        }
-        public ActionResult Delete(Guid id)
+        public ActionResult Cancel(Guid id)
         {
-            List<InvoinceDetail> ctdh = db.InvoinceDetails.Where(model => model.invoinceId == id).ToList();
-            foreach (var i in ctdh)
-            {
-                db.InvoinceDetails.Remove(i);
-            }
-            db.SaveChanges();
+            Member member = (Member)Session["info"]; // Lấy thông tin tài khoản từ session 
             Invoince invoince = db.Invoinces.Find(id);
-            db.Invoinces.Remove(invoince);
-            TempData["msgDeleteOrder"] = "Successfully delete order!";
+            if (invoince.status == "cancelled" || invoince.status == "completed" || invoince.paymentStatus == "paid")
+            {
+                TempData["msgCancelOrder"] = "Order ID " + invoince.invoinceId + " isn't cancel";
+                return RedirectToAction("MyOrder", "Home", new { memberId = member.memberId });
+            }
+            invoince.status = "cancelled";
+            TempData["msgCancelOrder"] = "Order ID " + invoince.invoinceId + " has been cancelled";
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("MyOrder", "Home", new { memberId = member.memberId });
         }
+
+        //public ActionResult Delete(Guid id)
+        //{
+        //    List<InvoinceDetail> ctdh = db.InvoinceDetails.Where(model => model.invoinceId == id).ToList();
+        //    foreach (var i in ctdh)
+        //    {
+        //        db.InvoinceDetails.Remove(i);
+        //    }
+        //    db.SaveChanges();
+        //    Invoince invoince = db.Invoinces.Find(id);
+        //    db.Invoinces.Remove(invoince);
+        //    TempData["msgDeleteOrder"] = "Successfully delete order!";
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
         public PartialViewResult ProductHome()
         {
             var list = db.Products.OrderByDescending(model => model.dateCreate).Take(8).ToList();

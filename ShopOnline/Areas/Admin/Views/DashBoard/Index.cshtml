@@ -1,9 +1,10 @@
 ﻿@using ShopOnline.Models
-@{ 
+@{
     Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
     ViewBag.Title = "DashBoard";
+    Member user = (Member)Session["infoAdmin"];
 }
-@{ Member user = (Member)Session["infoAdmin"]; }
+
 <div class="page-breadcrumb">
     @if (TempData["Delivery"] != null)
     {
@@ -12,34 +13,8 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             @TempData["Delivery"]
-        </div>           }
-
-    @if (TempData["msgEditProfieFailed"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-            @TempData["msgEditProfieFailed"]
-        </div>
-    }
-
-    @if (TempData["msgChangePassword"] != null)
-    {
-        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            @TempData["msgChangePassword"]
         </div>}
-    @if (TempData["msgChangePasswordFailed"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-            @TempData["msgChangePasswordFailed"]
-        </div>}
+
     <div class="row">
         <div class="col-7 align-self-center">
             <h3 class="page-title text-truncate text-dark font-weight-medium mb-1">Good Morning @user.lastName!</h3>
@@ -253,7 +228,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-start">
-                        <h4 class="card-title mb-0">Earning Statistics</h4>
+                        <h4 class="card-title">Earning Statistics</h4>
                         <div class="ml-auto">
                             <div class="dropdown sub-dropdown">
                                 <button class="btn btn-link text-muted dropdown-toggle" type="button"
@@ -347,7 +322,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-4">
+                    <div class="d-flex align-items-center">
                         <h4 class="card-title">Order of the day</h4>
                         <div class="ml-auto">
                             <div class="dropdown sub-dropdown">
@@ -376,7 +351,7 @@
 
 
 @section ChartDashboard{
-    <script src="~/Areas/Admin/Content/js/pages/chartjs/chartjs.init.js"></script>
+    <script src="~/Areas/Admin/Content/js/pages/chartjs/chartjs.init.min.js"></script>
     <script src="~/Areas/Admin/Content/assets/libs/chart.js/dist/Chart.min.js"></script>
     <script src="~/Areas/Admin/Content/assets/libs/chartist/dist/chartist.min.js"></script>
     <script src="~/Areas/Admin/Content/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>

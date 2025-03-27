@@ -6,7 +6,6 @@ using System.Web;
 using System.Web.Mvc;
 using ShopOnline.Models;
 using System.IO;
-using PagedList;
 using System.Web.Security;
 
 namespace ShopOnline.Areas.Admin.Controllers
@@ -14,12 +13,10 @@ namespace ShopOnline.Areas.Admin.Controllers
     [Authorize]
     public class CRUDmemberController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
-        public ActionResult Index(int? page, string searching)
+        menfsEntities db = new menfsEntities();
+        public ActionResult Index(string searching)
         {
-            var pageNumber = page ?? 1;
-            var pageSize = 10;
-            var member = db.Members.Where(model => model.phone.Contains(searching) || searching == null).OrderByDescending(model => model.dateCreate).Include(model => model.Role).ToPagedList(pageNumber, pageSize);
+            var member = db.Members.Where(model => model.phone.Contains(searching) || searching == null).OrderByDescending(model => model.dateCreate).Include(model => model.Role).ToList();
             return View(member);
         }
         //CREATE
@@ -158,15 +155,16 @@ namespace ShopOnline.Areas.Admin.Controllers
                 var checkProduct = db.Products.FirstOrDefault(model => model.memberId == memberId);
                 string currentImg = Request.MapPath(member.avatar);
                 // Kiểm tra xem  tài khoản có trong bảng Article, bảng Invoice hoặc bảng Product không
-                if (checkArticle != null || checkInvoice != null || checkProduct != null) // Nếu có 1 trong 3 giá trị thì không cho xóa
+                if (checkArticle != null || checkInvoice != null || checkProduct != null)
                 {
                     TempData["msgDeleteFailed"] = "Can't delete this! ";
                     return RedirectToAction("Index");
                 }
                 else
                 {
+                    Member m = (Member)Session["infoAdmin"];
                     // Kiểm tra xem tài khoản đăng nhập hiện tại có trùng với tài khoản xóa hay không
-                    if (Guid.Parse(Session["userNameAdmin"].ToString()) == member.memberId) // Nếu trùng thì xóa tài khoản và đăng xuất, chuyển về trang đăng nhập
+                    if (m.memberId == member.memberId) // Nếu trùng thì xóa tài khoản và đăng xuất, chuyển về trang đăng nhập
                     {
                         var avatarName = member.avatar.ToString(); // Lấy đường dẫn ảnh (relative path)
                         var checkAvatart = db.Members.Where(model => model.avatar == avatarName).ToList(); // Kiểm tra ảnh có trùng với avatar của member nào không

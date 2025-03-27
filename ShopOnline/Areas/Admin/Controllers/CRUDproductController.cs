@@ -6,21 +6,18 @@ using System.Web;
 using System.Web.Mvc;
 using ShopOnline.Models;
 using System.IO;
-using PagedList;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
     [Authorize]
     public class CRUDproductController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
 
         // GET: Admin/CRUDproduct
-        public ActionResult Index(int? page, string searching)
+        public ActionResult Index(string searching)
         {
-            var pageNumber = page ?? 1;
-            var pageSize = 5;
-            var products = db.Products.Where(model => model.productName.Contains(searching) || searching == null && model.status == true).OrderByDescending(model => model.dateCreate).Include(model => model.Member).Include(model => model.ProductCategory).ToPagedList(pageNumber, pageSize);
+            var products = db.Products.Where(model => model.productName.Contains(searching) || searching == null && model.status == true).OrderByDescending(model => model.dateCreate).Include(model => model.Member).Include(model => model.ProductCategory).ToList();
             return View(products);
         }
 
@@ -72,7 +69,8 @@ namespace ShopOnline.Areas.Admin.Controllers
                                 product.characteristic = product.characteristic.Trim();
                                 product.meta = product.meta.Trim();
                                 product.image = "~/Content/img/product/" + fileName;
-                                product.memberId = new Guid(Session["userNameAdmin"].ToString());
+                                Member member = (Member)Session["infoAdmin"];
+                                product.memberId = member.memberId;
                                 product.dateCreate = DateTime.Now;
                                 product.status = true;
                                 db.Products.Add(product);

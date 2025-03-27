@@ -1,6 +1,5 @@
 ﻿@using ShopOnline.Models
-@using PagedList.Mvc
-@model PagedList.PagedList<Invoince>
+@model IEnumerable<Invoince>
 @{
     ViewBag.Title = "Invoince";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
@@ -22,9 +21,9 @@
         <div class="col-5 align-self-center">
             <div class="customize-input float-right">
                 <select class="custom-select custom-select-set form-control bg-white border-0 custom-shadow custom-radius">
-                    <option selected>Aug 19</option>
-                    <option value="1">July 19</option>
-                    <option value="2">Jun 19</option>
+                    <option selected>Nov 25</option>
+                    <option value="1">Oct 25</option>
+                    <option value="2">Sep 25</option>
                 </select>
             </div>
         </div>
@@ -52,102 +51,88 @@
         </div>
     }
     <hr />
-    <div class="row">
-        <div class="col-sm-12 col-md-6">
-            <div class="dataTables_length " id="zero_config_length">
-                <label class="d-flex align-items-center">
-                    Show &nbsp;
-                    <select name="zero_config_length" aria-controls="zero_config" class="form-control" style="bottom:3px; width:auto; height:auto;">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                    &nbsp; entries
-                </label>
-            </div>
-        </div>
-        <div class="col-sm-12 col-md-6">
-            <div id="zero_config_filter" class="dataTables_filter text-right">
-                <label class="d-flex align-items-center justify-content-end">
-                    Search &nbsp;
-                    <input type="search" id="search" name="searching" class="form-control form-control-sm" aria-controls="zero_config" style="width:auto" />
-                </label>
-            </div>
 
-        </div>
-    </div>
     <div class="table-responsive">
-
         <table class="table">
             <thead class="thead-light">
                 <tr>
                     <th scope="col" class="text-center">Order Id</th>
-                    <th class="text-center">Orderer</th>
                     <th class="text-center">Order Date</th>
+                    <th class="text-center">Total Money</th>
+                    <th class="text-center">Payment Method</th>
+                    <th class="text-center">Payment Status</th>
                     <th class="text-center">Status</th>
-                    <th class="text-center">Delivery Date</th>
-                    <th class="text-center">Delivery Status</th>
                     <th class="text-center" width="250px">Feature</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var i in Model)
                 {
-                    <tr>
-                        <td class="text-center font-weight-medium text-dark font-14 px-2 py-4">
+                    <tr class="text-center">
+                        <td class="font-weight-medium">
                             <a href="@Url.Action("InvoinceDetail", "CRUDinvoince", new { invoinceNo = i.invoinceId})">#@i.invoinceId</a>
                         </td>
-
-                        <td class="text-muted px-2 py-4 text-center">
-                            @if (i.memberId != null)
-                            {
-                                @Html.DisplayFor(modelItem => i.Member.firstName)<span> </span>@Html.DisplayFor(modelItem => i.Member.lastName)
-                            }
-                            @*else
-                            {
-                                @Html.DisplayFor(modelItem => i.Member.firstName)<span> </span>@Html.DisplayFor(modelItem => i.Member.lastName)
-                            }*@
+                        <td class="text-muted">
+                            @String.Format("{0:dd/MM/yyyy}", i.dateCreate)
                         </td>
-                        <td class="text-muted px-2 py-4 font-14 text-center">
-                            @i.dateCreate
+                        <td>
+                            @String.Format("{0:N0}", i.totalMoney) ₫
                         </td>
-                        <td class="text-center px-2 py-4">
-                            @if (i.status == true)
+                        <td>
+                            @if (i.paymentMethod.Equals("cash"))
                             {
-                                <i class="fa fa-circle text-success font-12" data-toggle="tooltip" data-placement="top" title="Checked"></i>
+                                <img src="~/Content/img/icon/cash.png" alt="cash" width="24">
                             }
-                            else
+                            else if (i.paymentMethod.Equals("vnpay"))
                             {
-                                <i class="fa fa-circle text-danger font-12" data-toggle="tooltip" data-placement="top" title="Cancel"></i>
+                                <img src="~/Content/img/icon/vnpay.ico" alt="vnpay" width="24">
                             }
                         </td>
-                        <td class="text-muted px-2 py-4 font-14 text-center">
-                            @if (i.deliveryDate == null)
+                        <td>
+                            @if (i.paymentStatus.Equals("pending"))
                             {
-                                <span>Q/A</span>
+                                <span class="badge badge-warning">@i.paymentStatus</span>
                             }
-                            else
+                            else if (i.paymentStatus.Equals("paid"))
                             {
-                                @i.deliveryDate
+                                <span class="badge badge-success">@i.paymentStatus</span>
                             }
-                        </td>
-                        <td class="text-center px-2 py-4">
-                            @if (i.deliveryStatus == true)
+                            else if (i.paymentStatus.Equals("failed"))
                             {
-                                <i class="fa fa-circle text-success font-12" data-toggle="tooltip" data-placement="top" title="Done"></i>
-                            }
-                            else
-                            {
-                                <i class="fa fa-circle text-danger font-12" data-toggle="tooltip" data-placement="top" title="In Progress"></i>
+                                <span class="badge badge-danger">@i.paymentStatus</span>
                             }
                         </td>
-                        <td class="text-muted px-2 py-4 text-right">
-                            @if (i.deliveryStatus != true)
+                        <td>
+                            @if (i.status.Equals("pending"))
                             {
-                                <a href="@Url.Action("DeliverySuccess", "CRUDinvoince", new { id = i.invoinceId})" class="btn waves-effect waves-light btn-success">Delivery confirm</a>
+                                <span class="badge badge-warning">@i.status</span>
                             }
-                            <a href="@Url.Action("Delete", "CRUDinvoince", new { id = i.invoinceId})" class="btn waves-effect waves-light btn-danger" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
+                            else if (i.status.Equals("comfirmed"))
+                            {
+                                <span class="badge badge-info">@i.status</span>
+                            }
+                            else if (i.status.Equals("shipping"))
+                            {
+                                <span class="badge badge-primary">@i.status</span>
+                            }
+                            else if (i.status.Equals("completed"))
+                            {
+                                <span class="badge badge-success">@i.status</span>
+                            }
+                            else if (i.status.Equals("cancelled"))
+                            {
+                                <span class="badge badge-secondary">@i.status</span>
+                            }
+                        </td>
+                        <td class="text-right">
+                            @if (i.status.Equals("pending"))
+                            {<a href="@Url.Action("Comfirmed", "CRUDinvoince", new { id = i.invoinceId})" class="btn btn-info">Comfirmed</a>}
+                            else if (i.status.Equals("comfirmed"))
+                            {<a href="@Url.Action("Shipping", "CRUDinvoince", new { id = i.invoinceId})" class="btn btn-primary">Shipping</a>}
+                            else if (i.status.Equals("shipping"))
+                            {<a href="@Url.Action("Completed", "CRUDinvoince", new { id = i.invoinceId})" class="btn btn-success">Completed</a>}
+                            @if (!i.status.Equals("completed") && !i.status.Equals("cancelled") && !i.paymentStatus.Equals("paid"))
+                            {<a href="@Url.Action("Cancel", "CRUDinvoince", new { id = i.invoinceId })" class="btn btn-light" onclick="return confirm('Are you sure you want to cancel this?')">Cancel</a>}
                         </td>
                     </tr>
                 }
@@ -155,33 +140,11 @@
             </tbody>
         </table>
     </div>
-
-    <div class="row" style=" align-items: center">
-        <div class="col-sm-12 col-md-5">
-            <div class="dataTables_info" id="zero_config_info" role="status" aria-live="polite">Showing 1 to 10 of @Model.Count() entries</div>
-        </div>
-        <div class="col-sm-12 col-md-7">
-            <div class="dataTables_paginate paging_simple_numbers" id="default_order_paginate">
-                @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }), new PagedListRenderOptions() { LiElementClasses = new List<string> { "paginate_button", "page-item" } })
-            </div>
-        </div>
-    </div>
 </div>
-
-<style>
-    .page-item a {
-        display: block;
-        padding: .5rem .75rem;
-        margin-left: -1px;
-        line-height: 1.25;
-        color: #5f76e8;
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-    }
-
-    .pagination {
-        margin: 2px 0;
-        white-space: nowrap;
-        justify-content: flex-end;
-    }
-</style>
+<script>
+    $(document).ready(function () {
+        dataTable = $('.table').DataTable($.extend(true, {}, defaultDataTableSettings, {
+            ordering: false
+        }));
+    });
+</script>

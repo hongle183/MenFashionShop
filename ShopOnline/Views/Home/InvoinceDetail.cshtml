@@ -1,11 +1,8 @@
-﻿@using ShopOnline.Models
-@model List<InvoinceDetail>
+﻿@model ShopOnline.Models.Invoince
 
 @{
     ViewBag.Title = "Chi tiết đơn hàng";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
-
-    Invoince info = (Invoince)@Session["information"];
 }
 
 <!-- Breadcrumb Section Begin -->
@@ -17,7 +14,7 @@
                     <h4>@ViewBag.Title</h4>
                     <div class="breadcrumb__links">
                         <a href="/trang-chu">Trang chủ</a>
-                        <a href="@Url.Action("MyOrder", "Home")">Đơn hàng của tôi</a>
+                        <a href="@Url.Action("MyOrder", "Home", new {memberId = Model.memberId})">Đơn hàng của tôi</a>
                         <span>@ViewBag.Title</span>
                     </div>
                 </div>
@@ -27,22 +24,52 @@
 </section>
 <!-- Breadcrumb Section End -->
 <div class="container spad">
-    <h5 class="mb-3 text-uppercase">Đơn hàng <span class="font-weight-bold theme-color">#@ViewBag.invoinceId</span></h5>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-lg-8">
             <div class="invoince__detail card">
-                <p>Ngày đặt hàng: @info.dateCreate</p>
-                <p>Ngày giao hàng: @info.deliveryDate</p>
-                <p>Tình trạng đơn hàng: 
-                    @if (info.deliveryStatus == true)
-                    { 
-                        <b>Đã hoàn thành</b> 
-                    }
-                    else 
-                    {
-                        <b>Chờ giao hàng</b>
-                    }
-                </p>
+                <h5 class="mb-3">ĐƠN HÀNG <span class="font-weight-bold theme-color">#@Model.invoinceId</span></h5>
+                <div class="row">
+                    <div class="col-6">
+                        <p>Ngày đặt hàng: @Model.dateCreate</p>
+                        <p>
+                            Tình trạng đơn hàng:
+                            @if (Model.status.Equals("pending"))
+                            {
+                                <b>Đợi xác nhận</b>
+                            }
+                            else if (Model.status.Equals("comfirmed"))
+                            {
+                                <b>Đã xác nhận</b>
+                            }
+                            else if (Model.status.Equals("shipping"))
+                            {
+                                <b>Đang vận chuyển</b>
+                            }
+                            else if (Model.status.Equals("completed"))
+                            {
+                                <b>Hoàn thành</b>
+                            }
+                            else if (Model.status.Equals("cancelled"))
+                            {
+                                <b>Đã hủy</b>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-6 text-right">
+                        @if (Model.paymentMethod.Equals("vnpay") && !Model.paymentStatus.Equals("paid"))
+                        {
+                            <a href="@Url.Action("CreatePaymentUrl", "Payment", new { invoinceId = Model.invoinceId })" class="btn site-btn">Thanh toán</a>
+                        }
+                        else
+                        {
+                            <button class="btn outline-btn" disabled>Đã thanh toán</button>
+                        }
+                        @if (!Model.status.Equals("completed") && !Model.status.Equals("cancelled") && !Model.paymentStatus.Equals("paid"))
+                        {
+                            <a href="@Url.Action("Cancel", "Home", new { id = Model.invoinceId})" class="btn outline-btn" onclick="return confirm('Are you sure you want to cancel this order?')">Hủy</a>
+                        }
+                    </div>
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -54,7 +81,7 @@
                     </thead>
                     <tbody>
                         @{ int stt = 1, total = 0, totaldiscount = 0, totalprice = 0; }
-                        @foreach (var i in Model)
+                        @foreach (var i in Model.InvoinceDetails)
                         {
                             <tr>
                                 <td width="400px">
@@ -72,7 +99,7 @@
                                 <td class="text-center align-middle">@String.Format("{0:0,0}", i.price * i.quanlity) ₫</td>
                             </tr>
                             stt++;
-                            total += (int)i.price;
+                            total += (int)i.price * (int)i.quanlity;
                             totaldiscount += (int)i.discount;
                         }
                         @{ totalprice = total + totaldiscount; }
@@ -83,43 +110,43 @@
                 <div class="row justify-content-end">
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-md-6 text-right">
-                                <p>Tổng cộng:</p>
-                                <p>Vận chuyển:</p>
-                                <p>Giảm giá: </p>
-                                <p><b>Thanh toán:</b></p>
+                            <div class="col-md-8 text-right">
+                                <span>Tổng cộng:</span><br />
+                                <span>Vận chuyển:</span><br />
+                                <span>Giảm giá: </span><br />
+                                <span style="color: #ff2c2c;"><b>Thanh toán:</b></span>
                             </div>
-                            <div class="col-md-6 text-right">
-                                <p>@String.Format("{0:0,0}", totalprice) ₫</p>
-                                <p>@String.Format("{0:0,0}", 0) ₫</p>
-                                <p>@String.Format("{0:0,0}", -totaldiscount) ₫</p>
-                                <p>@String.Format("{0:0,0}", total) ₫</p>
+                            <div class="col-md-4 text-right">
+                                <span>@String.Format("{0:0,0}", totalprice) ₫</span><br />
+                                <span>@String.Format("{0:0,0}", 0) ₫</span><br />
+                                <span>@String.Format("{0:0,0}", -totaldiscount) ₫</span><br />
+                                <span>@String.Format("{0:0,0}", total) ₫</span>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-lg-4 mt-lg-0 mt-4">
             <div class="invoince__detail card">
-                <h4 style="margin-bottom: 16px">Thông tin giao hàng</h4>
+                <h4 class="mb-3"><img src="/Content/img/icon/place.png" style="width:10%;" alt=""> Thông tin giao hàng</h4>
                 <p style="margin: 0">
                     <b>
-                        @info.Member.firstName<span> </span>@info.Member.lastName
+                        @Model.Member.firstName<span> </span>@Model.Member.lastName
                     </b>
                 </p>
                 <p style="margin: 0">
-                    @info.Member.phone
+                    @Model.Member.phone
                 </p>
                 <p style="margin: 0">
-                    @info.Member.address
+                    @Model.Member.address
                 </p>
             </div>
         </div>
     </div>
 </div>
 
-<script>var obj = document.querySelector(".navbar li:nth-child(1)");
+<script>
+    var obj = document.querySelector(".navbar li:nth-child(1)");
     obj.classList.remove("active");
 </script>

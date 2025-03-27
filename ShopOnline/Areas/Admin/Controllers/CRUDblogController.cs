@@ -5,22 +5,18 @@ using System.Web;
 using System.Web.Mvc;
 using ShopOnline.Models;
 using System.IO;
-using PagedList;
 using System.Data.Entity.Migrations;
-using ShopOnline.Help;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
     [Authorize]
     public class CRUDblogController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
 
-        public ActionResult Index(int? page, string searching)
+        public ActionResult Index(string searching)
         {
-            var pageNumber = page ?? 1;
-            var pageSize = 10;
-            var article = db.Articles.Where(model => model.title.Contains(searching) || searching == null).OrderByDescending(model => model.dateCreate).ToPagedList(pageNumber, pageSize);
+            var article = db.Articles.Where(model => model.title.Contains(searching) || searching == null).OrderByDescending(model => model.dateCreate).ToList();
             return View(article);
         }
 
@@ -52,7 +48,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                     }
                     else
                     {
-                        article.meta = Functions.ConvertToUnSign(article.title);
+                        article.meta = article.meta.Trim();
                         article.image = "~/Content/img/blog/" + fileName;
                         article.memberId = new Guid("e4d33c53-b8a3-4f82-9ff3-e611912631fe");
                         article.status = true;

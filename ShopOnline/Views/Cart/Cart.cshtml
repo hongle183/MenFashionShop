@@ -26,9 +26,9 @@
 <!-- Shopping Cart Section Begin -->
 <section class="shopping-cart spad">
     <div class="container">
-        <div class="row">
-            @if (Model.Count > 0)
-            {
+        @if (Model.Count > 0)
+        {
+            <div class="row">
                 <div class="col-lg-8">
                     @using (Html.BeginForm("UpdateCart", "Cart", FormMethod.Post))
                     {
@@ -71,54 +71,57 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6">
-                                <a class="outline-btn btn" href="/san-pham">Continue Shopping</a>
+                                <a class="outline-btn btn" href="/san-pham">Tiếp tục mua sắm</a>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="update__btn">
-                                    <button class="site-btn" type="submit"><i class="fa fa-spinner"></i> Update cart</button>
+                                    <button class="site-btn" type="submit"><i class="fa fa-spinner"></i> Cập nhật giỏ</button>
                                 </div>
                             </div>
                         </div>
                     }
-
                 </div>
-            }
-            else
-            {
-                <div class="col-lg-8">
-                    <div class="shopping__cart__table">
-                        <h3>Không có sản phẩm nào trong giỏ hàng!!</h3>
+                <div class="col-lg-4">
+                    <div class="cart__discount">
+                        <h6>Mã giảm giá</h6>
+                        <form action="#">
+                            <input type="text" placeholder="Nhập mã giảm giá">
+                            <button class="rounded-right" type="submit">Áp dụng</button>
+                        </form>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                            <a class="outline-btn btn" href="/san-pham">Continue Shopping</a>
-                        </div>
+                    <div class="cart__total card">
+                        <h6>Thông tin đơn hàng</h6>
+                        <ul>
+                            <li>Thành tiền <span>@String.Format("{0:N0}", ViewBag.price) ₫</span></li>
+                            <li>Giảm giá <span>@String.Format("{0:N0}", ViewBag.discount) ₫</span></li>
+                            <li>Tổng cộng <span class="text-danger font-weight-bold">@String.Format("{0:N0}", ViewBag.totalPrice) ₫</span></li>
+                        </ul>
+                        @*@if (Session["info"] != null)*@
+                        @*{*@
+                        <a href="@Url.Action("Checkout","Cart")" class="btn site-btn">Mua hàng</a>
+                        @*}*@
+                        @*else
+                            {
+                                <script>
+                                    window.location.href = '@Url.Action("Login", "Account", new { message = "Vui lòng đăng nhập để mua hàng" })';
+                                </script>
+                            }*@
                     </div>
-                </div>
-            }
-            <div class="col-lg-4">
-                <div class="cart__discount">
-                    <h6>Mã giảm giá</h6>
-                    <form action="#">
-                        <input type="text" placeholder="Nhập mã giảm giá">
-                        <button class="rounded-right" type="submit">Áp dụng</button>
-                    </form>
-                </div>
-                <div class="cart__total card">
-                    <h6>Thông tin đơn hàng</h6>
-                    <ul>
-                        <li>Thành tiền <span>@String.Format("{0:N0}", ViewBag.price) ₫</span></li>
-                        <li>Giảm giá <span>@String.Format("{0:N0}", ViewBag.discount) ₫</span></li>
-                        <li>Tổng cộng <span class="text-danger font-weight-bold">@String.Format("{0:N0}", ViewBag.totalPrice) ₫</span></li>
-                    </ul>
-                    <a href="@Url.Action("Checkout","Cart")" class="btn site-btn">Mua hàng</a>
                 </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="shopping__cart__table text-center">
+                <img src="~/Content/img/Orders/empty.png" alt="" style="width:30%;" />
+                <h3 class="my-3">Không có sản phẩm nào trong giỏ hàng!!</h3>
+                <a class="outline-btn btn" href="/san-pham">Tiếp tục mua sắm</a>
+            </div>
+        }
     </div>
 </section>
 <!-- Shopping Cart Section End -->
 <script>
-    var obj = document.querySelector(".navlist li:nth-child(1)");
+    var obj = document.querySelector(".navbar li:nth-child(1)");
     obj.classList.remove("active");
 </script>

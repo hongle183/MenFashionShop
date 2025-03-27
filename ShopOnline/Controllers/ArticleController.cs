@@ -1,9 +1,6 @@
-﻿using System;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data;
 using System.Linq;
 using System.Web.Mvc;
-using System.Xml.Linq;
 using CSharpVitamins;
 using PagedList;
 using ShopOnline.Models;
@@ -12,7 +9,7 @@ namespace ShopOnline.Controllers
 {
     public class ArticleController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
         public ActionResult ArticleList(int? page)
         {
             int pageSize = 6;

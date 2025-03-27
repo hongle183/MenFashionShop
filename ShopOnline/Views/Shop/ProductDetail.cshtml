@@ -3,7 +3,6 @@
     ViewBag.Title = Model.productName;
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
-
 <!-- Shop Details Section Begin -->
 <section class="shop-details">
     <div class="product__details__pic">
@@ -163,10 +162,11 @@
                         <div class="product__details__cart__option">
                             <div class="quantity">
                                 <div class="pro-qty">
-                                    <input type="text" value="1">
+                                    <input type="text" value="1" id="quantity">
                                 </div>
                             </div>
-                            <a href="@Url.Action("AddToCart","Cart", new { id = Model.productId, strURL = Request.Url.ToString() })" class="site-btn btn">Thêm vào giỏ</a>
+                            <a href="@Url.Action("AddToCart","Cart", new { id = Model.productId, strURL = Request.Url.ToString() })" 
+                               id="add-to-cart" class="site-btn btn">Thêm vào giỏ</a>
                         </div>
                         <div class="product__details__btns__option">
                             <a href="#"><i class="fa fa-heart"></i> Yêu thích</a>
@@ -216,7 +216,7 @@
                             <div class="tab-pane" id="tabs-7" role="tabpanel">
                                 <div class="product__details__last__option">
                                     <h5><span>Guaranteed Safe Checkout</span></h5>
-                                    <img src="~/Content/img/payment.png" alt="">
+                                    <img src="~/Content/img/result.svg" alt="">
                                     <ul>
                                         <li><span>SKU:</span> 3812912</li>
                                         <li><span>Categories:</span> Clothes</li>
@@ -244,4 +244,16 @@
             liTags[i].classList.add("active");
         }
     }
+
+    document.getElementById('add-to-cart').addEventListener('click', function (e) {
+        e.preventDefault();
+        const quantity = document.getElementById('quantity').value;
+
+        // Lấy liên kết hiện tại của nút "Thêm vào giỏ"
+        const url = new URL(this.href);
+
+        // Cập nhật giá trị của tham số "quantity"
+        url.searchParams.set('quantity', quantity);
+        window.location.href = url.toString();
+    });
 </script>

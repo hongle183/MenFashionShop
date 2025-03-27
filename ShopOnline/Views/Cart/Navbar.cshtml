@@ -11,8 +11,7 @@
         @*<div class="price" style="margin-right:12px;">$ @ViewBag.totalPrice</div>*@
 
         @if (Session["info"] != null)
-        {
-            
+        {            
             <div class="header__nav__hover">
                 <span>
                     <img class="avatar" src=@Url.Content("" + user.avatar) style="width: 24px;height:24px;" /> @user.lastName<i class="arrow_carrot-down"></i>
@@ -20,16 +19,18 @@
                 <ul>
                     <li>                 
                         <a href="@Url.Action("EditProfie", "Home", new { memberId = user.memberId })">
-                            @*<img src="~/Content/img/icon/profile.png" style="width:10%;" alt="" />*@Hồ sơ tài khoản
+                            Hồ sơ tài khoản
                         </a>
                     </li>
                     <li>
                         <a href="@Url.Action("ChangePassword", "Home", new { memberId = user.memberId })">
-                            @*<img src="~/Content/img/icon/password.png" style="width:10%;" alt=""/>*@Thay đổi mật khẩu</a>
+                            Thay đổi mật khẩu
+                        </a>
                     </li>
                     <li>
                         <a href="@Url.Action("MyOrder", "Home", new { memberId = user.memberId })">
-                            @*<img src="~/Content/img/icon/orderlist-history.png" style="width:10%;" alt=""/>*@Đơn hàng của tôi</a>
+                            Đơn hàng của tôi
+                        </a>
                     </li>
                     <li>
                         <a href="@Url.Action("LogOut", "User")">Đăng xuất</a>

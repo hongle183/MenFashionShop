@@ -8,7 +8,7 @@ namespace shopOnline.Controllers
 {
     public class CartController : Controller
     {
-        menfsEntities1 db = new menfsEntities1();
+        menfsEntities db = new menfsEntities();
         public List<Cart> getCart() // Tạo danh sách giỏ hàng và lưu vào session
         {
             List<Cart> listCart = Session["Cart"] as List<Cart>;
@@ -128,18 +128,22 @@ namespace shopOnline.Controllers
             }
         }
 
-        [CustomAuthorize]
+        [CustomAuthorize("User")]
         [HttpGet]
         public ActionResult Checkout()
         {
             List<Cart> listCart = getCart();
+            if (listCart.Count == 0)
+            {
+                return RedirectToAction("Cart");
+            }
             ViewBag.totalPrice = TotalPrice();
             ViewBag.price = Price();
             ViewBag.discount = DiscountPrice();
 
             return View(listCart);
         }
-        [CustomAuthorize]
+        [CustomAuthorize("User")]
         [HttpPost]
         public ActionResult Checkout(FormCollection collection)
         {
@@ -152,10 +156,11 @@ namespace shopOnline.Controllers
                     List<Cart> listCart = getCart();
                     bill.invoinceId = Guid.NewGuid();
                     bill.memberId = member.memberId;
+                    bill.paymentMethod = collection["paymentMethod"];
+                    bill.paymentStatus = "pending";
+                    bill.note = collection["note"];
+                    bill.status = "pending";
                     bill.dateCreate = DateTime.Now;
-                    bill.status = false;
-                    bill.deliveryDate = null;
-                    bill.deliveryStatus = false;
 
                     // Biến totalmney lưu tổng tiền sản phẩm từ giỏ hàng
                     int totalmoney = 0;
@@ -177,7 +182,15 @@ namespace shopOnline.Controllers
                         db.InvoinceDetails.Add(ctdh);
                     }
                     db.SaveChanges();
-                    return RedirectToAction("SubmitBill", "Cart");
+                    Session.Remove("Cart");
+
+                    if (collection["paymentMethod"] == "vnpay")
+                    {
+                        return RedirectToAction("CreatePaymentUrl", "Payment", new { invoinceId = bill.invoinceId });
+                    }
+
+                    TempData["msgOrderSuccess"] = "Đặt hàng thành công";
+                    return RedirectToAction("MyOrder", "Home", new { memberId = member.memberId });
                 }
                 return View();
             }
@@ -185,22 +198,15 @@ namespace shopOnline.Controllers
             {
                 return RedirectToAction("Error", "Home");
             }
-        }
-        [CustomAuthorize]
+        }        
+
+        [CustomAuthorize("User")]
         [HttpGet]
         public ActionResult SubmitBill()
         {
             ViewBag.quanlityItem = Quanlity();
             ViewBag.totalPrice = TotalPrice();
             return View();
-        }
-        [CustomAuthorize]
-        [HttpPost]
-        public ActionResult SubmitBill(FormCollection form)
-        {
-            Session.Remove("Cart");
-            //Session["Cart"] = null;
-            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -28,15 +28,15 @@
 <section class="checkout spad">
     <div class="container">
         <div class="checkout__form">
-            <div class="row">
-                <div class="col-lg-7 col-md-6">
-                    <h6 class="coupon__code">
-                        <span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click here</a> to enter your code
-                    </h6>
-                    <h5 class="checkout__title">Thông tin giao hàng</h5>
-                    @{ Member user = (Member)Session["info"]; }
-                    @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post))
-                    {
+            @{ Member user = (Member)Session["info"]; }
+            @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { id = "checkout-form" }))
+            {
+                <div class="row">
+                    <div class="col-lg-7 col-md-6">
+                        <h6 class="coupon__code">
+                            <span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click here</a> to enter your code
+                        </h6>
+                        <h5 class="checkout__title">Thông tin giao hàng</h5>
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         <div class="row">
@@ -79,65 +79,51 @@
                                 </div>
                             </div>
                         </div>
-                    }
-                </div>
-                <div class="col-lg-5 col-md-6">
-                    <div class="checkout__order card">
-                        <h4 class="order__title">Đơn hàng</h4>
-                        <table cellpadding="5">
-                            <tr>
-                                <th width="70%">Sản phẩm</th>
-                                <th width="30%" style="text-align: right; ">Thành tiền</th>
-                            </tr>
-                            @{ int num = 1; }
-                            @foreach (var i in Model)
-                            {
+                    </div>
+                    <div class="col-lg-5 col-md-6">
+                        <div class="checkout__order card">
+                            <h4 class="order__title">Đơn hàng</h4>
+                            <table cellpadding="5" style="margin-bottom: 14px;">
                                 <tr>
-                                    <td>@num. @i.nameItem</td>
-                                    <td style="text-align: right;"><span>@String.Format("{0:N0}", i.priceTotal) ₫</span></td>
+                                    <th width="70%">Sản phẩm</th>
+                                    <th width="30%" style="text-align: right; ">Thành tiền</th>
                                 </tr>
-                                num++;
-                            }
-                        </table>
-                        <ul class="checkout__total__all">
-                            <li>Tổng cộng <span>@String.Format("{0:N0}", ViewBag.price) ₫</span></li>
-                            <li>Giảm giá <span>@String.Format("{0:N0}", ViewBag.discount) ₫</span></li>
-                            <li>Vận chuyển <span>@String.Format("{0:N0}", 0) ₫</span></li>
-                            <hr />
-                            <li>Tổng tiền <span class="text-danger">@String.Format("{0:N0}", ViewBag.totalPrice) ₫</span></li>
-                        </ul>
-                        <p class="font-weight-bold">Phương thức thanh toán</p>
-                        <div class="checkout__input__checkbox">
-                            <label for="momo">
-                                Ví Momo
-                                <input type="radio" name="checkout" id="momo">
-                                <span class="checkmark"></span>
-                            </label>
-                        </div>
-                        <div class="checkout__input__checkbox">
-                            <label for="atm">
-                                ATM/ Internet Banking
-                                <input type="radio" name="checkout" id="atm">
-                                <span class="checkmark"></span>
-                            </label>
-                        </div>
-                        <div class="checkout__input__checkbox">
-                            <label for="visa">
-                                Visa/ Master/ JCB
-                                <input type="radio" name="checkout" id="visa">
-                                <span class="checkmark"></span>
-                            </label>
-                        </div>
-                        <div class="checkout__input__checkbox">
-                            <label for="cash">
-                                Thanh toán bằng tiền mặt khi nhận hàng
-                                <input type="radio" name="checkout" id="cash" checked>
-                                <span class="checkmark"></span>
-                            </label>
+                                @{ int num = 1; }
+                                @foreach (var i in Model)
+                                {
+                                    <tr>
+                                        <td>@num. @i.nameItem</td>
+                                        <td style="text-align: right;"><span>@String.Format("{0:N0}", i.priceTotal) ₫</span></td>
+                                    </tr>
+                                    num++;
+                                }
+                            </table>
+                            <ul class="checkout__total__all">
+                                <li>Tổng cộng <span>@String.Format("{0:N0}", ViewBag.price) ₫</span></li>
+                                <li>Giảm giá <span>@String.Format("{0:N0}", ViewBag.discount) ₫</span></li>
+                                <li>Vận chuyển <span>@String.Format("{0:N0}", 0) ₫</span></li>
+                                <hr />
+                                <li>Tổng tiền <span class="text-danger">@String.Format("{0:N0}", ViewBag.totalPrice) ₫</span></li>
+                            </ul>
+                            <p class="font-weight-bold">Phương thức thanh toán</p>
+                            <div class="checkout__input__checkbox">
+                                <label for="vnpay">
+                                    Thanh toán qua VNPay
+                                    <input type="radio" name="paymentMethod" id="vnpay" value="vnpay">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="checkout__input__checkbox">
+                                <label for="cash">
+                                    Thanh toán bằng tiền mặt khi nhận hàng
+                                    <input type="radio" name="paymentMethod" id="cash" value="cash" checked>
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </section>
@@ -145,4 +131,15 @@
 <script>
     var obj = document.querySelector(".navbar li:nth-child(1)");
     obj.classList.remove("active");
+
+     @*$(document).ready(function () {
+        $("input[name='paymentMethod']").change(function () {
+            var form = $("#checkout-form");
+            if ($("#vnpay").is(":checked")) {
+                form.attr("action", "@Url.Action("CreatePaymentUrl", "Payment")"); // Chuyển sang CreatePaymentUrl của PaymentController
+            } else {
+                form.attr("action", "@Url.Action("Checkout", "Cart")"); // Giữ nguyên Checkout của CartController
+            }
+        });
+    });*@
 </script>

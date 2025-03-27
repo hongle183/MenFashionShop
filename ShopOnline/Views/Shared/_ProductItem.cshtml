@@ -1,8 +1,6 @@
 ﻿@model ShopOnline.Models.Product
-
 <div class="product__item sale">
     <div class="product__item__pic set-bg card" data-setbg=@Url.Content("" + Model.image)>
-
         @if (Model.discount != 0)
         {
             <span class="label">Sale</span>
@@ -14,8 +12,13 @@
         </ul>
     </div>
     <div class="product__item__text">
-        <h6><a href="@Url.Action("ProductDetail", "Shop", new { meta = Model.meta, id = (CSharpVitamins.ShortGuid)Model.productId})" class="nameProduct">@Model.productName</a></h6>
-        <a href="@Url.Action("AddToCart", "Cart", new { id = Model.productId, strURL = Request.Url.ToString() })" class="add-cart">+ Thêm vào giỏ</a>
+        <h6>
+            <a href="@Url.Action("ProductDetail", "Shop", new { meta = Model.meta, 
+                                                                id = (CSharpVitamins.ShortGuid)Model.productId})" 
+               class="nameProduct">@Model.productName</a>
+        </h6>
+        <a href="@Url.Action("AddToCart", "Cart", new { id = Model.productId, strURL = Request.Url.ToString() })" 
+           class="add-cart">+ Thêm vào giỏ</a>
         <div class="rating">
             <i class="fa fa-star"></i>
             <i class="fa fa-star"></i>
