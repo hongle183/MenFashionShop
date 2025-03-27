@@ -1,4 +1,4 @@
-$(function () {
+﻿$(function () {
     "use strict";
 
     // Feather Icon Init Js
@@ -73,5 +73,22 @@ $(function () {
         $(this).next('.custom-file-label').html(fileName);
     })
 
-    
+    // datatable
+    window.defaultDataTableSettings = {
+        paging: true,
+        pageLength: 5,
+        responsive: true,
+        layout: {
+            topStart: {
+                search: {
+                    placeholder: ''
+                }
+            },
+            topEnd: null,
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+        }, search: {
+            return: true
+        }
+    };
 });

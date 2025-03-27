@@ -129,10 +129,20 @@ function Validator(options){ //? options là tham số object của hàm Validat
                     }
                 }
             });
-
-
         });
 
+        // Xử lý reset form
+        formElement.onreset = function () {
+            var errorElements = formElement.querySelectorAll(options.errorSelector);
+            errorElements.forEach(function (errorElement) {
+                errorElement.innerText = '';
+            });
+
+            var formGroups = formElement.querySelectorAll(options.formGroupSelector);
+            formGroups.forEach(function (formGroup) {
+                formGroup.classList.remove('invalid');
+            });
+        };
     }
 }
 
@@ -186,3 +196,16 @@ Validator.isDate = function (selector, message) {
         }
     };
 }
+
+Validator.isReCaptchaValid = function (selector, message) {
+    return {
+        selector: selector,
+        test: function () {
+            var recaptchaResponse = grecaptcha.getResponse(); // Lấy reCAPTCHA response
+            if (recaptchaResponse === '') {
+                return message || 'reCAPTCHA verification is required.';
+            }
+            return undefined; // Hợp lệ
+        }
+    };
+};

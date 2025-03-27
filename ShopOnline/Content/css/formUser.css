@@ -21,9 +21,17 @@
         color: #000;
     }
 
+@media (min-width: 1200px) {
     .singinBx form {
         width: 35%;
     }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .singinBx form {
+        width: 70%;
+    }
+}
         .singinBx form .signup {
             position: relative;
             margin-top: 20px;

@@ -28,6 +28,16 @@
     --blue: #a0bcde;
 }
 
+@font-face {
+    font-family: "Nunito";
+    src: url("../fonts/Nunito-VariableFont_wght.ttf") format("truetype"), url("../fonts/Nunito-Italic-VariableFont_wght.ttf") format("truetype");
+}
+/*  tff     TrueType 
+    otf     OpenType
+    woff    Web Open Font Format
+    woff2   Web Open Font Format 2
+*/
+
 /*----------------------------------------*/
 /* Template default CSS
 /*----------------------------------------*/
@@ -236,10 +246,6 @@ form textarea {
         color: var(--dark-light);
     }
 
-    form textarea::-ms-input-placeholder {
-        color: var(--dark-light);
-    }
-
     form textarea::placeholder {
         color: var(--dark-light);
     }
@@ -251,23 +257,51 @@ form textarea {
 
 .form-message {
     font-size: 85%;
-    color: red;
+    color: #ff2c2c;
 }
 
 .form-group.invalid input {
-    border: 1px solid red;
+    border: 1px solid #ff2c2c;
 }
 
 .form-group.invalid textarea {
-    border: 1px solid red;
+    border: 1px solid #ff2c2c;
 }
 
 .validation-summary-errors ul {
     list-style: none;
     font-size: 85%;
-    color: red;
+    color: #ff2c2c;
     margin-bottom: 12px;
 }
+
+/*---------------------
+  Nice Select
+-----------------------*/
+
+.nice-select {
+    float: none;
+    display: inline-block;
+    padding: 0;
+    height: auto;
+    border: none;
+    padding-right: 28px;
+    padding-left: 12px;
+}
+
+    .nice-select:after {
+        border-bottom: 1.5px solid var(--dark);
+        border-right: 1.5px solid var(--dark);
+        height: 8px;
+        right: 12px;
+        width: 8px;
+    }
+
+    .nice-select span {
+        color: var(--dark);
+        font-size: 15px;
+        font-weight: 700;
+    }
 
 /*---------------------
   Helper CSS
@@ -278,7 +312,7 @@ form textarea {
 }
 
     .section-title span {
-        color: red;
+        color: #ff2c2c;
         font-size: 14px;
         font-weight: 700;
         text-transform: uppercase;
@@ -345,32 +379,6 @@ form textarea {
         animation: shine 1.6s ease;
     }
 
-.btn-submitForm, .btn-resetForm {
-    width: 100%;
-    position: relative;
-    background: #000;
-    cursor: pointer;
-    overflow: hidden;
-    outline: none;
-    font-size: 14px;
-    font-weight: 500;
-    color: #fff;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-    margin-top: 10px;
-}
-
-.btn-resetForm {
-    background: #fff;
-    color: #000;
-}
-
-    .btn-submitForm:active, .btn-resetForm:active {
-        transform: translateY(1px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    }
-
 .site-btn {
     display: inline-block;
     font-size: 14px;
@@ -390,7 +398,6 @@ form textarea {
     color: var(--dark);
     border: 1px solid #e1e1e1;
     border-radius: 5px;
-    cursor: pointer;
 }
 
     .outline-btn:hover {
@@ -633,7 +640,7 @@ form textarea {
             bottom: 0;
             width: 100%;
             height: 2px;
-            background: red;
+            background: #ff2c2c;
             content: "";
             -webkit-transition: all, 0.5s;
             -o-transition: all, 0.5s;
@@ -814,7 +821,7 @@ form textarea {
 }
 
 .hero__text h6 {
-    color: red;
+    color: #ff2c2c;
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
@@ -901,7 +908,7 @@ form textarea {
 
     .banner__item:hover .banner__item__text a:after {
         width: 40px;
-        background: red;
+        background: #ff2c2c;
     }
 
     .banner__item.banner__item--middle {
@@ -1047,7 +1054,7 @@ form textarea {
     }
 
 .categories__deal__countdown span {
-    color: red;
+    color: #ff2c2c;
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
@@ -1132,7 +1139,7 @@ form textarea {
     }
 
     .instagram__text h3 {
-        color: red;
+        color: #ff2c2c;
         font-weight: 700;
     }
 
@@ -1141,18 +1148,18 @@ form textarea {
 -----------------------*/
 
 .product {
-    padding-top: 0;
+    padding-top: 60px;
     padding-bottom: 60px;
 }
 
 .filter__controls {
     text-align: center;
-    margin-bottom: 45px;
+    margin-bottom: -30px;
 }
 
     .filter__controls li {
         color: var(--brown);
-        font-size: 24px;
+        font-size: 30px;
         font-weight: 700;
         list-style: none;
         display: inline-block;
@@ -1175,7 +1182,7 @@ form textarea {
 
     .product__item.sale .product__item__pic .label {
         color: #ffffff;
-        background: red;
+        background: #ff2c2c;
     }
 
     .product__item.sale .product__item__text .rating i {
@@ -1289,7 +1296,7 @@ form textarea {
 
     .product__item__text .add-cart {
         font-size: 15px;
-        color: red;
+        color: #ff2c2c;
         font-weight: 700;
         position: absolute;
         left: 79px;
@@ -1405,21 +1412,23 @@ form textarea {
             height: 48px;
         }
 
-.shop__sidebar__accordion .card {
-    margin-bottom: 25px;
+@media (min-width: 1200px) {
+    .shop__sidebar__accordion .card {
+        margin-bottom: 25px;
+    }
 }
 
-    .shop__sidebar__accordion .card:last-child {
-        margin-bottom: 0;
+.shop__sidebar__accordion .card:last-child {
+    margin-bottom: 0;
+}
+
+    .shop__sidebar__accordion .card:last-child .card-body {
+        border-bottom: none;
     }
 
-        .shop__sidebar__accordion .card:last-child .card-body {
-            border-bottom: none;
-        }
-
-    .shop__sidebar__accordion .card .card-body {
-        padding-bottom: 0px;
-    }
+.shop__sidebar__accordion .card .card-body {
+    padding-bottom: 0px;
+}
 
 .shop__sidebar__accordion .card-heading {
     cursor: pointer;
@@ -1634,30 +1643,6 @@ form textarea {
         display: inline-block;
         margin-bottom: 0;
     }
-
-    .shop__product__option__right .nice-select {
-        float: none;
-        display: inline-block;
-        padding: 0;
-        height: auto;
-        border: none;
-        padding-right: 28px;
-        padding-left: 12px;
-    }
-
-        .shop__product__option__right .nice-select:after {
-            border-bottom: 1.5px solid var(--dark);
-            border-right: 1.5px solid var(--dark);
-            height: 8px;
-            right: 12px;
-            width: 8px;
-        }
-
-        .shop__product__option__right .nice-select span {
-            color: var(--dark);
-            font-size: 15px;
-            font-weight: 700;
-        }
 
 .product__pagination {
     padding-top: 25px;
@@ -2055,7 +2040,7 @@ form textarea {
             }
 
                 .product__details__tab .nav-tabs .nav-item .nav-link.active {
-                    border-bottom: 2px solid red;
+                    border-bottom: 2px solid #ff2c2c;
                 }
 
 .product__details__tab__content {
@@ -2208,11 +2193,11 @@ form textarea {
     }
 
         .footer__copyright__text p i {
-            color: red;
+            color: #ff2c2c;
         }
 
         .footer__copyright__text p a {
-            color: red;
+            color: #ff2c2c;
         }
 
 /*---------------------
@@ -2324,7 +2309,7 @@ form textarea {
 }
 
     .testimonial__text span {
-        color: red;
+        color: #ff2c2c;
         font-size: 72px;
     }
 
@@ -2680,7 +2665,7 @@ form textarea {
     }
 
         .checkout__input__checkbox label input:checked ~ .checkmark {
-            border-color: red;
+            border-color: #ff2c2c;
         }
 
             .checkout__input__checkbox label input:checked ~ .checkmark:after {
@@ -2704,7 +2689,7 @@ form textarea {
             top: -3px;
             width: 14px;
             height: 7px;
-            border: solid red;
+            border: solid #ff2c2c;
             border-width: 1.5px 1.5px 0px 0px;
             -webkit-transform: rotate(127deg);
             -ms-transform: rotate(127deg);
@@ -2780,7 +2765,7 @@ form textarea {
 
 .checkout__total__all {
     border-top: 1px solid var(--gray);
-    padding: 14px 0;
+    padding: 0;
     margin-bottom: 12px;
 }
 
@@ -2833,7 +2818,7 @@ form textarea {
 
     .blog__item:hover a::after {
         width: 40px;
-        background: red;
+        background: #ff2c2c;
     }
 
     .blog__item:hover .blog__item__text {
@@ -4018,13 +4003,13 @@ td p {
     border-radius: 50%;
 }
 
-.redirect-login:hover {
+.cirect-login:hover {
     color: #007bff
 }
 
 .box-detail {
-    width: 400px;
-    padding: 65px 24px;
+    width: 500px;
+/*    margin: 65px 24px;*/
     position: absolute;
     top: 50%;
     left: 50%;

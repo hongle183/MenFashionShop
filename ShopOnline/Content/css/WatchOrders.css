@@ -15,8 +15,8 @@
 
 .top {
     padding-top: 40px;
-    padding-left: 13% !important;
-    padding-right: 13% !important
+    padding-left: 12.5% !important;
+    padding-right: 12.5% !important;
 }
 
 #progressbar {
@@ -45,10 +45,10 @@
     #progressbar li:before {
         width: 40px;
         height: 40px;
-        line-height: 45px;
+        line-height: 40px;
         display: block;
         font-size: 20px;
-        background: #C5CAE9;
+        background: #f5b1b1;
         border-radius: 50%;
         margin: auto;
         padding: 0px
@@ -58,7 +58,7 @@
         content: '';
         width: 100%;
         height: 12px;
-        background: #C5CAE9;
+        background: #f5b1b1;
         position: absolute;
         left: 0;
         top: 16px;
@@ -96,7 +96,7 @@
 
     #progressbar li.active:before,
     #progressbar li.active:after {
-        background: #651FFF
+        background: #ff2c2c
     }
 
     #progressbar li.active:before {
@@ -117,12 +117,12 @@
 .card-footer {
     background-color: #eceff1 !important;
 }
-    .card-footer a {
+/*    .card-footer a {
         color: #343535
     }
 .card a:hover {
     color: #343535;
-}
+}*/
 .cursor-pointer{
     cursor: pointer
 }

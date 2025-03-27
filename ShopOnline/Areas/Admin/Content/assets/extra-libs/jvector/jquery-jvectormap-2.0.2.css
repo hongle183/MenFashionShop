@@ -1,16 +1,21 @@
+svg {
+    touch-action: none;
+}
+
 .jvectormap-container {
     width: 100%;
     height: 100%;
     position: relative;
     overflow: hidden;
+    touch-action: none;
 }
 
 .jvectormap-tip {
     position: absolute;
     display: none;
-    border: solid 1px #4F5467;
-    border-radius: 2px;
-    background: #4F5467;
+    border: solid 1px #CDCDCD;
+    border-radius: 3px;
+    background: #292929;
     color: white;
     font-family: sans-serif, Verdana;
     font-size: smaller;
@@ -20,19 +25,19 @@
 .jvectormap-zoomin, .jvectormap-zoomout, .jvectormap-goback {
     position: absolute;
     left: 10px;
-    border-radius: 2px;
-    background: #4F5467;
-    padding: 5px;
+    border-radius: 3px;
+    background: #292929;
+    padding: 3px;
     color: white;
     cursor: pointer;
-    line-height: 20px;
+    line-height: 10px;
     text-align: center;
     box-sizing: content-box;
 }
 
 .jvectormap-zoomin, .jvectormap-zoomout {
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
 }
 
 .jvectormap-zoomin {
@@ -40,7 +45,7 @@
 }
 
 .jvectormap-zoomout {
-    top: 50px;
+    top: 30px;
 }
 
 .jvectormap-goback {

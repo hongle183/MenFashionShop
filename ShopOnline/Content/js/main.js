@@ -1,13 +1,4 @@
-﻿/*  ---------------------------------------------------
-    Template Name: Male Fashion
-    Description: Male Fashion - ecommerce teplate
-    Author: Colorib
-    Author URI: https://www.colorib.com/
-    Version: 1.0
-    Created: Colorib
----------------------------------------------------------  */
-
-'use strict';
+﻿'use strict';
 
 (function ($) {
 
@@ -179,38 +170,18 @@
     proQty.prepend('<span class="fa fa-angle-up dec qtybtn"></span>');
     proQty.append('<span class="fa fa-angle-down inc qtybtn"></span>');
     proQty.on('click', '.qtybtn', function () {
-        var $button = $(this);
-        var oldValue = $button.parent().find('input').val();
-        if ($button.hasClass('inc')) {
-            var newVal = parseFloat(oldValue) - 1;
-        } else {
-            // Don't allow decrementing below zero
-            if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) + 1;
-            } else {
-                newVal = 0;
-            }
-        }
-        $button.parent().find('input').val(newVal);
-    });
+        var $button = $(this); // Lấy nút được nhấp
+        var $input = $button.siblings('input'); // Tìm ô input cùng cấp
+        var oldValue = parseFloat($input.val()) || 1; // Lấy giá trị hiện tại từ ô input
+        var newVal;
 
-    var proQty = $('.pro-qty-2');
-    proQty.prepend('<span class="fa fa-angle-left dec qtybtn"></span>');
-    proQty.append('<span class="fa fa-angle-right inc qtybtn"></span>');
-    proQty.on('click', '.qtybtn', function () {
-        var $button = $(this);
-        var oldValue = $button.parent().find('input').val();
-        if ($button.hasClass('inc')) {
-            var newVal = parseFloat(oldValue) + 1;
-        } else {
-            // Don't allow decrementing below zero
-            if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) - 1;
-            } else {
-                newVal = 0;
-            }
+        if ($button.hasClass('dec')) {
+            newVal = oldValue + 1; // Tăng giá trị
+        } else if ($button.hasClass('inc')) {
+            newVal = oldValue > 1 ? oldValue - 1 : 1; // Giảm nhưng không nhỏ hơn 1
         }
-        $button.parent().find('input').val(newVal);
+
+        $input.val(newVal);
     });
 
     /*------------------
@@ -227,5 +198,4 @@
             }
         });
     });
-
 })(jQuery);
