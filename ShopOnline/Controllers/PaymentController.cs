@@ -6,13 +6,11 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Configuration;
 using System.Linq;
-using System.Web;
 using System.Net;
 using CSharpVitamins;
 
 namespace ShopOnline.Controllers
 {
-    [CustomAuthorize("User")]
     public class PaymentController : Controller
     {
         menfsEntities db = new menfsEntities();
@@ -30,7 +28,8 @@ namespace ShopOnline.Controllers
             if (bill == null)
             {
                 return RedirectToAction("MyOrder", "Home", new { memberId = user.memberId });
-            }
+            }            
+
             string vnp_TmnCode = ConfigurationManager.AppSettings["vnp_TmnCode"];
             string vnp_HashSecret = ConfigurationManager.AppSettings["vnp_HashSecret"];
             string vnp_Url = ConfigurationManager.AppSettings["vnp_Url"];
@@ -92,6 +91,7 @@ namespace ShopOnline.Controllers
                 var item = db.Invoinces.Where(model => model.invoinceId == gid.Guid).FirstOrDefault();
                 if (vnp_Params["vnp_ResponseCode"] == "00")
                 {
+                    item.paymentMethod = "vnpay";
                     item.paymentStatus = "paid";                    
                     item.transactionId = vnp_Params["vnp_TransactionNo"];
                     db.SaveChanges();
@@ -103,12 +103,12 @@ namespace ShopOnline.Controllers
                 {
                     item.paymentStatus = "failed";
                     db.SaveChanges();
-                    TempData["msgPaidFail"] = "Thanh toán thất bại!";
+                    TempData["msgPaidFailed"] = "Thanh toán thất bại!";
                 }
             }
             else
             {
-                TempData["msgPaidFail"] = "Đã xảy ra lỗi! Vui lòng thử lại";
+                TempData["msgPaidFailed"] = "Đã xảy ra lỗi! Vui lòng thử lại";
             }
 
             Member user = (Member)Session["info"];

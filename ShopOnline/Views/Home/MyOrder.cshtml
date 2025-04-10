@@ -23,35 +23,53 @@
 </section>
 <!-- Breadcrumb Section End -->
 <link rel="stylesheet" href="~/Content/css/WatchOrders.css">
+@if (TempData["msgOrder"] != null)
+{
+    <script>
+        showToast({
+            type: "success",
+            message: "@TempData["msgOrder"].ToString().Replace("\"", "\\\"")"
+        });
+    </script>
+}
+else if (TempData["msgOrderFailed"] != null)
+{
+    <script>
+        showToast({
+            type: "danger",
+            message: "@TempData["msgOrderFailed"].ToString().Replace("\"", "\\\"")"
+        });
+    </script>
+}
+@if (TempData["msgPaidFailed"] != null)
+{
+    <script>
+        showToast({
+            type: "danger",
+            message: "@TempData["msgPaidFailed"].ToString().Replace("\"", "\\\"")"
+        });
+    </script>
+}
+@if (TempData["msgCancelOrder"] != null)
+{
+    <script>
+        showToast({
+            type: "success",
+            message: "@TempData["msgCancelOrder"].ToString().Replace("\"", "\\\"")"
+        });
+    </script>
+}
+else if (TempData["msgCancelOrderFailed"] != null)
+{
+    <script>
+        showToast({
+            type: "danger",
+            message: "@TempData["msgCancelOrderFailed"].ToString().Replace("\"", "\\\"")"
+        });
+    </script>
+}
 
 <div class="container">
-    @if (TempData["msgOrderSuccess"] != null)
-    {
-        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show my-5" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            @TempData["msgCancelOrder"]
-        </div>
-    }
-    @if (TempData["msgCancelOrder"] != null)
-    {
-        <div class="alert alert-success alert-dismissible bg-secondary text-white border-0 fade show my-5" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            @TempData["msgCancelOrder"]
-        </div>
-    }
-    @if (TempData["msgPaidFail"] != null)
-    {
-        <div class="alert alert-success alert-dismissible bg-secondary text-white border-0 fade show my-5" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            @TempData["msgPaidFail"]
-        </div>
-    }
     @if (Model.Count == 0)
     {
         <div class="text-center my-5">
@@ -168,9 +186,9 @@
                                 {
                                     <span style="color: #a0bcde">Đã thanh toán</span>
                                 }
-                                else if (i.paymentStatus.Equals("failed") || (i.paymentStatus.Equals("pending") && (i.paymentMethod.Equals("vnpay"))))
+                                else if ((i.paymentStatus.Equals("failed") || i.paymentStatus.Equals("pending")) && i.paymentMethod.Equals("vnpay"))
                                 {
-                                    <a href="@Url.Action("CreatePaymentUrl", "Payment", new { invoinceId = i.invoinceId })">Thanh toán</a>
+                                    <a href="@Url.Action("CreatePaymentUrl", "Payment", new { invoinceId = i.invoinceId })" target="_blank">Thanh toán</a>
                                 }
                                 else
                                 {

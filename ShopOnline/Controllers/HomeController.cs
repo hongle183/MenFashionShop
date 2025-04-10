@@ -36,14 +36,16 @@ namespace shopOnline.Controllers
         public ActionResult Error()
         {
             return View();
-        }    
+        }
+        [CustomAuthorize("User")]
         [HttpGet]
         public ActionResult EditProfie(Guid memberId)
         {
             Member member = db.Members.Find(memberId);
             Session["imgPath"] = member.avatar;
             return View(member);
-        }            
+        }
+        [CustomAuthorize("User")]
         [HttpPost]
         public ActionResult EditProfie(Member member, HttpPostedFileBase uploadFile)
         {
@@ -72,6 +74,7 @@ namespace shopOnline.Controllers
                             }
                             var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();// Lấy thông tin mới cập nhập lưu vào session
                             Session["info"] = info;
+                            TempData["msgEditProfie"] = "Cập nhật thông tin thành công.";
                             return RedirectToAction("Index");
                         }
                     }
@@ -83,6 +86,7 @@ namespace shopOnline.Controllers
                         {
                             var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();// Lấy thông tin mới cập nhập lưu vào session
                             Session["info"] = info;
+                            TempData["msgEditProfie"] = "Cập nhật thông tin thành công.";
                             return RedirectToAction("Index");
                         }
                     }
@@ -92,16 +96,18 @@ namespace shopOnline.Controllers
             }
             catch (Exception ex)
             {
-                TempData["msgEditProfieFailed"] = "Edit failed! " + ex.Message;
+                TempData["msgEditProfieFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
-        }    
+        }
+        [CustomAuthorize("User")]
         [HttpGet]
         public ActionResult ChangePassword(Guid memberId)
         {
             Member member = db.Members.Find(memberId);
             return View();
-        }        
+        }
+        [CustomAuthorize("User")]
         [HttpPost]
         public ActionResult ChangePassword(Member member, FormCollection collection)
         {
@@ -119,45 +125,47 @@ namespace shopOnline.Controllers
                 {
                     check.password = NewPassword;
                     db.SaveChanges();
-                    TempData["msgChangePassword"] = "Successfully change password!";
-                    return RedirectToAction("index");
+                    TempData["msgChangePassword"] = "Đổi mật khẩu thành công!";
+                    return RedirectToAction("Index");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Incorrect your password!");
+                    ModelState.AddModelError("", "Sai mật khẩu!");
                     return View(member);
                 }
             }
             catch (Exception ex)
             {
-                TempData["msgChangePasswordFailed"] = "Edit failed! " + ex.Message;
+                TempData["msgChangePasswordFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }
+        [CustomAuthorize("User")]
         [HttpGet]
         public ActionResult MyOrder(Guid memberId)
         {
             var orders = db.Invoinces.OrderByDescending(model => model.dateCreate).Where(model => model.memberId == memberId).ToList();
             return View(orders);
         }
+        [CustomAuthorize("User")]
         [HttpGet]
         public ActionResult InvoinceDetail(Guid invoinceId)
         {
             var orders = db.Invoinces.Where(model => model.invoinceId == invoinceId).FirstOrDefault();
             return View(orders);
         }
-
+        [CustomAuthorize("User")]
         public ActionResult Cancel(Guid id)
         {
             Member member = (Member)Session["info"]; // Lấy thông tin tài khoản từ session 
             Invoince invoince = db.Invoinces.Find(id);
             if (invoince.status == "cancelled" || invoince.status == "completed" || invoince.paymentStatus == "paid")
             {
-                TempData["msgCancelOrder"] = "Order ID " + invoince.invoinceId + " isn't cancel";
+                TempData["msgCancelOrderFailed"] = "Order ID " + invoince.invoinceId + " không thể hủy!";
                 return RedirectToAction("MyOrder", "Home", new { memberId = member.memberId });
             }
             invoince.status = "cancelled";
-            TempData["msgCancelOrder"] = "Order ID " + invoince.invoinceId + " has been cancelled";
+            TempData["msgCancelOrder"] = "Order ID " + invoince.invoinceId + " đã được hủy.";
             db.SaveChanges();
             return RedirectToAction("MyOrder", "Home", new { memberId = member.memberId });
         }

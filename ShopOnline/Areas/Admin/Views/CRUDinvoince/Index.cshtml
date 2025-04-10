@@ -30,28 +30,27 @@
     </div>
 </div>
 
+@if (TempData["Delivery"] != null)
+{
+    <script>
+        showToast({
+            type: "success",
+            message: "@TempData["Delivery"].ToString().Replace("\"", "\\\"")"
+        });
+    </script>
+}
+else if (TempData["msgCancelOrder"] != null)
+{
+    <script>
+        showToast({
+            type: "danger",
+            message: "@TempData["msgCancelOrder"].ToString().Replace("\"", "\\\"")"
+        });
+    </script>
+}
 <div class="card-body">
     <h3 class="text-dark text-uppercase card-title">Orders</h3>
-    @if (TempData["Delivery"] != null)
-    {
-        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            @TempData["Delivery"]
-        </div>
-    }
-    @if (TempData["DeleteOrder"] != null)
-    {
-        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            @TempData["DeleteOrder"]
-        </div>
-    }
     <hr />
-
     <div class="table-responsive">
         <table class="table">
             <thead class="thead-light">

@@ -134,7 +134,7 @@
         <div>
             @if (Model.paymentMethod.Equals("vnpay") && !Model.paymentStatus.Equals("paid"))
             {
-                <a href="@Url.Action("CreatePaymentUrl", "Payment", new { invoinceId = Model.invoinceId })" class="btn btn-lg btn-cyan">Pay by VnPay</a>
+                <a href="@Url.Action("CreatePaymentUrl", "Payment", new { area = "", invoinceId = Model.invoinceId })" target="_blank" class="btn btn-lg btn-cyan">Pay by VnPay</a>
             }
             else
             {

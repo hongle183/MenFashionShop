@@ -42,7 +42,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             FormsAuthentication.SetAuthCookie(check.phone, false);
             Session["UserRole"] = "Admin";
             Session["infoAdmin"] = check;
-
+            TempData["msgLoginSuccess"] = "Đăng nhập thành công.";
             return RedirectToAction("Index", "DashBoard");
         }
         public ActionResult Logout()

@@ -131,15 +131,4 @@
 <script>
     var obj = document.querySelector(".navbar li:nth-child(1)");
     obj.classList.remove("active");
-
-     @*$(document).ready(function () {
-        $("input[name='paymentMethod']").change(function () {
-            var form = $("#checkout-form");
-            if ($("#vnpay").is(":checked")) {
-                form.attr("action", "@Url.Action("CreatePaymentUrl", "Payment")"); // Chuyển sang CreatePaymentUrl của PaymentController
-            } else {
-                form.attr("action", "@Url.Action("Checkout", "Cart")"); // Giữ nguyên Checkout của CartController
-            }
-        });
-    });*@
 </script>

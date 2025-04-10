@@ -39,7 +39,7 @@ namespace ShopOnline.Controllers
                 FormsAuthentication.SetAuthCookie(check.phone, false);
                 Session["UserRole"] = "User";
                 Session["info"] = check;
-                TempData["msgSuccess"] = "Đăng nhập thành công!";
+                TempData["msgLoginSuccess"] = "Đăng nhập thành công!";
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -98,7 +98,7 @@ namespace ShopOnline.Controllers
         {
             FormsAuthentication.SignOut();
             Session.Clear();
-            return RedirectToAction("Login");
+            return RedirectToAction("SignIn");
         }
 
         private bool VerifyRecaptcha(string token)

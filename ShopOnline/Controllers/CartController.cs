@@ -189,14 +189,15 @@ namespace shopOnline.Controllers
                         return RedirectToAction("CreatePaymentUrl", "Payment", new { invoinceId = bill.invoinceId });
                     }
 
-                    TempData["msgOrderSuccess"] = "Đặt hàng thành công";
+                    TempData["msgOrder"] = "Đặt hàng thành công!";
                     return RedirectToAction("MyOrder", "Home", new { memberId = member.memberId });
                 }
                 return View();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return RedirectToAction("Error", "Home");
+                TempData["msgOrderFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
+                return RedirectToAction("Index");
             }
         }        
 

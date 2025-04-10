@@ -56,9 +56,9 @@
                         </p>
                     </div>
                     <div class="col-6 text-right">
-                        @if (Model.paymentMethod.Equals("vnpay") && !Model.paymentStatus.Equals("paid"))
+                        @if ((Model.paymentMethod.Equals("vnpay") && !Model.paymentStatus.Equals("paid")) || Model.paymentMethod.Equals("cash"))
                         {
-                            <a href="@Url.Action("CreatePaymentUrl", "Payment", new { invoinceId = Model.invoinceId })" class="btn site-btn">Thanh toán</a>
+                            <a href="@Url.Action("CreatePaymentUrl", "Payment", new { invoinceId = Model.invoinceId })" target="_blank" class="btn site-btn">Thanh toán</a>
                         }
                         else
                         {

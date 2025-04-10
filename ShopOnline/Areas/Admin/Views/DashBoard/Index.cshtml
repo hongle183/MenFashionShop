@@ -31,9 +31,9 @@
         <div class="col-5 align-self-center">
             <div class="customize-input float-right">
                 <select class="custom-select custom-select-set form-control bg-white border-0 custom-shadow custom-radius">
-                    <option selected>Aug 19</option>
-                    <option value="1">July 19</option>
-                    <option value="2">Jun 19</option>
+                    <option selected>Nov 25</option>
+                    <option value="1">Oct 25</option>
+                    <option value="2">Sep 25</option>
                 </select>
             </div>
         </div>
@@ -42,6 +42,15 @@
 <!-- ============================================================== -->
 <!-- End Bread crumb and right sidebar toggle -->
 <!-- ============================================================== -->
+@if (TempData["msgLoginSuccess"] != null)
+{
+    <script>
+        showToast({
+            type: "success",
+            message: "@TempData["msgLoginSuccess"].ToString().Replace("\"", "\\\"")"
+        });
+    </script>
+}
 <!-- ============================================================== -->
 <!-- Container fluid  -->
 <!-- ============================================================== -->

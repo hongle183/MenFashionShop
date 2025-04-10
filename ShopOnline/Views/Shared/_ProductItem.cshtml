@@ -15,7 +15,7 @@
         <h6>
             <a href="@Url.Action("ProductDetail", "Shop", new { meta = Model.meta, 
                                                                 id = (CSharpVitamins.ShortGuid)Model.productId})" 
-               class="nameProduct">@Model.productName</a>
+               class="product__item__name">@Model.productName</a>
         </h6>
         <a href="@Url.Action("AddToCart", "Cart", new { id = Model.productId, strURL = Request.Url.ToString() })" 
            class="add-cart">+ Thêm vào giỏ</a>
