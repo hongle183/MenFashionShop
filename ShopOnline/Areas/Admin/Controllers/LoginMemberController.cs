@@ -35,7 +35,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             // Tiếp tục xử lý logic login
             if (check == null)
             {
-                TempData["msgFailed"] = "Username or password is incorrect.";
+                TempData["msgFailed"] = "Username hoặc password không đúng.";
                 return View();
             }
 

@@ -9,7 +9,7 @@ using System.IO;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [Authorize]
+    [CustomAuthorize("Admin")]
     public class CRUDproductController : Controller
     {
         menfsEntities db = new menfsEntities();
@@ -49,24 +49,24 @@ namespace ShopOnline.Areas.Admin.Controllers
                 {
                     if (check != null)
                     {
-                        ModelState.AddModelError("", "Product name already exists");
+                        ModelState.AddModelError("", "Tên sản phẩm đã tồn tại");
                     }
                     else
                     {
                         if (uploadFile == null)
                         {
-                            ModelState.AddModelError("", "Error while file uploading.");
+                            ModelState.AddModelError("", "Đã xảy ra lỗi khi upload file.");
                         }
                         else
                         {
                             if (product.discount >= 100)
                             {
-                                ModelState.AddModelError("", "Discount  percent must less than 100.");
+                                ModelState.AddModelError("", "Giảm giá phải nhỏ hơn 100.");
                             }
                             else
                             {
                                 product.productName = product.productName.Trim();
-                                product.characteristic = product.characteristic.Trim();
+                                product.characteristic = product.characteristic != null ? product.characteristic.Trim() : "";
                                 product.meta = product.meta.Trim();
                                 product.image = "~/Content/img/product/" + fileName;
                                 Member member = (Member)Session["infoAdmin"];
@@ -78,7 +78,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                                 {
                                     uploadFile.SaveAs(path);
                                     ModelState.Clear();
-                                    TempData["msgCreate"] = "Successfully create a new product!";
+                                    TempData["msgCreate"] = "Thêm mới sản phẩm thành công!";
                                     return RedirectToAction("Index");
                                 }
                             }
@@ -95,7 +95,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["msgCreatefailed"] = "Create failed! " + ex.Message;
+                TempData["msgCreatefailed"] = "Đã xảy ra lỗi: " + ex.Message;
                 return RedirectToAction("Create");
             }
         }
@@ -130,7 +130,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                         string oldImgPath = Request.MapPath(Session["imgPath"].ToString());
                         if (db.SaveChanges() > 0)
                         {
-                            TempData["msgEdit"] = "Successfully edited product " + product.productName;
+                            TempData["msgEdit"] = "Đã cập nhật sản phẩm " + product.productName + ".";
                             uploadFile.SaveAs(path);
                             if (System.IO.File.Exists(oldImgPath))
                             {
@@ -148,7 +148,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                         db.Entry(product).State = System.Data.Entity.EntityState.Modified;
                         if (db.SaveChanges() > 0)
                         {
-                            TempData["msgEdit"] = "Successfully edited product has ID: " + product.productId;
+                            TempData["msgEdit"] = "Đã cập nhật sản phẩm " + product.productName + ".";
                             return RedirectToAction("index");
                         }
                     }
@@ -158,7 +158,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
             catch(Exception ex)
             {
-                TempData["msgEditFailed"] = "Edit failed! " + ex.Message;
+                TempData["msgEditFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }
@@ -172,7 +172,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 // Kiểm tra xem với mã Product có tồn tại trong bảng InvoinceDetail không?
                 if (checkInvoice != null) // Nếu có giá trị thì xuất thông báo lỗi
                 {
-                    TempData["msgDelete"] = "Can't delete this!";
+                    TempData["msgDeleteFailed"] = "Không thể xóa!";
                     return RedirectToAction("Index");
                 }
                 else
@@ -185,12 +185,13 @@ namespace ShopOnline.Areas.Admin.Controllers
                     }
                     db.Products.Remove(product);
                     db.SaveChanges();
+                    TempData["msgDelete"] = "Xóa thành công sản phẩm " + product.productName + ".";
                     return RedirectToAction("Index");
                 }
             }
             catch (Exception ex)
             {
-                TempData["msgDelete"] = "Can't delete this! " + ex.Message;
+                TempData["msgDeleteFailed"] = "Không thể xóa! " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }

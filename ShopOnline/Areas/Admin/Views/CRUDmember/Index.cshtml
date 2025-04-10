@@ -33,44 +33,53 @@
 <div class="card-body">
     <h3 class="text-dark text-uppercase card-title">Member</h3>
     <a href="@Url.Action("Create", "CRUDmember")" class="btn btn-success">Add member</a>
-    @if (TempData["msgEditFailed"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-            @TempData["msgEditFailed"]
-        </div>
-    }
-    @if (TempData["msgDeleteFailed"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-            @TempData["msgDeleteFailed"]
-        </div>
-    }
     @if (TempData["msgCreate"] != null)
     {
-        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            @TempData["msgCreate"]
-        </div>
+        <script>
+           showToast({
+               type: "success",
+               message: "@TempData["msgCreate"].ToString().Replace("\"", "\\\"")"
+           });
+        </script>
     }
     @if (TempData["msgEdit"] != null)
     {
-        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            @TempData["msgEdit"]
-        </div>
+        <script>
+           showToast({
+               type: "success",
+               message: "@TempData["msgEdit"].ToString().Replace("\"", "\\\"")"
+           });
+        </script>
     }
-    <hr />
+    else if (TempData["msgEditFailed"] != null)
+    {
+        <script>
+           showToast({
+               type: "danger",
+               message: "@TempData["msgEditFailed"].ToString().Replace("\"", "\\\"")"
+           });
+        </script>
+    }
+    @if (TempData["msgDelete"] != null)
+    {
+        <script>
+           showToast({
+               type: "success",
+               message: "@TempData["msgDelete"].ToString().Replace("\"", "\\\"")"
+           });
+        </script>
+    }
+    else if (TempData["msgDeleteFailed"] != null)
+    {
+        <script>
+           showToast({
+               type: "danger",
+               message: "@TempData["msgDeleteFailed"].ToString().Replace("\"", "\\\"")"
+           });
+        </script>
+    }
 
+    <hr />
     <div class="table-responsive">
         <table class="table">
             <thead class="thead-light">

@@ -5,7 +5,7 @@ using ShopOnline.Models;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [Authorize]
+    [CustomAuthorize("Admin")]
     public class CRUDcategoryController : Controller
     {
         menfsEntities db = new menfsEntities();

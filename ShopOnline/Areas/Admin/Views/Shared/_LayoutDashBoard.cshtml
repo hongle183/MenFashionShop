@@ -121,6 +121,10 @@
 
 <body>
     <!-- ============================================================== -->
+    <!-- Alert - Toast Message -->
+    <!-- ============================================================== -->
+    <div id="alert-toast"></div>
+    <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
     <div class="preloader">
@@ -329,7 +333,7 @@
                                     </span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                                    <a class="dropdown-item" href="@Url.Action("EditProfie", "DashBoard", new { memberId = user.memberId })">
+                                    <a class="dropdown-item" href="@Url.Action("EditProfile", "DashBoard", new { memberId = user.memberId })">
                                         <i data-feather="user" class="svg-icon mr-2 ml-1"></i>
                                         My Profile
                                     </a>

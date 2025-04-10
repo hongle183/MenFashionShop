@@ -313,6 +313,17 @@ input[type="month"] {
     -webkit-appearance: listbox;
 }
 
+input[type="file"]::file-selector-button {
+    background-color: #6fb5ff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.375rem 0.75rem;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #56a8ff;
+}
+
 textarea {
     overflow: auto;
     resize: vertical;
@@ -5372,12 +5383,67 @@ a.badge-purple:focus, a.badge-purple.focus {
     border-radius: 5px;
 }
 
+/*---------------------
+  Toast message
+-----------------------*/
+
+#alert-toast {
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    z-index: 9999;
+}
+
 .alert {
-    position: relative;
-    padding: 0.75rem 1.25rem;
+    max-width: 450px;
+    min-width: 400px;
+    padding: 0.75rem 1.25rem;   
     margin-bottom: 1rem;
-    border: 1px solid transparent;
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-left: 2px solid;
     border-radius: 5px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    display: flex;
+    /* animation1 2s, sau 3s sẽ có animation2 2s. forwards để dừng trạng thái ở animation2 */
+    animation: slideInLeft ease 1s, fadeOut ease .5s 3s forwards;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        /*vì được fix qua trái thêm 32px*/
+        transform: translateX(calc(100% + 32px));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+.alert .alert-icon {
+    text-align: center;
+    align-content: center;
+    font-size: 24px;
+    margin-right: 16px;
+}
+
+.alert button.close {
+    margin-left: auto;
+    padding-left: 8px;
+}
+
+.alert .alert-content p {
+    color: var(--gray);
+    margin-bottom: 0;
 }
 
 .alert-heading {
@@ -5427,30 +5493,35 @@ a.badge-purple:focus, a.badge-purple.focus {
     .alert-secondary .alert-link {
         color: #202326;
     }
-
+    
+        
 .alert-success {
-    color: #126943;
-    background-color: #d3f4e6;
-    border-color: #c1f0db;
+    border-color: #22ca80;
 }
 
     .alert-success hr {
         border-top-color: #acebcf;
     }
 
+    .alert-success .alert-icon {
+            color: #22ca80;
+        }
+
     .alert-success .alert-link {
         color: #0b3d27;
-    }
+    } 
 
 .alert-info {
-    color: #313d79;
-    background-color: #dfe4fa;
-    border-color: #d2d9f9;
+    border-color: #4286f4;
 }
 
     .alert-info hr {
-        border-top-color: #bcc6f6;
+        border-top-color: #6fb5ff;
     }
+
+    .alert-info .alert-icon {
+            color: #4286f4;
+        }
 
     .alert-info .alert-link {
         color: #222b55;
@@ -5468,16 +5539,18 @@ a.badge-purple:focus, a.badge-purple.focus {
 
     .alert-warning .alert-link {
         color: #604928;
-    }
+    }       
 
 .alert-danger {
-    color: #85293a;
-    background-color: #ffdce2;
-    border-color: #ffced7;
+    border-color: #ff2951;
 }
 
     .alert-danger hr {
         border-top-color: #ffb5c2;
+    }
+    
+    .alert-danger .alert-icon {
+            color: #ff2951;
     }
 
     .alert-danger .alert-link {
@@ -6008,6 +6081,7 @@ button.close {
     padding: 0;
     background-color: transparent;
     border: 0;
+    outline: 0;
     appearance: none;
 }
 
@@ -11249,7 +11323,6 @@ a.text-purple:hover, a.text-purple:focus {
         }
 
         #main-wrapper[data-layout="vertical"][data-sidebartype="mini-sidebar"] .sidebar-nav ul .sidebar-item .sidebar-link {
-            padding: 12px 15px;
             margin-right: 0;
         }
 

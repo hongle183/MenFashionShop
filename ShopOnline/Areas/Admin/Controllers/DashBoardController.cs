@@ -10,7 +10,7 @@ using ShopOnline.Models;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [Authorize]
+    [CustomAuthorize("Admin")]
     public class DashBoardController : Controller
     {
         menfsEntities db = new menfsEntities();
@@ -96,14 +96,14 @@ namespace ShopOnline.Areas.Admin.Controllers
             return PartialView(list);
         }
         [HttpGet]
-        public ActionResult EditProfie(Guid memberId)
+        public ActionResult EditProfile(Guid memberId)
         {
             Member member = db.Members.Find(memberId);
             Session["imgPath"] = member.avatar;
             return View(member);
         }
         [HttpPost]
-        public ActionResult EditProfie(Member member, HttpPostedFileBase uploadFile)
+        public ActionResult EditProfile(Member member, HttpPostedFileBase uploadFile)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                             }
                             var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();
                             Session["infoAdmin"] = info; // Lấy thông tin mới của member lưu lại vào session hiển thị
-                            TempData["msgEditProfie"] = "Successfully update your profile!";
+                            TempData["msgEditProfile"] = "Cập nhật tài khoản thành công!";
                             return View(member);
                         }
 
@@ -143,7 +143,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                         {
                             var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();
                             Session["infoAdmin"] = info;
-                            TempData["msgEditProfie"] = "Successfully update your profile!";
+                            TempData["msgEditProfile"] = "Cập nhật tài khoản thành công!";
                             return View(member);
                         }
                     }
@@ -153,7 +153,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["msgEditProfieFailed"] = "Edit failed! " + ex.Message;
+                TempData["msgEditProfileFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return View(member);
             }
         }
@@ -174,19 +174,19 @@ namespace ShopOnline.Areas.Admin.Controllers
                 {
                     check.password = NewPassword;
                     db.SaveChanges();
-                    TempData["msgChangePassword"] = "Successfully change password!";
-                    return RedirectToAction("EditProfie", new { memberId = member.memberId });
+                    TempData["msgChangePassword"] = "Cập nhật mật khẩu thành công!";
+                    return RedirectToAction("EditProfile", new { memberId = member.memberId });
                 }
                 else
                 {
-                    TempData["msgChangePasswordFailed"] = "Incorrect your password!";
+                    TempData["msgChangePasswordFailed"] = "Sai mật khẩu!";
                     return RedirectToAction("EditProfile", new { memberId = member.memberId });
                 }
             }
             catch(Exception ex)
             {
-                TempData["msgChangePasswordFailed"] = "Edit failed! " + ex.Message;
-                return RedirectToAction("EditProfie", new { memberId = member.memberId });
+                TempData["msgChangePasswordFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
+                return RedirectToAction("EditProfile", new { memberId = member.memberId });
             }
         }
     }

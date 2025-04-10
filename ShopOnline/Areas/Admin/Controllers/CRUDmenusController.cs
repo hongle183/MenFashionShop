@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -7,7 +6,7 @@ using ShopOnline.Models;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [Authorize]
+    [CustomAuthorize("Admin")]
     public class CRUDmenusController : Controller
     {
         private menfsEntities db = new menfsEntities();
@@ -39,7 +38,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 var check = db.Menus.SingleOrDefault(model => model.name == name);
                 if (check != null)
                 {
-                    ModelState.AddModelError("", "Menu name already exists");
+                    ModelState.AddModelError("", "Tên menu này đã tồn tại.");
                 }
                 else
                 {
@@ -52,7 +51,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                     if (db.SaveChanges() > 0)
                     {
                         ModelState.Clear();
-                        TempData["msgCreate"] = "Successfully create a new menu!";
+                        TempData["msgCreate"] = "Thêm mới menu thành công!";
                         return RedirectToAction("Index");
                     }
                 }               
@@ -60,7 +59,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["msgCreatefailed"] = "Create failed! " + ex.Message;
+                TempData["msgCreatefailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Create");
             }
         }
@@ -93,7 +92,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                     db.Entry(menu).State = System.Data.Entity.EntityState.Modified;
                     if (db.SaveChanges() > 0)
                     {
-                        TempData["msgEdit"] = "Successfully edited product " + menu.name;
+                        TempData["msgEdit"] = "Đã cập nhật menu " + menu.name + ".";
                     }
                     return RedirectToAction("Index");
                 }
@@ -101,7 +100,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["msgEditFailed"] = "Edit failed! " + ex.Message;
+                TempData["msgEditFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }
@@ -114,11 +113,12 @@ namespace ShopOnline.Areas.Admin.Controllers
                 Menu menu = db.Menus.Find(id);
                 db.Menus.Remove(menu);
                 db.SaveChanges();
+                TempData["msgDelete"] = "Xóa thành công menu " + menu.name + ".";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["msgDelete"] = "Can't delete this! " + ex.Message;
+                TempData["msgDeleteFailed"] = "Không thể xóa! " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }

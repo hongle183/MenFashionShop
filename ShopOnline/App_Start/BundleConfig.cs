@@ -7,7 +7,8 @@ namespace ShopOnline.App_Start
         public static void RegisterBundles(BundleCollection bundle)
         {
             bundle.Add(new ScriptBundle("~/bundles/jquery").Include(
-                                            "~/Content/js/jquery-3.7.1.min.js"
+                                            "~/Content/js/jquery-3.7.1.min.js",
+                                            "~/Content/js/toast-message.js"
             ));
 
             bundle.Add(new StyleBundle("~/bundles/css").Include(
@@ -23,6 +24,7 @@ namespace ShopOnline.App_Start
                                             "~/Content/css/formUser.css"
             ));
             bundle.Add(new StyleBundle("~/bundles/admin/login/css").Include(
+                                            "~/Areas/Admin/Content/css/icons/font-awesome/css/all.min.css",
                                             "~/Areas/Admin/Content/css/style.min.css"
             ));
             bundle.Add(new StyleBundle("~/bundles/adminCss").Include(
@@ -43,7 +45,7 @@ namespace ShopOnline.App_Start
                                             "~/Content/js/jquery.countdown.min.js",
                                             "~/Content/js/jquery.slicknav.js",
                                             "~/Content/js/mixitup.min.js",
-                                            "~/Content/js/owl.carousel.min.js",
+                                            "~/Content/js/owl.carousel.min.js",                                           
                                             "~/Content/js/main.js"
              ));
             bundle.Add(new ScriptBundle("~/bundles/adminJs").Include(
@@ -58,7 +60,7 @@ namespace ShopOnline.App_Start
                                 "~/Areas/Admin/Content/assets/extra-libs/c3/c3.min.js",
                                 "~/Areas/Admin/Content/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js",
                                 "~/Areas/Admin/Content/assets/extra-libs/jvector/jquery-jvectormap-world-mill-en.js",
-                                "~/Areas/Admin/Content/js/pages/dashboards/dashboard1.min.js",
+                                "~/Areas/Admin/Content/js/dashboard1.min.js",
                                 "~/Areas/Admin/Content/assets/extra-libs/sparkline/sparkline.js",
                                 "~/Areas/Admin/Content/assets/libs/moment/moment.js",
                                 "~/Areas/Admin/Content/js/custom.min.js"

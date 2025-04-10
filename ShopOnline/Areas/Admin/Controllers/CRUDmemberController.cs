@@ -10,7 +10,7 @@ using System.Web.Security;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [Authorize]
+    [CustomAuthorize("Admin")]
     public class CRUDmemberController : Controller
     {
         menfsEntities db = new menfsEntities();
@@ -45,13 +45,13 @@ namespace ShopOnline.Areas.Admin.Controllers
                 {
                     if (check != null)
                     {
-                        ModelState.AddModelError("", "Phone or Email already exists");
+                        ModelState.AddModelError("", "Số điện thoại hoặc email đã tồn tại.");
                     }
                     else
                     {
                         if (uploadFile == null)
                         {
-                            ModelState.AddModelError("", "Error while file uploading.");
+                            ModelState.AddModelError("", "Đã xảy ra lỗi khi upload file.");
                         }
                         else
                         {
@@ -68,7 +68,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                             {
                                 uploadFile.SaveAs(path);
                                 ModelState.Clear();
-                                TempData["msgCreate"] = "Successfully create a new member!";
+                                TempData["msgCreate"] = "Tạo mới tài khoản thành công!";
                                 return RedirectToAction("Index");
                             }
                         }
@@ -84,7 +84,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
             catch(Exception ex)
             {
-                TempData["msgCreatefailed"] = "Create failed! " + ex.Message;
+                TempData["msgCreatefailed"] = "Đã xảy ra lỗi " + ex.Message + ".";
                 return RedirectToAction("Create");
             }
         }
@@ -114,7 +114,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                         string oldImgPath = Request.MapPath(Session["imgPath"].ToString());
                         if (db.SaveChanges() > 0)
                         {
-                            TempData["msgEdit"] = "Successfully edited!";
+                            TempData["msgEdit"] = "Đã cập nhật tài khoản " + member.firstName + " " + member.lastName + ".";
                             uploadFile.SaveAs(path);
                             if (System.IO.File.Exists(oldImgPath))
                             {
@@ -129,7 +129,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                         db.Entry(member).State = System.Data.Entity.EntityState.Modified;
                         if (db.SaveChanges() > 0)
                         {
-                            TempData["msgEdit"] = "Successfully edited!";
+                            TempData["msgEdit"] = "Đã cập nhật tài khoản " + member.firstName + " " + member.lastName + ".";
                             return RedirectToAction("index");
                         }
                     }
@@ -139,7 +139,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
             catch(Exception ex)
             {
-                TempData["msgEditFailed"] = "Edit failed! " + ex.Message;
+                TempData["msgEditFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }
@@ -157,7 +157,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 // Kiểm tra xem  tài khoản có trong bảng Article, bảng Invoice hoặc bảng Product không
                 if (checkArticle != null || checkInvoice != null || checkProduct != null)
                 {
-                    TempData["msgDeleteFailed"] = "Can't delete this! ";
+                    TempData["msgDeleteFailed"] = "Không thể xóa tài khoản này!";
                     return RedirectToAction("Index");
                 }
                 else
@@ -166,16 +166,8 @@ namespace ShopOnline.Areas.Admin.Controllers
                     // Kiểm tra xem tài khoản đăng nhập hiện tại có trùng với tài khoản xóa hay không
                     if (m.memberId == member.memberId) // Nếu trùng thì xóa tài khoản và đăng xuất, chuyển về trang đăng nhập
                     {
-                        var avatarName = member.avatar.ToString(); // Lấy đường dẫn ảnh (relative path)
-                        var checkAvatart = db.Members.Where(model => model.avatar == avatarName).ToList(); // Kiểm tra ảnh có trùng với avatar của member nào không
-                        if (System.IO.File.Exists(currentImg) && checkAvatart.Count < 2)
-                        {
-                            System.IO.File.Delete(currentImg);
-                        }
-                        db.Members.Remove(member);
-                        db.SaveChanges();
-                        FormsAuthentication.SignOut();
-                        return RedirectToAction("Login", "LoginMember");
+                        TempData["msgDeleteFailed"] = "Không thể xóa tài khoản này!";
+                        return RedirectToAction("Index");
                     }
                     else
                     {
@@ -187,13 +179,14 @@ namespace ShopOnline.Areas.Admin.Controllers
                         }
                         db.Members.Remove(member);
                         db.SaveChanges();
+                        TempData["msgDelete"] = "Đã xóa tài khoản " + member.firstName + " " + member.lastName + ".";
                         return RedirectToAction("Index");
                     }
                 }
             }
             catch (Exception ex)
             {
-                TempData["msgDeleteFailed"] = "Can't delete this! " + ex.Message;
+                TempData["msgDeleteFailed"] = "Không thể xóa! " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }

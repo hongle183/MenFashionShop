@@ -9,7 +9,7 @@ using System.Data.Entity.Migrations;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [Authorize]
+    [CustomAuthorize("Admin")]
     public class CRUDblogController : Controller
     {
         menfsEntities db = new menfsEntities();
@@ -44,7 +44,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 {
                     if (uploadFile == null)
                     {
-                        ModelState.AddModelError("", "Error while file uploading.");
+                        ModelState.AddModelError("", "Đã xảy ra lỗi khi upload file.");
                     }
                     else
                     {
@@ -59,7 +59,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                         {
                             uploadFile.SaveAs(path);
                             ModelState.Clear();
-                            TempData["msgCreate"] = "Successfully create a new blog!";
+                            TempData["msgCreate"] = "Thêm mới bài viết thành công!";
                             return RedirectToAction("Index");
                         }
                     }
@@ -72,7 +72,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["msgCreatefailed"] = "Create failed! " + ex.Message;
+                TempData["msgCreatefailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Create");
             }
         }
@@ -107,7 +107,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                         string oldImgPath = Request.MapPath(Session["imgPath"].ToString());
                         if (db.SaveChanges() > 0)
                         {
-                            TempData["msgEdit"] = "Successfully edited product has ID: " + article.articleId;
+                            TempData["msgEdit"] = "Đã cập nhật bài viết " + article.title + ".";
                             uploadFile.SaveAs(path);
                             if (System.IO.File.Exists(oldImgPath))
                             {
@@ -125,7 +125,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                         //db.Entry(article).State = EntityState.Modified;
                         if (db.SaveChanges() > 0)
                         {
-                            TempData["msgEdit"] = "Successfully edited product has ID: " + article.articleId;
+                            TempData["msgEdit"] = "Đã cập nhật bài viết " + article.title + ".";
                             return RedirectToAction("index");
                         }
                     }
@@ -134,7 +134,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             }
             catch(Exception ex)
             {
-                TempData["msgEditFailed"] = "Edit failed! " + ex.Message;
+                TempData["msgEditFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }
@@ -151,11 +151,12 @@ namespace ShopOnline.Areas.Admin.Controllers
                 }
                 db.Articles.Remove(article);
                 db.SaveChanges();
+                TempData["msgDelete"] = "Xóa thành công bài viết " + article.title + ".";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["msgDelete"] = "Can't delete this! " + ex.Message;
+                TempData["msgDeleteFailed"] = "Không thể xóa! " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }
