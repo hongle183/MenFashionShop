@@ -1,14 +1,11 @@
 ﻿body {
-    color: #000;
     overflow-x: hidden;
     height: 100%;
-    background-color: #a0bcde;
-    background-repeat: no-repeat
 }
 
 .card {
     z-index: 0;
-    background-color: #ECEFF1;
+    background-color: #f0f0f0;
     padding-bottom: 10px;
     border-radius: 10px
 }
@@ -22,7 +19,7 @@
 #progressbar {
     margin-bottom: 30px;
     overflow: hidden;
-    color: #455A64;
+    color: #ff1053;
     padding-left: 0px;
     margin-top: 30px
 }
@@ -48,7 +45,7 @@
         line-height: 40px;
         display: block;
         font-size: 20px;
-        background: #f5b1b1;
+        background: #ffd6d6;
         border-radius: 50%;
         margin: auto;
         padding: 0px
@@ -58,7 +55,7 @@
         content: '';
         width: 100%;
         height: 12px;
-        background: #f5b1b1;
+        background: #ffd6d6;
         position: absolute;
         left: 0;
         top: 16px;
@@ -115,7 +112,7 @@
 }
 
 .card-footer {
-    background-color: #eceff1 !important;
+    background-color: #f0f0f0 !important;
 }
 /*    .card-footer a {
         color: #343535

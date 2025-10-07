@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Danh sách sản phẩm";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
+    string currentPrice = Request.QueryString["price"];
 }
 
 <!-- Breadcrumb Section Begin -->
@@ -34,12 +35,12 @@
                         }
                     </div>
                     <div class="shop__sidebar__accordion">
-                        <div class="row" id="accordionExample">
+                        <div class="row">
                             <div class="card col-lg-12 col-6 p-3">
                                 <div class="card-heading">
                                     <a data-toggle="collapse" data-target="#collapseOne">Danh mục sản phẩm</a>
                                 </div>
-                                <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                <div id="collapseOne" class="collapse show">
                                     <div class="card-body">
                                         <div class="shop__sidebar__categories">
                                             <ul class="nice-scroll">
@@ -53,15 +54,11 @@
                                 <div class="card-heading">
                                     <a data-toggle="collapse" data-target="#collapseThree">Giá sản phẩm</a>
                                 </div>
-                                <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
+                                <div id="collapseThree" class="collapse show">
                                     <div class="card-body">
                                         <div class="shop__sidebar__price">
-                                            <ul>
-                                                <li>@Html.ActionLink("< 100,000₫", "Shop", new { minPrice = 0, maxPrice = 100000 })</li>
-                                                <li>@Html.ActionLink("100,000₫ - 250,000₫", "Shop", new { minPrice = 100000, maxPrice = 250000 })</li>
-                                                <li>@Html.ActionLink("250,000₫ - 500,000₫", "Shop", new { minPrice = 250000, maxPrice = 500000 })</li>
-                                                <li>@Html.ActionLink("500,000₫ - 1,000,000₫", "Shop", new { minPrice = 500000, maxPrice = 1000000 })</li>
-                                                <li>@Html.ActionLink("> 1,000,000₫", "Shop", new { minPrice = 1000000, maxPrice = (decimal?)null })</li>
+                                            <ul class="nice-scroll">
+                                                @Html.Action("Prices", "Shop")
                                             </ul>
                                         </div>
                                     </div>

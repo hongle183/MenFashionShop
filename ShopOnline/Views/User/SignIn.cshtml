@@ -22,7 +22,7 @@
     </script>
 }
 
-<div class="container info spad">
+<div class="container info">
     <div class="singinBx">
         @using (Html.BeginForm("SignIn", "User", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
         {
@@ -34,15 +34,26 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
             <div class="form-group">
-                <input id="username" name="username" type="text" placeholder="Số điện thoại/ Email">
+                <div class="input-group flex-nowrap">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fa-regular fa-user"></i></div>
+                    </div>
+                    <input id="username" name="username" type="text" placeholder="Số điện thoại/ Email">
+                </div>
                 <span class="form-message"></span>
             </div>
-
             <div class="form-group">
+                <div class="input-group flex-nowrap">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fa-solid fa-lock"></i></div>
+                    </div>
                 <input id="password" name="password" type="password" placeholder="Mật khẩu">
+                </div>
                 <span class="form-message"></span>
             </div>
-
+            <div class="form-group signup">
+                <a href="">Quên mật khẩu ?</a>
+            </div>
             <div class="form-group">
                 <input type="hidden" id="recaptchaToken" name="recaptchaToken" />
                 <button class="g-recaptcha btn site-btn w-100" type="submit">
@@ -50,7 +61,7 @@
                 </button>
             </div>
 
-            <p class="signup text-uppercase">Bạn chưa có tài khoản ? <a href="@Url.Action("Register", "User")">Đăng ký.</a></p>
+            <p class="signup text-uppercase text-center">Bạn chưa có tài khoản ? <a href="@Url.Action("Register", "User")">Đăng ký.</a></p>
         }
     </div>
 </div>

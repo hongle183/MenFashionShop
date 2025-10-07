@@ -6,10 +6,18 @@
     box-sizing: border-box;
 }
 
-.singinBx {
+.info {
     display: flex;
     justify-content: center;
-    padding: 45px 0 0 0;
+    align-items: center;
+}
+
+.singinBx {
+    height: fit-content;
+    padding: 24px;
+    border-radius: 8px;
+    background-color: var(--light);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
 }
 
     .singinBx form h2 {
@@ -21,31 +29,36 @@
         color: #000;
     }
 
+    .singinBx form .signup {
+        margin-top: 20px;
+        font-size: 12px;
+        font-weight: 300;
+        line-height: 20px;
+        letter-spacing: 1px;
+        color: #2b2b2b;
+    }
+
+        .singinBx form .signup a {
+            font-weight: 600;
+            text-decoration: none;
+            color: #705b29;
+        }
+
+.editProfile {
+    width: 80% !important;
+}
+
 @media (min-width: 1200px) {
-    .singinBx form {
+    .singinBx {
         width: 35%;
     }
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
-    .singinBx form {
+    .singinBx {
         width: 50%;
     }
 }
-        .singinBx form .signup {
-            position: relative;
-            margin-top: 20px;
-            font-size: 12px;
-            letter-spacing: 1px;
-            color: #2b2b2b;
-            font-weight: 300;
-        }
-
-            .singinBx form .signup a {
-                font-weight: 600;
-                text-decoration: none;
-                color: #705b29;
-            }
 
 @-moz-keyframes shine {
     100% {

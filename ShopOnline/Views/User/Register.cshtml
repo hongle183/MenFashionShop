@@ -3,7 +3,7 @@
     ViewBag.Title = "Tạo tài khoản";
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
-<div class="container info spad">
+<div class="container info">
     <div class="singinBx">
         @using (Html.BeginForm("Register", "User", FormMethod.Post, new { @id = "form-1" }))
         {
@@ -12,30 +12,50 @@
                 <h2>@ViewBag.Title</h2>
             </div>
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="d-flex justify-content-between">
-                <div class="form-group mr-2">
+            <div class="form-group">
+                <div class="input-group flex-nowrap">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fa-regular fa-user"></i></div>
+                    </div>
                     <input type="text" name="firstName" id="firstname" placeholder="Họ" />
-                    <span class="form-message"></span>
-                </div>
-                <div class="form-group">
                     <input type="text" name="lastName" id="lastname" placeholder="Tên" />
-                    <span class="form-message"></span>
                 </div>
-            </div>
-            <div class="form-group">
-                <input type="password" name="password" id="password" placeholder="Mật khẩu" />
                 <span class="form-message"></span>
             </div>
             <div class="form-group">
-                <input type="password" name="comfirm" id="password_confirmation" placeholder="Nhập lại mật khẩu" />
+                <div class="input-group flex-nowrap">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fa-solid fa-lock"></i></div>
+                    </div>
+                    <input id="password" name="password" type="password" placeholder="Mật khẩu">
+                </div>
                 <span class="form-message"></span>
             </div>
             <div class="form-group">
-                <input type="number" name="phone" id="phone" placeholder="Số điện thoại" />
+                <div class="input-group flex-nowrap">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fa-solid fa-lock"></i></div>
+                    </div>
+                    <input type="password" name="comfirm" id="password_confirmation" placeholder="Nhập lại mật khẩu" />
+                </div>
                 <span class="form-message"></span>
             </div>
             <div class="form-group">
-                <input type="text" name="email" id="email" placeholder="Email" />
+                <div class="input-group flex-nowrap">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fa-solid fa-phone-volume"></i></div>
+                    </div>
+                    <input type="number" name="phone" id="phone" placeholder="Số điện thoại" />
+                </div>
+                <span class="form-message"></span>
+            </div>
+            <div class="form-group">
+                <div class="input-group flex-nowrap">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fa-regular fa-envelope"></i></div>
+                    </div>
+                    <input type="text" name="email" id="email" placeholder="Email" />
+                </div>
                 <span class="form-message"></span>
             </div>
             <div class="form-group">
@@ -45,7 +65,7 @@
                 </p>
                 <button type="submit" class="btn site-btn w-100">Đăng ký</button>
             </div>
-            <p class="signup text-uppercase">Bạn đã có tài khoản ? <a href="@Url.Action("SignIn", "User")">Đăng nhập.</a></p>
+            <p class="signup text-uppercase text-center">Bạn đã là thành viên? <a href="@Url.Action("SignIn", "User")">Đăng nhập.</a></p>
         }
     </div>
 </div>

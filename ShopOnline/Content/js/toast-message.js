@@ -1,20 +1,22 @@
-function showToast({ type = '', message = '' }) {
-    const toast = document.querySelector('#alert-toast');
-    if (toast) {
-        const icons = {
-            success: '<i class="fa-solid fa-circle-check"></i>',
-            info: '<i class="fa-solid fa-circle-info"></i>',
-            danger: '<i class="fa-solid fa-circle-exclamation"></i>'
-        };
-        const titles = {
-            success: 'Thành công',
-            info: 'Thông báo',
-            danger: 'Không thành công'
-        };
+//export nó rõ ràng vào window để minifier không rút ngắn tên
+(function () {
+    window.showToast = function ({ type = '', message = '' }) {
+        const toast = document.querySelector('#alert-toast');
+        if (toast) {
+            const icons = {
+                success: '<i class="fa-solid fa-circle-check"></i>',
+                info: '<i class="fa-solid fa-circle-info"></i>',
+                danger: '<i class="fa-solid fa-circle-exclamation"></i>'
+            };
+            const titles = {
+                success: 'Thành công',
+                info: 'Thông báo',
+                danger: 'Không thành công'
+            };
 
-        const content = document.createElement('div');
-        content.classList.add('alert', `alert-${type}`)
-        content.innerHTML = `
+            const content = document.createElement('div');
+            content.classList.add('alert', `alert-${type}`)
+            content.innerHTML = `
                     <div class="alert-icon">
                         ${icons[type]}
                     </div>            
@@ -27,16 +29,17 @@ function showToast({ type = '', message = '' }) {
                     </button>
                 `;
 
-        toast.appendChild(content);
+            toast.appendChild(content);
 
-        const autorRemoveId = setTimeout(() => {
-            toast.removeChild(content);
-        }, 4500);
-        content.onclick = (e) => {
-            if (e.target.closest('.close')) {
+            const autorRemoveId = setTimeout(() => {
                 toast.removeChild(content);
-                clearTimeout(autorRemoveId);
+            }, 4500);
+            content.onclick = (e) => {
+                if (e.target.closest('.close')) {
+                    toast.removeChild(content);
+                    clearTimeout(autorRemoveId);
+                }
             }
         }
-    }
-}
+    };
+})();

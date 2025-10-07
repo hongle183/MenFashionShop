@@ -1,0 +1,12 @@
+﻿@using ShopOnline.Models
+@model List<ProductCategory>
+@{
+    string currentMeta = ViewContext.RouteData.Values["meta"] as string;
+    string currentPrice = Request.QueryString["price"];
+}
+
+<li class="@(currentPrice == "0-100000" ? "active" : "")">@Html.ActionLink("< 100,000₫", "Shop", new { meta=currentMeta, price = "0-100000" })</li>
+<li class="@(currentPrice == "100000-250000" ? "active" : "")">@Html.ActionLink("100,000₫ - 250,000₫", "Shop", new { meta = currentMeta, price = "100000-250000" })</li>
+<li class="@(currentPrice == "250000-500000" ? "active" : "")">@Html.ActionLink("250,000₫ - 500,000₫", "Shop", new { meta = currentMeta, price = "250000-500000" })</li>
+<li class="@(currentPrice == "500000-1000000" ? "active" : "")">@Html.ActionLink("500,000₫ - 1,000,000₫", "Shop", new { meta = currentMeta, price = "500000-1000000" })</li>
+<li class="@(currentPrice == "1000000-" ? "active" : "")">@Html.ActionLink("> 1,000,000₫", "Shop", new { meta = currentMeta, price = "1000000-" })</li>

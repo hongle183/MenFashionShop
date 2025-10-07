@@ -18,25 +18,39 @@ namespace shopOnline.Controllers
             return View();
         }
 
-        public PartialViewResult ListProduct(int? page, string meta, string searching, decimal? minPrice, decimal? maxPrice) // Show product
+        public PartialViewResult ListProduct(int? page, string meta, string searching, string price, string sortBy) // Show product
         {
             var pageNumber = page ?? 1;
             var pageSize = 9;
 
             List<Product> list = db.Products.Where(model => model.ProductCategory.meta.Equals(meta) || meta == null && model.status == true).OrderByDescending(model => model.dateCreate).ToList();
 
-            if (searching != null)
+            if (!string.IsNullOrEmpty(searching))
             {
                 var result = list.Where(model => model.productName.ToLower().Contains(searching.ToLower()) || searching == null);
                 ViewBag.searching = searching;
                 ViewBag.count = result.Count();
                 return PartialView(result.ToPagedList(pageNumber, pageSize));
             }
-            else if (minPrice.HasValue && maxPrice.HasValue)
+            else if (!string.IsNullOrEmpty(price))
             {
+                // Tách giá
+                decimal minPrice = 0, maxPrice = decimal.MaxValue;
+                var prices = price.Split('-');
+                // Gán minPrice
+                if (decimal.TryParse(prices[0], out var parsedMin))
+                {
+                    minPrice = parsedMin;
+                }
+
+                // Gán maxPrice nếu có
+                if (prices.Length > 1 && decimal.TryParse(prices[1], out var parsedMax))
+                {
+                    maxPrice = parsedMax;
+                }
+
                 var result = list.Where(model => model.price >= minPrice && model.price <= maxPrice);
-                ViewBag.minPrice = minPrice;
-                ViewBag.maxPrice = maxPrice;
+                ViewBag.price = price;
                 ViewBag.count = result.Count();
                 return PartialView(result.ToPagedList(pageNumber, pageSize));
             }
@@ -51,6 +65,11 @@ namespace shopOnline.Controllers
         {
             var list = db.ProductCategories.ToList();
             return PartialView(list);
+        }
+
+        public PartialViewResult Prices() // List price filter
+        {            
+            return PartialView();
         }
 
         public PartialViewResult RelationProduct(Guid? product, Guid? category)
