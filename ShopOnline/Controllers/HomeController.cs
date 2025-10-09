@@ -39,99 +39,110 @@ namespace shopOnline.Controllers
         }
         [CustomAuthorize("User")]
         [HttpGet]
-        public ActionResult EditProfie(Guid memberId)
+        public ActionResult EditProfile()
         {
-            Member member = db.Members.Find(memberId);
-            Session["imgPath"] = member.avatar;
-            return View(member);
+            Member user = (Member)Session["info"];
+            Session["imgPath"] = user.avatar;
+            return View(user);
         }
         [CustomAuthorize("User")]
         [HttpPost]
-        public ActionResult EditProfie(Member member, HttpPostedFileBase uploadFile)
+        public ActionResult EditProfile(Member member, HttpPostedFileBase uploadFile)
         {
             try
             {
+                Member user = (Member)Session["info"];
                 if (ModelState.IsValid)
                 {
+                    // Lấy entity thật từ DB để cập nhật
+                    var dbMember = db.Members.FirstOrDefault(m => m.memberId == user.memberId);
+
+                    // Cập nhật thông tin được phép thay đổi
+                    dbMember.firstName = member.firstName?.Trim();
+                    dbMember.lastName = member.lastName?.Trim();
+                    dbMember.email = member.email?.Trim();
+                    dbMember.phone = member.phone?.Trim();
+                    dbMember.address = member.address?.Trim();
+                    dbMember.birthday = member.birthday;
+
+                    string oldAvatarRel = dbMember.avatar;
+                    string oldAvatarAbs = !string.IsNullOrEmpty(oldAvatarRel) ? Request.MapPath(oldAvatarRel) : null;
+
+                    // Nếu có upload file mới
                     if (uploadFile != null)
                     {
+                        // Tạo đường dẫn file mới
                         var fileName = Path.GetFileName(uploadFile.FileName);
-                        var path = Path.Combine(Server.MapPath("~/Content/img/avatar"), fileName);
+                        var newAvatarRel = "~/Content/img/avatar/" + fileName;
+                        var newAvatarAbs = Path.Combine(Server.MapPath("~/Content/img/avatar"), fileName);
 
-                        member.avatar = "~/Content/img/avatar/" + fileName;
-                        db.Entry(member).State = System.Data.Entity.EntityState.Modified;
+                        dbMember.avatar = newAvatarRel;
+                        // Lưu file mới
+                        uploadFile.SaveAs(newAvatarAbs);
 
-                        string oldImgPath = Request.MapPath(Session["imgPath"].ToString()); // Lấy đường dẫn ảnh (absolute path)
-                        var avatarName = Session["imgPath"].ToString(); // Lấy đường dẫn ảnh (relative path)
-                        var checkAvatart = db.Members.Where(model => model.avatar == avatarName).ToList(); // Kiểm tra ảnh có trùng với avatar của member nào không
-
-                        if (db.SaveChanges() > 0)
+                        // Xóa ảnh cũ nếu không còn ai dùng
+                        if (!string.IsNullOrEmpty(oldAvatarAbs))
                         {
-                            uploadFile.SaveAs(path);
-                            if (System.IO.File.Exists(oldImgPath) && checkAvatart.Count < 2) // Nếu tồn tại hình trong folder và không member nào có hình này thì xóa ra khỏi folder
+                            bool isUsed = db.Members.Any(m => m.avatar == oldAvatarRel && m.memberId != dbMember.memberId);
+                            if (System.IO.File.Exists(oldAvatarAbs) && !isUsed)
                             {
-                                System.IO.File.Delete(oldImgPath);
+                                System.IO.File.Delete(oldAvatarAbs);
                             }
-                            var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();// Lấy thông tin mới cập nhập lưu vào session
-                            Session["info"] = info;
-                            TempData["msgEditProfie"] = "Cập nhật thông tin thành công.";
-                            return RedirectToAction("Index");
                         }
+
                     }
-                    else
-                    {
-                        member.avatar = Session["imgPath"].ToString();
-                        db.Entry(member).State = System.Data.Entity.EntityState.Modified;
-                        if (db.SaveChanges() > 0)
-                        {
-                            var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();// Lấy thông tin mới cập nhập lưu vào session
-                            Session["info"] = info;
-                            TempData["msgEditProfie"] = "Cập nhật thông tin thành công.";
-                            return RedirectToAction("Index");
-                        }
-                    }
+                    db.SaveChanges();
+
+                    // Cập nhật session với dữ liệu mới
+                    Session["info"] = dbMember;
+                    TempData["msgEditProfile"] = "Cập nhật thông tin thành công!";
+                    return RedirectToAction("Index");
                 }
-                ViewBag.roleId = new SelectList(db.Roles, "roleId", "roleName", member.roleId);
-                return View(member);
+
+                ViewBag.roleId = new SelectList(db.Roles, "roleId", "roleName", user.roleId);
+                return View(user);
             }
             catch (Exception ex)
             {
-                TempData["msgEditProfieFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
+                TempData["msgEditProfileFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
         }
         [CustomAuthorize("User")]
         [HttpGet]
-        public ActionResult ChangePassword(Guid memberId)
+        public ActionResult ChangePassword()
         {
-            Member member = db.Members.Find(memberId);
             return View();
         }
         [CustomAuthorize("User")]
         [HttpPost]
-        public ActionResult ChangePassword(Member member, FormCollection collection)
+        public ActionResult ChangePassword(FormCollection collection)
         {
             try
             {
+                Member user = (Member)Session["info"];
                 var CurrentPassword = collection["CurPassword"]; // Mật khẩu hiện tại
                 var NewPassword = collection["NewPassword"]; // Mật khẩu mới
-                //var ConfirmPassword = collection["Confirm"];
 
                 CurrentPassword = Encryptor.MD5Hash(CurrentPassword.Trim());
                 NewPassword = Encryptor.MD5Hash(NewPassword.Trim());
 
-                var check = db.Members.Where(model => model.password == CurrentPassword && model.memberId == member.memberId).FirstOrDefault();
-                if (check != null)
+                // Lấy lại bản ghi user từ DB
+                var member = db.Members.FirstOrDefault(model => model.memberId == user.memberId);
+                if (member != null && member.password == CurrentPassword)
                 {
-                    check.password = NewPassword;
+                    member.password = NewPassword;
                     db.SaveChanges();
+
+                    // Cập nhật lại session
+                    Session["info"] = member;
                     TempData["msgChangePassword"] = "Đổi mật khẩu thành công!";
                     return RedirectToAction("Index");
                 }
                 else
                 {
                     ModelState.AddModelError("", "Sai mật khẩu!");
-                    return View(member);
+                    return View(user);
                 }
             }
             catch (Exception ex)
@@ -142,23 +153,52 @@ namespace shopOnline.Controllers
         }
         [CustomAuthorize("User")]
         [HttpGet]
-        public ActionResult MyOrder(Guid memberId)
+        public ActionResult MyOrder()
         {
-            var orders = db.Invoinces.OrderByDescending(model => model.dateCreate).Where(model => model.memberId == memberId).ToList();
+            Member user = (Member)Session["info"];
+            var orders = db.Invoinces.OrderByDescending(model => model.dateCreate).Where(model => model.memberId == user.memberId).ToList();
             return View(orders);
         }
         [CustomAuthorize("User")]
         [HttpGet]
-        public ActionResult InvoinceDetail(Guid invoinceId)
+        public JsonResult GetOrdersByStatus(string status)
         {
-            var orders = db.Invoinces.Where(model => model.invoinceId == invoinceId).FirstOrDefault();
+            Member user = (Member)Session["info"];
+            var orders = db.Invoinces.Where(model => model.memberId == user.memberId);
+
+            if (!string.IsNullOrEmpty(status) && status != "all")
+            {
+                orders = orders.Where(model => model.status == status);
+            }
+
+            var result = orders.Select(order => new
+            {
+                invoinceId = order.invoinceId,
+                memberId = user.memberId,
+                status = order.status,
+                totalMoney = order.totalMoney,
+                paymentStatus = order.paymentStatus,
+            }).ToList();
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        [CustomAuthorize("User")]
+        [HttpGet]
+        public ActionResult InvoinceDetail(string invoinceId)
+        {
+            Member user = (Member)Session["info"];
+            if (!Guid.TryParse(invoinceId, out Guid parsedId))
+            {
+                return RedirectToAction("MyOrder", "Home");
+            }
+            var orders = db.Invoinces.FirstOrDefault(model => model.invoinceId == parsedId);
             return View(orders);
         }
         [CustomAuthorize("User")]
         public ActionResult Cancel(Guid id)
         {
             Member member = (Member)Session["info"]; // Lấy thông tin tài khoản từ session 
-            Invoince invoince = db.Invoinces.Find(id);
+            Invoince invoince = db.Invoinces.FirstOrDefault(model => model.invoinceId == id);
             if (invoince.status == "cancelled" || invoince.status == "completed" || invoince.paymentStatus == "paid")
             {
                 TempData["msgCancelOrderFailed"] = "Order ID " + invoince.invoinceId + " không thể hủy!";

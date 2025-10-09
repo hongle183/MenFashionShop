@@ -93,7 +93,7 @@
 
     #progressbar li.active:before,
     #progressbar li.active:after {
-        background: #ff2c2c
+        background: #ff1053;
     }
 
     #progressbar li.active:before {

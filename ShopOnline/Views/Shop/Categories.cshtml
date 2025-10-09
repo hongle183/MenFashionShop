@@ -2,13 +2,11 @@
 @model List<ProductCategory>
 @{
     string currentMeta = ViewContext.RouteData.Values["meta"] as string;
-    string currentPrice = Request.QueryString["price"];
     var isActive = string.IsNullOrEmpty(currentMeta) ? "active" : "";
 }
 
-<li class="@isActive"><a href="@Url.Action("Shop", "Shop", new { meta ="", price=currentPrice })">Tất cả sản phẩm</a></li>
+<li class="@isActive"><a href="@Url.Action("Shop", "Shop", new { meta ="" })">Tất cả sản phẩm</a></li>
 @foreach (var i in Model)
 {
-    isActive = (i.meta == currentMeta) ? "active" : "";
-    <li class="@isActive"><a href="@Url.Action("Shop", "Shop", new { meta = i.meta, price=currentPrice })">@i.categoryName</a></li>
+    <li class="@(i.meta == currentMeta ? "active" : "")"><a href="@Url.Action("Shop", "Shop", new { meta = i.meta })">@i.categoryName</a></li>
 }

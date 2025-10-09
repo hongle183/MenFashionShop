@@ -3,12 +3,10 @@
 @{
     string currentMeta = ViewContext.RouteData.Values["meta"] as string;
     string currentPrice = Request.QueryString["price"];
-    var isActive = string.IsNullOrEmpty(currentMeta) ? "active" : "";
 }
 
-<a class="dropdown-item @isActive" href="@Url.Action("Shop", "Shop", new { meta ="", price=currentPrice })">Tất cả sản phẩm</a>
+<a class="dropdown-item" href="@Url.Action("Shop", "Shop", new { meta ="", price=currentPrice })">Tất cả sản phẩm</a>
 @foreach (var i in Model)
 {
-    isActive = (i.meta == currentMeta) ? "active" : "";
-    <a class="dropdown-item @isActive" href="@Url.Action("Shop", "Shop", new { meta = i.meta, price=currentPrice })">@i.categoryName</a>
+    <a class="dropdown-item @(i.meta == currentMeta ? "active" : "")" href="@Url.Action("Shop", "Shop", new { meta = i.meta, price=currentPrice })">@i.categoryName</a>
 }

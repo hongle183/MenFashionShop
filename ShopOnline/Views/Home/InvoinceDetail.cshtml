@@ -14,7 +14,7 @@
                     <h4>@ViewBag.Title</h4>
                     <div class="breadcrumb__links">
                         <a href="/trang-chu">Trang chủ</a>
-                        <a href="@Url.Action("MyOrder", "Home", new {memberId = Model.memberId})">Đơn hàng của tôi</a>
+                        <a href="@Url.Action("MyOrder", "Home")">Đơn hàng của tôi</a>
                         <span>@ViewBag.Title</span>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                             {
                                 <b>Đợi xác nhận</b>
                             }
-                            else if (Model.status.Equals("comfirmed"))
+                            else if (Model.status.Equals("confirmed"))
                             {
                                 <b>Đã xác nhận</b>
                             }
@@ -66,7 +66,7 @@
                         }
                         @if (!Model.status.Equals("completed") && !Model.status.Equals("cancelled") && !Model.paymentStatus.Equals("paid"))
                         {
-                            <a href="@Url.Action("Cancel", "Home", new { id = Model.invoinceId})" class="btn outline-btn" onclick="return confirm('Are you sure you want to cancel this order?')">Hủy</a>
+                            <a href="@Url.Action("Cancel", "Home", new { id = Model.invoinceId})" class="btn outline-btn shadow-inner" onclick="return confirm('Are you sure you want to cancel this order?')">Hủy</a>
                         }
                     </div>
                 </div>

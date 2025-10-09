@@ -82,15 +82,29 @@ namespace ShopOnline
             // Route cho Theo dõi đơn hàng
             routes.MapRoute(
                 name: "MyOrder",
-                url: "don-hang-cua-toi/{memberId}",
-                defaults: new { controller = "Home", action = "MyOrder", memberId = UrlParameter.Optional }
+                url: "don-hang-cua-toi",
+                defaults: new { controller = "Home", action = "MyOrder" }
+            );
+
+            // Route cho Hủy đơn
+            routes.MapRoute(
+                name: "Cancel",
+                url: "huy-don/{invoinceId}",
+                defaults: new { controller = "Home", action = "Cancel", invoinceId = UrlParameter.Optional }
             );
 
             // Route cho Chi tiết đơn hàng
             routes.MapRoute(
                 name: "InvoinceDetail",
-                url: "don-hang-cua-toi/{memberId}/chi-tiet/{invoinceId}",
-                defaults: new { controller = "Home", action = "InvoinceDetail", memberId = UrlParameter.Optional, invoinceId = UrlParameter.Optional }
+                url: "don-hang-cua-toi/chi-tiet/{invoinceId}",
+                defaults: new { controller = "Home", action = "InvoinceDetail", invoinceId = UrlParameter.Optional }
+            );
+
+            // Route cho Thanh toán đơn hàng
+            routes.MapRoute(
+                name: "Payment",
+                url: "thanh-toan/{invoinceId}",
+                defaults: new { controller = "Payment", action = "CreatePaymentUrl", invoinceId = UrlParameter.Optional }
             );
 
             // Route cho Đăng nhập
@@ -117,15 +131,15 @@ namespace ShopOnline
             // Route cho Đổi mật khẩu
             routes.MapRoute(
                 name: "ChangePassword",
-                url: "doi-mat-khau/{memberId}",
-                defaults: new { controller = "Home", action = "ChangePassword", memberId = UrlParameter.Optional }
+                url: "doi-mat-khau",
+                defaults: new { controller = "Home", action = "ChangePassword" }
             );
 
             // Route cho Thông tin cá nhân
             routes.MapRoute(
-                name: "EditProfie",
-                url: "thong-tin-ca-nhan/{memberId}",
-                defaults: new { controller = "Home", action = "EditProfie", memberId = UrlParameter.Optional }
+                name: "EditProfile",
+                url: "thong-tin-ca-nhan",
+                defaults: new { controller = "Home", action = "EditProfile" }
             );
 
             // Route mặc định

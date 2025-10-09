@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
 <div class="container info">
-    <div class="singinBx">
+    <div class="signinBx">
         @using (Html.BeginForm("Register", "User", FormMethod.Post, new { @id = "form-1" }))
         {
             @Html.AntiForgeryToken()

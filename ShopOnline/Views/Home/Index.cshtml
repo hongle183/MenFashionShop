@@ -30,21 +30,21 @@ else if (TempData["msgChangePasswordFailed"] != null)
         });
     </script>
 }
-@if (TempData["msgEditProfie"] != null)
+@if (TempData["msgEditProfile"] != null)
 {
     <script>
         showToast({
             type: "success",
-            message: "@TempData["msgEditProfie"].ToString().Replace("\"", "\\\"")"
+            message: "@TempData["msgEditProfile"].ToString().Replace("\"", "\\\"")"
         });
     </script>
 }
-else if (TempData["msgEditProfieFailed"] != null)
+else if (TempData["msgEditProfileFailed"] != null)
 {
     <script>
         showToast({
             type: "danger",
-            message: "@TempData["msgEditProfieFailed"].ToString().Replace("\"", "\\\"")"
+            message: "@TempData["msgEditProfileFailed"].ToString().Replace("\"", "\\\"")"
         });
     </script>
 }
@@ -135,9 +135,9 @@ else if (TempData["msgEditProfieFailed"] != null)
                 <div class="section-title">
                     <span>Sản phẩm</span>
                     <ul class="filter__controls">
-                        <li class="filter-control-item active" data-filter="*">Best Seller</li>
-                        <li class="filter-control-item" data-filter=".new-arrivals">New Arrival</li>
-                        <li class="filter-control-item" data-filter=".hot-sales">Hot Sale</li>
+                        <li class="filter-control-item active" data-filter="*">Hot sale</li>
+                        <li class="filter-control-item" data-filter=".new-arrivals">Bán chạy🔥</li>
+                        <li class="filter-control-item" data-filter=".hot-sales">Mới<img src="~/Content/img/icon/new.png" width="25%" /></li>
                     </ul>
                 </div>
             </div>
@@ -153,7 +153,7 @@ else if (TempData["msgEditProfieFailed"] != null)
             <div class="col-lg-12">
                 <div class="section-title">
                     <span>Tin tức mới</span>
-                    <h2 style=" position: relative; left: 58px;">Fashion New Trends <span style="display: inline; position: relative; left: 288px;"><a href="/bai-viet" style=" color: black;">Xem tất cả</a></span></h2>
+                    <h2 style=" position: relative; left: 58px;">Fashion New Trends <span style="display: inline; position: relative; left: 288px;"><a href="/bai-viet">Xem tất cả</a></span></h2>
                 </div>
             </div>
         </div>
