@@ -238,7 +238,7 @@ else if (TempData["msgCancelOrderFailed"] != null)
                 url: '@Url.Action("GetOrdersByStatus", "Home")',
                 type: 'GET',
                 dataType: 'json',
-                data: { status: status },
+                data: { status },
                 success: function (orders) {
                     var html = '';
                     $.each(orders, function (i, order) {

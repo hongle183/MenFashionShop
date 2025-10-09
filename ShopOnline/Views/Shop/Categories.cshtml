@@ -1,12 +1,15 @@
 ﻿@using ShopOnline.Models
 @model List<ProductCategory>
 @{
-    string currentMeta = ViewContext.RouteData.Values["meta"] as string;
-    var isActive = string.IsNullOrEmpty(currentMeta) ? "active" : "";
+    var currentMeta = ViewContext.RouteData.Values["meta"] as string ?? "";
 }
 
-<li class="@isActive"><a href="@Url.Action("Shop", "Shop", new { meta ="" })">Tất cả sản phẩm</a></li>
+<li class="category-item @(String.IsNullOrEmpty(currentMeta) ? "active" : "")" data-meta="">
+    <a href="@Url.Action("Shop", "Shop", new { meta ="" })">Tất cả sản phẩm</a>
+</li>
 @foreach (var i in Model)
 {
-    <li class="@(i.meta == currentMeta ? "active" : "")"><a href="@Url.Action("Shop", "Shop", new { meta = i.meta })">@i.categoryName</a></li>
+    <li class="category-item @(i.meta == currentMeta ? "active" : "")" data-meta="@i.meta">
+        <a href="@Url.Action("Shop", "Shop", new { meta = i.meta })">@i.categoryName</a>
+    </li>
 }

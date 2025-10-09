@@ -68,7 +68,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-9">
+            <div class="col-lg-9" id="listProductContainer">
                 @Html.Action("ListProduct", "Shop", new { meta = ViewBag.meta })
             </div>
         </div>
@@ -85,4 +85,101 @@
             liTags[i].classList.add("active");
         }
     }
+
+    function getCurrentMeta() {
+        // /san-pham/ao-thun => "ao-thun"
+        var parts = window.location.pathname.split("/");
+        return parts.length > 2 ? parts[2] : "";
+    }
+
+    // Category filter with AJAX
+    $(document).on("click", ".category-item", function (e) {
+        e.preventDefault();
+        var meta = $(this).data("meta");
+
+        $.ajax({
+            url: '@Url.Action("ListProduct", "Shop")',
+            type: 'GET',
+            dataType: 'html', // vì server trả về PartialView (HTML)
+            data: { meta },
+            success: function (result) {
+                $("#listProductContainer").html(result);
+                applySetBg(); // 👈 Gọi lại hàm trong main.js
+                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới
+
+                // Xóa "active" của tất cả, rồi thêm vào item được chọn
+                $(".category-item").removeClass("active");
+                $(".price-item").removeClass("active");
+                $(`.category-item[data-meta='${meta ?? ""}']`).addClass("active");
+
+                // URL thay đổi mà không reload
+                var baseShopUrl = "@Url.Action("Shop", "Shop", new { meta = "" })";
+                baseShopUrl = baseShopUrl.replace(/\/+$/, ""); // xóa dấu / cuối nếu có
+
+                var newUrl = meta ? `${baseShopUrl}/${meta}` : baseShopUrl;
+                window.history.pushState({ meta }, "", newUrl);
+            },
+            error: function () {
+                alert("Không thể tải sản phẩm, vui lòng thử lại!");
+            }
+        });
+    });
+
+    // Price filter with AJAX
+    $(document).on("click", ".price-item", function (e) {
+        e.preventDefault();
+        var price = $(this).data("price");
+        var meta = getCurrentMeta(); // ✅ luôn lấy từ URL mới nhất
+
+        $.ajax({
+            url: '@Url.Action("ListProduct", "Shop")',
+            type: 'GET',
+            dataType: 'html', // vì server trả về PartialView (HTML)
+            data: { price, meta },
+            success: function (result) {
+                $("#listProductContainer").html(result);
+                applySetBg(); // 👈 Gọi lại hàm trong main.js
+                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới
+
+                // Xóa "active" của tất cả, rồi thêm vào item được chọn
+                $(".price-item").removeClass("active");
+                $(`.price-item[data-price='${price ?? ""}']`).addClass("active");
+            },
+            error: function () {
+                alert("Không thể tải sản phẩm, vui lòng thử lại!");
+            }
+        });
+    });
+
+    // Pageination with AJAX
+    $(document).on("click", ".product__pagination a", function (e) {
+        e.preventDefault();
+
+        const url = $(this).attr("href");
+        if (!url) return;
+        // Tách query (page, price, searching) từ URL
+        const params = new URLSearchParams(url.split("?")[1]);
+        const meta = window.location.pathname.split("/")[2] || "";
+        const page = params.get("page");
+        const price = params.get("price");
+        const searching = params.get("searching");
+
+        $.ajax({
+            url: '@Url.Action("ListProduct", "Shop")',
+            type: "GET",
+            dataType: "html",
+            data: { meta, price, searching, page },
+            success: function (result) {
+                $("#listProductContainer").html(result);
+                applySetBg();
+                initNiceSelect();
+
+                // Lưu trạng thái vào lịch sử trình duyệt (URL thay đổi mà không reload)
+                window.history.pushState(null, "", url);
+            },
+            error: function () {
+                alert("Không thể tải sản phẩm, vui lòng thử lại!");
+            }
+        });
+    });
 </script>

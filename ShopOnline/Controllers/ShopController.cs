@@ -20,17 +20,28 @@ namespace shopOnline.Controllers
 
         public PartialViewResult ListProduct(int? page, string meta, string searching, string price, string sortBy) // Show product
         {
+            var baseUrl = Url.Action("Shop", "Shop", new { meta = "" });
+            ViewBag.returnUrl = string.IsNullOrEmpty(meta) ? baseUrl : $"{baseUrl}/{meta}"; // for cart           
+            
+            IPagedList<Product> products = GetProducts(page, meta, searching, price, sortBy);
+            ViewBag.count = products.TotalItemCount;
+            ViewBag.meta = meta;
+            ViewBag.searching = searching;
+            ViewBag.price = price;
+            return PartialView(products);
+        }
+
+        private IPagedList<Product> GetProducts(int? page, string meta, string searching, string price, string sortBy)
+        {
             var pageNumber = page ?? 1;
             var pageSize = 9;
 
-            List<Product> list = db.Products.Where(model => model.ProductCategory.meta.Equals(meta) || meta == null && model.status == true).OrderByDescending(model => model.dateCreate).ToList();
+            List<Product> list = db.Products.Where(model => model.ProductCategory.meta.Equals(meta) || string.IsNullOrEmpty(meta) && model.status == true).OrderByDescending(model => model.dateCreate).ToList();
 
             if (!string.IsNullOrEmpty(searching))
             {
                 var result = list.Where(model => model.productName.ToLower().Contains(searching.ToLower()) || searching == null);
-                ViewBag.searching = searching;
-                ViewBag.count = result.Count();
-                return PartialView(result.ToPagedList(pageNumber, pageSize));
+                return result.ToPagedList(pageNumber, pageSize);
             }
             else if (!string.IsNullOrEmpty(price))
             {
@@ -50,15 +61,10 @@ namespace shopOnline.Controllers
                 }
 
                 var result = list.Where(model => model.price >= minPrice && model.price <= maxPrice);
-                ViewBag.price = price;
-                ViewBag.count = result.Count();
-                return PartialView(result.ToPagedList(pageNumber, pageSize));
+                return result.ToPagedList(pageNumber, pageSize);
             }
-            else
-            {
-                ViewBag.count = list.Count();
-                return PartialView(list.ToPagedList(pageNumber, pageSize));
-            }
+
+            return list.ToPagedList(pageNumber, pageSize);            
         }
 
         public PartialViewResult Categories() // List categories

@@ -5,8 +5,8 @@
     string currentPrice = Request.QueryString["price"];
 }
 
-<a class="dropdown-item" href="@Url.Action("Shop", "Shop", new { meta ="", price=currentPrice })">Tất cả sản phẩm</a>
+<a class="dropdown-item category-item" href="@Url.Action("Shop", "Shop", new { meta ="", price=currentPrice })">Tất cả sản phẩm</a>
 @foreach (var i in Model)
 {
-    <a class="dropdown-item @(i.meta == currentMeta ? "active" : "")" href="@Url.Action("Shop", "Shop", new { meta = i.meta, price=currentPrice })">@i.categoryName</a>
+    <a class="dropdown-item @(i.meta == currentMeta ? "active" : "") category-item" data-meta="@i.meta" href="@Url.Action("Shop", "Shop", new { meta = i.meta, price=currentPrice })">@i.categoryName</a>
 }

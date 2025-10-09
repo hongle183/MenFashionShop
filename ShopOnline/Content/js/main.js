@@ -29,10 +29,13 @@
     /*------------------
         Background Set
     --------------------*/
-    $('.set-bg').each(function () {
-        var bg = $(this).data('setbg');
-        $(this).css('background-image', 'url(' + bg + ')');
-    });
+    window.applySetBg = function () {
+        $('.set-bg').each(function () {
+            $(this).css('background-image', 'url(' + $(this).data('setbg') + ')');
+        });
+    }; // export để gọi lại trong ajax
+
+    applySetBg();// chạy 1 lần khi load file
 
     //Search Switch
     $('.search-switch').on('click', function () {
@@ -106,7 +109,10 @@
     /*--------------------------
         Select
     ----------------------------*/
-    $("select").niceSelect();
+    window.initNiceSelect = function () {
+        $("select").niceSelect();
+    };
+    initNiceSelect();
 
     /*-------------------
 		Radio Btn
