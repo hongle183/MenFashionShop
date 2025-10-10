@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
 
-@if (TempData["msgFailed"] != null)
+@*@if (TempData["msgFailed"] != null)
 {
     <script>
         showToast({
@@ -11,7 +11,7 @@
             message: "@TempData["msgFailed"].ToString().Replace("\"", "\\\"")"
         });
     </script>
-}
+}*@
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
     <script>
@@ -24,7 +24,7 @@
 
 <div class="container info">
     <div class="signinBx">
-        @using (Html.BeginForm("SignIn", "User", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("SignIn", "User", FormMethod.Post, new { @id = "form-1" }))
         {
             @Html.AntiForgeryToken()
 
@@ -56,7 +56,7 @@
             </div>
             <div class="form-group">
                 <input type="hidden" id="recaptchaToken" name="recaptchaToken" />
-                <button class="g-recaptcha btn site-btn w-100" type="submit">
+                <button class="btn site-btn w-100" type="submit">
                     Đăng nhập
                 </button>
             </div>
@@ -72,21 +72,48 @@
 </script>
 <script src="~/Content/js/validator.js"></script>
 <script>
-    grecaptcha.ready(function () {
-        grecaptcha.execute('6LcwOrIqAAAAABgzNqIKLwBNnL9oNXltz63sLozY', { action: 'SignIn' }).then(function (token) {
-            // Gửi token vào input hidden để server xử lý
-            document.getElementById('recaptchaToken').value = token;
-        });
-    });
-
     Validator({
         form: '#form-1',
         formGroupSelector: '.form-group',
         errorSelector: '.form-message',
         rules: [
             Validator.isRequired('#username'),
-            Validator.isRequired('#password'),
-            //Validator.isReCaptchaValid('.g-recaptcha', 'Vui lòng xác nhận reCAPTCHA.')
+            Validator.isRequired('#password')
         ],
+        onSubmit: function (formData) {
+            // formData là object chứa dữ liệu hợp lệ
+            var form = $("#form-1"); // jQuery object
+                                
+            grecaptcha.ready(function () {
+                grecaptcha.execute('6LcwOrIqAAAAABgzNqIKLwBNnL9oNXltz63sLozY', { action: 'SignIn' })
+                    .then(function (token) {
+                        formData.recaptchaToken = token;
+
+                        $.ajax({
+                            url: form.attr("action"),
+                            type: form.attr("method"),
+                            data: formData,
+                            success: function (res) {
+                                if (res.success) {
+                                    showToast({
+                                        type: "success",
+                                        message: res.message
+                                    });
+                                } else {
+                                    showToast({
+                                        type: "danger",
+                                        message: res.message
+                                    });
+                                }
+                                if (res.redirectUrl) {
+                                    setTimeout(function () {
+                                        window.location.href = res.redirectUrl;
+                                    }, 1000); // delay 1 giây để toast xuất hiện
+                                }
+                            }
+                        });
+                    });
+            });
+        }
     });
 </script>

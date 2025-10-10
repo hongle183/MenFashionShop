@@ -24,12 +24,12 @@ namespace ShopOnline.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SignIn(string username, string password, string recaptchaToken)
+        public JsonResult SignIn(string username, string password, string recaptchaToken)
         {
             if (string.IsNullOrEmpty(recaptchaToken) || !VerifyRecaptcha(recaptchaToken))
             {
-                TempData["msgFailed"] = "Xác minh reCAPTCHA không thành công. Vui lòng thử lại.";
-                return RedirectToAction("SignIn");
+                // TempData["msgFailed"] = "Xác minh reCAPTCHA không thành công. Vui lòng thử lại.";
+                return Json(new { success = false, message = "Xác minh reCAPTCHA không thành công. Vui lòng thử lại." });
             }
 
             password = Encryptor.MD5Hash(password);
@@ -39,13 +39,13 @@ namespace ShopOnline.Controllers
                 FormsAuthentication.SetAuthCookie(check.phone, false);
                 Session["UserRole"] = "User";
                 Session["info"] = check;
-                TempData["msgLoginSuccess"] = "Đăng nhập thành công!";
-                return RedirectToAction("Index", "Home");
+                // TempData["msgLoginSuccess"] = "Đăng nhập thành công!";
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "Home"), message = "Đăng nhập thành công!" });
             }
             else
             {
-                TempData["msgFailed"] = "Tên đăng nhập hoặc mật khẩu không đúng.";
-                return RedirectToAction("SignIn");
+                // TempData["msgFailed"] = "Tên đăng nhập hoặc mật khẩu không đúng.";
+                return Json(new { success = false, message = "Tên đăng nhập hoặc mật khẩu không đúng." });
             }
         }
         [HttpGet]
@@ -56,7 +56,7 @@ namespace ShopOnline.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(Member member)
+        public JsonResult Register(Member member)
         {
             try
             {
@@ -67,31 +67,29 @@ namespace ShopOnline.Controllers
                     if (check != null)
                     {
                         // check username constained in database
-                        ModelState.AddModelError("", "Số điện thoại hoặc email đã được sử dụng");
-                        return View(member);
+                        return Json(new { success = false, message = "Số điện thoại hoặc email đã được sử dụng" });
                     }
-                    else
+                    // 👇 Gán GUID thủ công trong code
+                    member.memberId = Guid.NewGuid();
+
+                    member.password = Encryptor.MD5Hash(member.password);
+                    member.dateCreate = DateTime.Now;
+                    member.roleId = Guid.Parse("54ed1855-5103-4121-811c-3997ce4c2241");
+                    member.avatar = "~/Content/img/avatar.png";
+                    member.status = true;
+                    db.Members.Add(member);
+                    var result = db.SaveChanges();
+                    
+                    if (result > 0)
                     {
-                        member.password = Encryptor.MD5Hash(member.password);
-                        member.dateCreate = DateTime.Now;
-                        member.roleId = Guid.Parse("54ed1855-5103-4121-811c-3997ce4c2241");
-                        member.avatar = "~/Content/img/avatar.png";
-                        member.status = true;
-                        db.Members.Add(member);
-                        var result = db.SaveChanges();
-                        if (result > 0)
-                        {
-                            TempData["msgSuccess"] = "Đăng ký thành công! Vui lòng đăng nhập.";
-                            return RedirectToAction("SignIn");
-                        }
+                        return Json(new { success = true, redirectUrl = Url.Action("SignIn", "User"), message = "Đăng ký thành công! Vui lòng đăng nhập." });
                     }
                 }
-                return View(member);
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ!" });
             }
             catch (Exception ex)
             {
-                TempData["msgFailed"] = "Xảy ra lỗi! " + ex.Message;
-                return RedirectToAction("SignIn");
+                return Json(new { success = false, message = "Xảy ra lỗi! " + ex.Message });
             }
         }
         public ActionResult LogOut()
