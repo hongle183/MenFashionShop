@@ -165,7 +165,7 @@
                                     <input type="text" value="1" id="quantity">
                                 </div>
                             </div>
-                            <a href="@Url.Action("AddToCart","Cart", new { id = Model.productId, strURL = Request.Url.ToString() })"
+                            <a href="@Url.Action("AddToCart","Cart", new { id = Model.productId, strURL = Request.Url.ToString() })"  data-id="@Model.productId"
                                id="add-to-cart" class="site-btn btn">Thêm vào giỏ</a>
                         </div>
                         <div class="product__details__btns__option">
@@ -238,15 +238,26 @@
         }
     }
 
-    document.getElementById('add-to-cart').addEventListener('click', function (e) {
+     // Category add cart with AJAX
+    $(document).on("click", "#add-to-cart", function (e) {
         e.preventDefault();
-        const quantity = document.getElementById('quantity').value;
+        var id = $(this).data("id");
+        var quantity = $(this).closest(".product__details__cart__option").find("#quantity").val() || 1;
 
-        // Lấy liên kết hiện tại của nút "Thêm vào giỏ"
-        const url = new URL(this.href);
-
-        // Cập nhật giá trị của tham số "quantity"
-        url.searchParams.set('quantity', quantity);
-        window.location.href = url.toString();
-    });
+        $.ajax({
+            url: '@Url.Action("AddToCart", "Cart")',
+            type: 'POST',
+            dataType: 'json',
+            data: { id, quantity },
+            success: function (res) {
+                if (res.success) {
+                    // Sau khi thêm thành công, cập nhật lại phần navbar
+                    $(".header__nav__option").load("/Cart/Navbar");
+                }
+            },
+            error: function () {
+                 alert("Không thể tải sản phẩm, vui lòng thử lại!");
+            }
+        });
+    })
 </script>

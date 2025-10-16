@@ -102,8 +102,8 @@
             type: 'GET',
             dataType: 'html', // vì server trả về PartialView (HTML)
             data: { meta },
-            success: function (result) {
-                $("#listProductContainer").html(result);
+            success: function (res) {
+                $("#listProductContainer").html(res);
                 applySetBg(); // 👈 Gọi lại hàm trong main.js
                 initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới
 
@@ -136,8 +136,8 @@
             type: 'GET',
             dataType: 'html', // vì server trả về PartialView (HTML)
             data: { price, meta },
-            success: function (result) {
-                $("#listProductContainer").html(result);
+            success: function (res) {
+                $("#listProductContainer").html(res);
                 applySetBg(); // 👈 Gọi lại hàm trong main.js
                 initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới
 
@@ -169,8 +169,8 @@
             type: "GET",
             dataType: "html",
             data: { meta, price, searching, page },
-            success: function (result) {
-                $("#listProductContainer").html(result);
+            success: function (res) {
+                $("#listProductContainer").html(res);
                 applySetBg();
                 initNiceSelect();
 
@@ -182,4 +182,26 @@
             }
         });
     });
+
+     // Category add cart with AJAX
+    $(document).on("click", "#add-to-cart", function (e) {
+        e.preventDefault();
+        var id = $(this).data("id");
+
+        $.ajax({
+            url: '@Url.Action("AddToCart", "Cart")',
+            type: 'POST',
+            dataType: 'json',
+            data: { id },
+            success: function (res) {
+                if (res.success) {
+                    // Sau khi thêm thành công, cập nhật lại phần navbar                    
+                    $(".header__nav__option").load("/Cart/Navbar");
+                }
+            },
+            error: function () {
+                 alert("Không thể tải sản phẩm, vui lòng thử lại!");
+            }
+        });
+    })
 </script>

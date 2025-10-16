@@ -173,21 +173,23 @@
 		Quantity change
 	--------------------- */
     var proQty = $('.pro-qty');
-    proQty.prepend('<span class="fa fa-angle-up dec qtybtn"></span>');
-    proQty.append('<span class="fa fa-angle-down inc qtybtn"></span>');
-    proQty.on('click', '.qtybtn', function () {
+    proQty.append('<span class="fa fa-angle-up inc qtybtn"></span>');
+    proQty.prepend('<span class="fa fa-angle-down dec qtybtn"></span>');
+
+    var proQty2 = $('.pro-qty-2');
+    proQty2.append('<span class="fa-solid fa-plus inc qtybtn"></span>');
+    proQty2.prepend('<span class="fa-solid fa-minus dec qtybtn"></span>');
+
+    proQty.add(proQty2).on('click', '.qtybtn', function () {
         var $button = $(this); // Lấy nút được nhấp
         var $input = $button.siblings('input'); // Tìm ô input cùng cấp
         var oldValue = parseFloat($input.val()) || 1; // Lấy giá trị hiện tại từ ô input
-        var newVal;
 
-        if ($button.hasClass('dec')) {
-            newVal = oldValue + 1; // Tăng giá trị
-        } else if ($button.hasClass('inc')) {
-            newVal = oldValue > 1 ? oldValue - 1 : 1; // Giảm nhưng không nhỏ hơn 1
+        if ($button.hasClass('inc')) {
+            $input.val(oldValue + 1);
+        } else if ($button.hasClass('dec')) {
+            $input.val(Math.max(1, oldValue - 1));
         }
-
-        $input.val(newVal);
     });
 
     /*------------------

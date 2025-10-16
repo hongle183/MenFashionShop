@@ -9,32 +9,39 @@ namespace shopOnline.Controllers
     public class CartController : Controller
     {
         menfsEntities db = new menfsEntities();
-        public List<Cart> getCart() // Tạo danh sách giỏ hàng và lưu vào session
+        private List<Cart> getCart() // Tạo danh sách giỏ hàng và lưu vào session
         {
-            List<Cart> listCart = Session["Cart"] as List<Cart>;
-            if (listCart == null)
+            if (!(Session["Cart"] is List<Cart> listCart))
             {
                 listCart = new List<Cart>();
                 Session["Cart"] = listCart;
             }
             return listCart;
         }
-        public ActionResult AddToCart(Guid id, string strURL, int? quantity) // Thêm item vào giỏ hàng 
+        [HttpPost]
+        public JsonResult AddToCart(string id, int? quantity) // Thêm item vào giỏ hàng 
         {
-            List<Cart> listCart = getCart();
-            Cart item = listCart.Find(model => model.idItem == id);
+            if (!Guid.TryParse(id, out Guid productId))
+                return Json(new { success = false });            
+
+            var cart = getCart();
+
+            var item = cart.FirstOrDefault(c => c.idItem == productId);
             if (item == null)
             {
-                item = new Cart(id);
-                item.quantity = quantity ?? 1;
-                listCart.Add(item);
-                return Redirect(strURL);
+                item = new Cart(productId)
+                {
+                    quantity = quantity ?? 1
+                };
+                cart.Add(item);
             }
-            else
-            {
-                item.quantity = item.quantity + (quantity ?? 1);
-                return Redirect(strURL);
-            }
+            else item.quantity += (quantity ?? 1);            
+
+            // Luôn cập nhật session
+            Session["Cart"] = cart;
+
+            // Trả về kết quả cho AJAX
+            return Json(new { success = true });
         }
         private int Quanlity() // Lấy tổng số sản phẩm giỏ hàng hiện tại
         {
@@ -199,7 +206,7 @@ namespace shopOnline.Controllers
                 TempData["msgOrderFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Index");
             }
-        }        
+        }
 
         [CustomAuthorize("User")]
         [HttpGet]

@@ -3,44 +3,41 @@
     Member user = (Member)Session["info"];
 }
 
-<div class="col-lg-3 col-md-3 my-auto">
-    <div class="header__nav__option">
-        <a href="#" class="search-switch"><img src="~/Content/img/icon/search.png" style="width:10%;" alt=""></a>
-        <a href="#"><img src="~/Content/img/icon/favorite-folder.png" style="width:10%;" alt=""></a>
-        <a href="@Url.Action("Cart", "Cart")"><img src="~/Content/img/icon/bagg.png" style="width:10%" alt=""><span>@ViewBag.quanlityItem</span></a>
-        @*<div class="price" style="margin-right:12px;">$ @ViewBag.totalPrice</div>*@
+<div class="header__nav__option">
+    <a href="#" class="search-switch"><img src="~/Content/img/icon/search.png" style="width:10%;" alt=""></a>
+    <a href="#"><img src="~/Content/img/icon/favorite-folder.png" style="width:10%;" alt=""></a>
+    <a href="@Url.Action("Cart", "Cart")"><img src="~/Content/img/icon/bagg.png" style="width:10%" alt=""><span>@ViewBag.quanlityItem</span></a>
+    @*<div class="price" style="margin-right:12px;">$ @ViewBag.totalPrice</div>*@
 
-        @if (Session["info"] != null)
-        {            
-            <div class="header__nav__hover">
-                <span>
-                    <img class="avatar" src=@Url.Content("" + user.avatar) style="width: 24px;height:24px;" /> @user.lastName<i class="arrow_carrot-down"></i>
-                </span>
-                <ul>
-                    <li>                 
-                        <a href="@Url.Action("EditProfile", "Home")">
-                            Hồ sơ tài khoản
-                        </a>
-                    </li>
-                    <li>
-                        <a href="@Url.Action("ChangePassword", "Home")">
-                            Thay đổi mật khẩu
-                        </a>
-                    </li>
-                    <li>
-                        <a href="@Url.Action("MyOrder", "Home")">
-                            Đơn hàng của tôi
-                        </a>
-                    </li>
-                    <li>
-                        <a href="@Url.Action("LogOut", "User")">Đăng xuất</a>
-                    </li>
-                </ul>
-            </div> }
-        else
-        {
-             <a href="@Url.Action("SignIn", "User")">Đăng nhập</a>
-        }
-    </div>
+    @if (Session["info"] != null)
+    {
+        <div class="header__nav__hover">
+            <span>
+                <img class="avatar" src=@Url.Content("" + user.avatar) style="width: 24px;height:24px;" /> @user.lastName<i class="arrow_carrot-down"></i>
+            </span>
+            <ul>
+                <li>
+                    <a href="@Url.Action("EditProfile", "Home")">
+                        Hồ sơ tài khoản
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ChangePassword", "Home")">
+                        Thay đổi mật khẩu
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("MyOrder", "Home")">
+                        Đơn hàng của tôi
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("LogOut", "User")">Đăng xuất</a>
+                </li>
+            </ul>
+        </div> }
+    else
+    {
+        <a href="@Url.Action("SignIn", "User")">Đăng nhập</a>
+    }
 </div>
-

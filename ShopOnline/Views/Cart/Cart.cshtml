@@ -38,7 +38,7 @@
                                     <tr>
                                         <th>Sản phẩm</th>
                                         <th>Số lượng</th>
-                                        <th>Thành tiền</th>
+                                        <th class="text-center">Thành tiền</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -56,11 +56,12 @@
                                             <td class="quantity__item">
                                                 <div class="quantity">
                                                     <div class="pro-qty-2">
-                                                        <input type="text" name="quanlity" value="@i.quantity">
+                                                        <input type="number" min="1" name="quanlity" id="quantity" value="@i.quantity" onkeydown="return event.keyCode !== 189 && event.keyCode !== 69">
+                                                        @*onkeydown chặn phím - (mã 189) và e (mã 69).*@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="cart__price">@String.Format("{0:N0}", i.priceTotal) ₫</td>
+                                            <td class="cart__price text-center">@String.Format("{0:N0}", i.priceTotal) ₫</td>
                                             <td class="cart__close">
                                                 <a href="@Url.Action("DeteteCart","Cart", new { id = i.idItem})"><img src="~/Content/img/icon/close.png" alt="" /></a>
                                             </td>
@@ -115,4 +116,12 @@
 <script>
     var obj = document.querySelector(".navbar li:nth-child(1)");
     obj.classList.remove("active");
+
+    $(document).on('input', '#quantity', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value === '' || parseInt(this.value) < 1) {
+            this.value = 1;
+        }
+    });
+
 </script>
