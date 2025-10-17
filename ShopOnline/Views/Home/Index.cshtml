@@ -179,8 +179,8 @@ else if (TempData["msgEditProfileFailed"] != null)
                     $(".header__nav__option").load("/Cart/Navbar");
                 }
             },
-            error: function () {
-                 alert("Không thể tải sản phẩm, vui lòng thử lại!");
+            error: function (err) {
+                console.log(err.responseText);
             }
         });
     })

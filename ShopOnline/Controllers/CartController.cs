@@ -100,21 +100,23 @@ namespace shopOnline.Controllers
             ViewBag.discount = DiscountPrice();
             return View(listCart);
         }
-
-        public ActionResult DeteteCart(Guid id)
+        [HttpPost]
+        public PartialViewResult DeleteCart(string id)
         {
-            List<Cart> listCart = getCart();
-            Cart item = listCart.SingleOrDefault(model => model.idItem == id);
+            Guid.TryParse(id, out Guid productId);               
+
+            var cart = getCart();
+            var item = cart.FirstOrDefault(c => c.idItem == productId);
             if (item != null)
             {
-                listCart.RemoveAll(model => model.idItem == id);
-                return RedirectToAction("Cart", "Cart");
+                cart.Remove(item);
+                Session["Cart"] = cart;
+                ViewBag.totalPrice = TotalPrice();
+                ViewBag.price = Price();
+                ViewBag.discount = DiscountPrice();
             }
-            if (listCart.Count == 0)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            return RedirectToAction("Cart", "Cart");
+
+            return PartialView("_ListItem", cart);
         }
         public ActionResult UpdateCart(FormCollection form)
         {

@@ -176,9 +176,9 @@
     proQty.append('<span class="fa fa-angle-up inc qtybtn"></span>');
     proQty.prepend('<span class="fa fa-angle-down dec qtybtn"></span>');
 
-    var proQty2 = $('.pro-qty-2');
-    proQty2.append('<span class="fa-solid fa-plus inc qtybtn"></span>');
-    proQty2.prepend('<span class="fa-solid fa-minus dec qtybtn"></span>');
+    //var proQty2 = $('.pro-qty-2');
+    //proQty2.append('<span class="fa-solid fa-plus inc qtybtn"></span>');
+    //proQty2.prepend('<span class="fa-solid fa-minus dec qtybtn"></span>');
 
     proQty.add(proQty2).on('click', '.qtybtn', function () {
         var $button = $(this); // Lấy nút được nhấp

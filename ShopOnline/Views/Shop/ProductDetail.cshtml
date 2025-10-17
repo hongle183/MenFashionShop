@@ -165,8 +165,7 @@
                                     <input type="text" value="1" id="quantity">
                                 </div>
                             </div>
-                            <a href="@Url.Action("AddToCart","Cart", new { id = Model.productId, strURL = Request.Url.ToString() })"  data-id="@Model.productId"
-                               id="add-to-cart" class="site-btn btn">Thêm vào giỏ</a>
+                            <a href="#"  data-id="@Model.productId" id="add-to-cart" class="site-btn btn">Thêm vào giỏ</a>
                         </div>
                         <div class="product__details__btns__option">
                             <a href="#"><i class="fa fa-heart"></i> Yêu thích</a>
@@ -255,8 +254,8 @@
                     $(".header__nav__option").load("/Cart/Navbar");
                 }
             },
-            error: function () {
-                 alert("Không thể tải sản phẩm, vui lòng thử lại!");
+            error: function (err) {
+                console.log(err.responseText);
             }
         });
     })
