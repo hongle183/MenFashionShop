@@ -1,7 +1,4 @@
 ﻿@model ShopOnline.Models.Product
-@{
-    var returnUrl = ViewData["returnUrl"] ?? Url.Action("Index", "Home");
-}
 
 <div class="product__item sale">
     <div class="product__item__pic set-bg card" data-setbg="@Url.Content(Model.image)">

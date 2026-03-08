@@ -26,7 +26,7 @@ namespace ShopOnline.Controllers
             }
 
             ShortGuid gid = (ShortGuid)id;
-            var item = db.Articles.Where(model => model.articleId == gid.Guid).Single();
+            var item = db.Articles.FirstOrDefault(model => model.articleId == gid.Guid);
             if (item == null)
             {
                 return RedirectToAction("Error", "Home");

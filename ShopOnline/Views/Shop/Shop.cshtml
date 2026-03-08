@@ -28,7 +28,7 @@
             <div class="col-lg-3">
                 <div class="shop__sidebar">
                     <div class="shop__sidebar__search">
-                        @using (Html.BeginForm("Shop", "Shop", FormMethod.Get, new { @style = "display: flex; align-items: center;" }))
+                        @using (Html.BeginForm("Shop", "Shop", FormMethod.Get))
                         {
                             <input type="text" name="searching" placeholder="Tìm kiếm...">
                             <button type="submit"><span class="icon_search"></span></button>
@@ -105,12 +105,7 @@
             success: function (res) {
                 $("#listProductContainer").html(res);
                 applySetBg(); // 👈 Gọi lại hàm trong main.js
-                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới
-
-                // Xóa "active" của tất cả, rồi thêm vào item được chọn
-                $(".category-item").removeClass("active");
-                $(".price-item").removeClass("active");
-                $(`.category-item[data-meta='${meta ?? ""}']`).addClass("active");
+                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới               
 
                 // URL thay đổi mà không reload
                 var baseShopUrl = "@Url.Action("Shop", "Shop", new { meta = "" })";
@@ -123,6 +118,11 @@
                 console.log(err.responseText);
             }
         });
+
+        // Xóa "active" của tất cả, rồi thêm vào item được chọn
+        $(".category-item").removeClass("active");
+        $(".price-item").removeClass("active");
+        $(this).addClass("active");
     });
 
     // Price filter with AJAX
@@ -139,16 +139,16 @@
             success: function (res) {
                 $("#listProductContainer").html(res);
                 applySetBg(); // 👈 Gọi lại hàm trong main.js
-                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới
-
-                // Xóa "active" của tất cả, rồi thêm vào item được chọn
-                $(".price-item").removeClass("active");
-                $(`.price-item[data-price='${price ?? ""}']`).addClass("active");
+                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới               
             },
             error: function (err) {
                 console.log(err.responseText);
             }
         });
+
+        // Xóa "active" của tất cả, rồi thêm vào item được chọn
+        $(".price-item").removeClass("active");
+        $(this).addClass("active");
     });
 
     // Pageination with AJAX

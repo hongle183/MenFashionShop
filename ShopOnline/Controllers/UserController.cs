@@ -5,6 +5,8 @@ using ShopOnline.Models;
 using System.Net;
 using System.Web.Script.Serialization;
 using System.Web.Security;
+using System.Web;
+using System.IO;
 
 namespace ShopOnline.Controllers
 {
@@ -37,7 +39,15 @@ namespace ShopOnline.Controllers
             if (check != null)
             {
                 FormsAuthentication.SetAuthCookie(check.phone, false);
-                Session["UserRole"] = "User";
+
+                var role = check.Role.roleName;
+                Session["UserRole"] = role;
+                if (role == "Manager")
+                {
+                    Session["infoAdmin"] = check;
+                    return Json(new { success = true, redirectUrl = Url.Action("Index", "DashBoard", new { area = "Admin" }), msg = "Login successful." });
+                }
+
                 Session["info"] = check;
                 // TempData["msgLoginSuccess"] = "Đăng nhập thành công!";
                 return Json(new { success = true, redirectUrl = Url.Action("Index", "Home"), message = "Đăng nhập thành công!" });
@@ -75,7 +85,7 @@ namespace ShopOnline.Controllers
                     member.password = Encryptor.MD5Hash(member.password);
                     member.dateCreate = DateTime.Now;
                     member.roleId = Guid.Parse("54ed1855-5103-4121-811c-3997ce4c2241");
-                    member.avatar = "~/Content/img/avatar.png";
+                    member.avatar = "/Content/img/avatar/avatar.png";
                     member.status = true;
                     db.Members.Add(member);
                     var result = db.SaveChanges();
@@ -97,6 +107,128 @@ namespace ShopOnline.Controllers
             FormsAuthentication.SignOut();
             Session.Clear();
             return RedirectToAction("SignIn");
+        }
+
+        [CustomAuthorize("Customer Member")]
+        [HttpGet]
+        public ActionResult EditProfile()
+        {
+            Member user = (Member)Session["info"];
+            Session["imgPath"] = user.avatar;
+            return View(user);
+        }
+        [CustomAuthorize("Customer Member")]
+        [HttpPost]
+        public ActionResult EditProfile(Member member, HttpPostedFileBase uploadFile)
+        {
+            try
+            {
+                Member user = (Member)Session["info"];
+                if (ModelState.IsValid)
+                {
+                    // Lấy entity thật từ DB để cập nhật
+                    var dbMember = db.Members.FirstOrDefault(m => m.memberId == user.memberId);
+
+                    // Cập nhật thông tin được phép thay đổi
+                    dbMember.firstName = member.firstName?.Trim();
+                    dbMember.lastName = member.lastName?.Trim();
+                    dbMember.email = member.email?.Trim();
+                    dbMember.phone = member.phone?.Trim();
+                    dbMember.address = member.address?.Trim();
+                    dbMember.birthday = member.birthday;
+
+                    string oldAvatarRel = dbMember.avatar;
+                    string oldAvatarAbs = !string.IsNullOrEmpty(oldAvatarRel) ? Server.MapPath(oldAvatarRel) : null;
+
+                    // Nếu có upload file mới
+                    if (uploadFile != null && uploadFile.ContentLength > 0)
+                    {                        
+                        string extension = Path.GetExtension(uploadFile.FileName).ToLower();
+                        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                        {
+                            ModelState.AddModelError("", "Invalid file type. Only JPG, JPEG, or PNG are allowed.");
+                            return View(dbMember);
+                        }
+
+                        // Tạo đường dẫn file mới
+                        var fileName = Path.GetFileName(uploadFile.FileName);
+                        var newAvatarRel = "/Content/img/avatar/" + fileName;
+                        var newAvatarAbs = Path.Combine(Server.MapPath("/Content/img/avatar"), fileName);
+
+                        // Lưu file mới
+                        uploadFile.SaveAs(newAvatarAbs);
+                        dbMember.avatar = newAvatarRel;
+
+                        // Xóa ảnh cũ nếu không còn ai dùng
+                        if (!string.IsNullOrEmpty(oldAvatarAbs))
+                        {
+                            bool isUsedByOther = db.Members.Any(m => m.avatar == oldAvatarRel && m.memberId != dbMember.memberId);
+                            if (System.IO.File.Exists(oldAvatarAbs) && !isUsedByOther)
+                            {
+                                System.IO.File.Delete(oldAvatarAbs);
+                            }
+                        }
+
+                    }
+                    db.SaveChanges();
+
+                    // Cập nhật session với dữ liệu mới
+                    Session["info"] = dbMember;
+                    TempData["msgEditProfile"] = "Cập nhật thông tin thành công!";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                ViewBag.roleId = new SelectList(db.Roles, "roleId", "roleName", user.roleId);
+                return View(user);
+            }
+            catch (Exception ex)
+            {
+                TempData["msgEditProfileFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        [CustomAuthorize("Customer Member")]
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+        [CustomAuthorize("Customer Member")]
+        [HttpPost]
+        public ActionResult ChangePassword(FormCollection collection)
+        {
+            try
+            {
+                Member user = (Member)Session["info"];
+                var CurrentPassword = collection["CurPassword"]; // Mật khẩu hiện tại
+                var NewPassword = collection["NewPassword"]; // Mật khẩu mới
+
+                CurrentPassword = Encryptor.MD5Hash(CurrentPassword.Trim());
+                NewPassword = Encryptor.MD5Hash(NewPassword.Trim());
+
+                // Lấy lại bản ghi user từ DB
+                var member = db.Members.FirstOrDefault(model => model.memberId == user.memberId);
+                if (member != null && member.password == CurrentPassword)
+                {
+                    member.password = NewPassword;
+                    db.SaveChanges();
+
+                    // Cập nhật lại session
+                    Session["info"] = member;
+                    TempData["msgChangePassword"] = "Đổi mật khẩu thành công!";
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Sai mật khẩu!");
+                    return View(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["msgChangePasswordFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         private bool VerifyRecaptcha(string token)

@@ -43,46 +43,7 @@ namespace shopOnline.Controllers
             // Trả về kết quả cho AJAX
             return Json(new { success = true });
         }
-        private int Quanlity() // Lấy tổng số sản phẩm giỏ hàng hiện tại
-        {
-            int amount = 0;
-            List<Cart> listCart = Session["Cart"] as List<Cart>;
-            if (listCart != null)
-            {
-                amount = listCart.Sum(model => model.quantity);
-            }
-            return amount;
-        }
-        private double DiscountPrice() //  Lấy tổng số tiền giảm giá
-        {
-            double total = 0;
-            List<Cart> listCart = Session["Cart"] as List<Cart>;
-            if (listCart != null)
-            {
-                total = listCart.Sum(model => model.discountTotal);
-            }
-            return total;
-        }
-        private double Price() //  Lấy tổng số tiền sản phẩm khi chưa được giảm giá
-        {
-            double total = 0;
-            List<Cart> listCart = Session["Cart"] as List<Cart>;
-            if (listCart != null)
-            {
-                total = listCart.Sum(model => model.unitPrice * model.quantity);
-            }
-            return total;
-        }
-        private double TotalPrice() //  Lấy tổng số tiền sản phẩm
-        {
-            double total = 0;
-            List<Cart> listCart = Session["Cart"] as List<Cart>;
-            if (listCart != null)
-            {
-                total = listCart.Sum(model => model.priceTotal);
-            }
-            return total;
-        }
+
         public PartialViewResult Navbar() // Hiển thị số lượng sản phẩm và tiền trên navbar
         {
             ViewBag.quanlityItem = Quanlity();
@@ -118,6 +79,7 @@ namespace shopOnline.Controllers
 
             return PartialView("_ListItem", cart);
         }
+        [HttpPost]
         public ActionResult UpdateCart(FormCollection form)
         {
             string[] qualities = form.GetValues("quanlity");
@@ -129,7 +91,7 @@ namespace shopOnline.Controllers
             if (Quanlity() == 0)
             {
                 Session["Cart"] = null;
-                return RedirectToAction("NoICart", "Cart");
+                return RedirectToAction("Shop", "Shop");
             }
             else
             {
@@ -137,7 +99,7 @@ namespace shopOnline.Controllers
             }
         }
 
-        [CustomAuthorize("User")]
+        [CustomAuthorize("Customer Member")]
         [HttpGet]
         public ActionResult Checkout()
         {
@@ -152,7 +114,7 @@ namespace shopOnline.Controllers
 
             return View(listCart);
         }
-        [CustomAuthorize("User")]
+        [CustomAuthorize("Customer Member")]
         [HttpPost]
         public ActionResult Checkout(FormCollection collection)
         {
@@ -199,7 +161,7 @@ namespace shopOnline.Controllers
                     }
 
                     TempData["msgOrder"] = "Đặt hàng thành công!";
-                    return RedirectToAction("MyOrder", "Home", new { memberId = member.memberId });
+                    return RedirectToAction("MyOrder", "Invoice", new { memberId = member.memberId });
                 }
                 return View();
             }
@@ -210,13 +172,54 @@ namespace shopOnline.Controllers
             }
         }
 
-        [CustomAuthorize("User")]
+        [CustomAuthorize("Customer Member")]
         [HttpGet]
         public ActionResult SubmitBill()
         {
             ViewBag.quanlityItem = Quanlity();
             ViewBag.totalPrice = TotalPrice();
             return View();
+        }
+
+        private int Quanlity() // Lấy tổng số sản phẩm giỏ hàng hiện tại
+        {
+            int amount = 0;
+            List<Cart> listCart = Session["Cart"] as List<Cart>;
+            if (listCart != null)
+            {
+                amount = listCart.Sum(model => model.quantity);
+            }
+            return amount;
+        }
+        private double DiscountPrice() //  Lấy tổng số tiền giảm giá
+        {
+            double total = 0;
+            List<Cart> listCart = Session["Cart"] as List<Cart>;
+            if (listCart != null)
+            {
+                total = listCart.Sum(model => model.discountTotal);
+            }
+            return total;
+        }
+        private double Price() //  Lấy tổng số tiền sản phẩm khi chưa được giảm giá
+        {
+            double total = 0;
+            List<Cart> listCart = Session["Cart"] as List<Cart>;
+            if (listCart != null)
+            {
+                total = listCart.Sum(model => model.unitPrice * model.quantity);
+            }
+            return total;
+        }
+        private double TotalPrice() //  Lấy tổng số tiền sản phẩm
+        {
+            double total = 0;
+            List<Cart> listCart = Session["Cart"] as List<Cart>;
+            if (listCart != null)
+            {
+                total = listCart.Sum(model => model.priceTotal);
+            }
+            return total;
         }
     }
 }

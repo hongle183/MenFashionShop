@@ -103,7 +103,9 @@
         animateIn: 'fadeIn',
         smartSpeed: 1200,
         autoHeight: false,
-        autoplay: false
+        autoplay: true,
+        autoplayTimeout: 10000,
+        autoplayHoverPause: true
     });
 
     /*--------------------------
@@ -176,7 +178,7 @@
     proQty.append('<span class="fa fa-angle-up inc qtybtn"></span>');
     proQty.prepend('<span class="fa fa-angle-down dec qtybtn"></span>');
 
-    //var proQty2 = $('.pro-qty-2');
+    var proQty2 = $('.pro-qty-2');
     //proQty2.append('<span class="fa-solid fa-plus inc qtybtn"></span>');
     //proQty2.prepend('<span class="fa-solid fa-minus dec qtybtn"></span>');
 

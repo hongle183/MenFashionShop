@@ -191,6 +191,10 @@ Validator.isDate = function (selector, message) {
     return {
         selector: selector,
         test: function (value) {
+            // nếu rỗng thì bỏ qua -> valid
+            if (!value || value.trim() == '') return undefined;
+            
+
             var regex = /^([0-9]{4}|[0-9]{4})[./-]([0]?[1-9]|[1][0-2])[./-]([0]?[1-9]|[1|2][0-9]|[3][0|1])$/
             return regex.test(value) ? undefined : message || 'Vui lòng nhập ngày hợp lệ.'
         }

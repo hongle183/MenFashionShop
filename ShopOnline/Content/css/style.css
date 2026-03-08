@@ -318,7 +318,7 @@ form textarea {
 
 .alert {
     max-width: 450px;
-    min-width: 400px;
+    min-width: 360px;
     padding: 0.75rem 1.25rem;
     margin-bottom: 1rem;
     background-color: #ffffff;
@@ -387,9 +387,15 @@ form textarea {
     padding-left: 8px;
 }
 
+.alert .alert-content h4 {
+    font-size: 110%;
+    font-weight: 700;
+}
+
 .alert .alert-content p {
-    color: var(--dark-light);
     margin-bottom: 0;
+    color: var(--dark-light);
+    font-size: 90%;
 }
 
 /*---------------------
@@ -471,15 +477,18 @@ form textarea {
 .btn, button {
     position: relative;
     overflow: hidden;
+    padding: 14px 30px;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
     text-decoration: none;
-    padding: 14px 30px;
 }
 
-    .btn:hover, button:hover {
+/*    .btn:hover, button:hover {
         color: var(--pink) !important;
-    }
+    }*/
 
     .btn::after, button::after {
         content: '';
@@ -489,7 +498,7 @@ form textarea {
         width: 200%;
         height: 100%;
         transform: skewX(-20deg);
-        background-image: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+        background-image: linear-gradient(to right, transparent, rgba(255, 214, 214, 0.3), transparent);
     }
 
     .btn:hover:after, button:hover:after {
@@ -501,28 +510,41 @@ form textarea {
     }
 
 .site-btn {
-    display: inline-block;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 14px 30px;
     color: #ffffff;
-    background: var(--dark);
+    background-color: var(--dark);
     border: none !important;
     border-radius: 5px;
 }
+
+    .site-btn:hover {
+        color: #ffffff;
+    }
 
     .site-btn:focus {
         color: #ffffff;
     }
 
-.outline-btn {
-    display: inline-block;
-    font-size: 14px;
-    font-weight: 700;
-    background-color: transparent;
+.light-btn {
     color: var(--dark);
-    border: 1px solid var(--gray-light);
+    background-color: var(--light);
+    border: none !important;
     border-radius: 5px;
+}
+
+    .light-btn:hover {
+        color: var(--dark);
+    }
+
+    .light-btn:focus {
+        color: var(--dark);
+    }
+
+.outline-btn {
+    color: var(--dark);
+    background-color: transparent;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
 }
 
     .outline-btn:hover {
@@ -790,38 +812,55 @@ form textarea {
         }
 
 .header__nav__option {
-    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
+    .header__nav__option img {
+        height: 30px;
+        width: 30px;
+    }
+
     .header__nav__option a {
-        color: #000000;
         position: relative;
+        color: #000000;
         font-size: 16px;
         font-weight: 600;
     }
 
-        .header__nav__option a span {
-            color: #ffffff;
-            font-size: 12px;
-            position: absolute;
-            top: 70%;
-            left: 55%;
-            -ms-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
-
-        .header__nav__option a:last-child {
-            margin-right: 0;
-        }
-
     .header__nav__option > a {
-        margin-right: 4px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        font-weight: 700;
     }
+
 
         .header__nav__option > a:hover {
             color: #6c6c6c;
+        }
+
+        .header__nav__option > a.text {
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            line-height: normal;
+        }
+
+        .header__nav__option > a span {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 20px;
+            height: 20px;
+            padding: 6px;
+            color: #ffffff;
+            background-color: var(--red);
+            border-radius: 20px;
+            font-size: 12px;
+            -ms-transform: translate(50%, -50%);
+            transform: translate(50%, -50%);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
         }
 
     .header__nav__option .price {
@@ -844,16 +883,13 @@ form textarea {
     }
 
     .header__nav__hover span {
-        color: #000000;
-        font-size: 16px;
         letter-spacing: 1.5px;
-        display: inline-block;
+        font-weight: 700;
+        font-size: 110%;
         cursor: pointer;
+        display: flex;
+        align-items: center;
     }
-
-        .header__nav__hover span i {
-            position: relative;
-        }
 
     .header__nav__hover ul {
         width: fit-content;
@@ -861,7 +897,8 @@ form textarea {
         background: #ffffff;
         display: inline-block;
         position: absolute;
-        left: 0;
+        left: 50%;
+        transform: translateX(-50%);
         top: 44px;
         opacity: 0;
         visibility: hidden;
@@ -932,13 +969,16 @@ form textarea {
 
 .hero__slider.owl-carousel .owl-nav button {
     font-size: 36px;
-    color: #cccccc;
+    color: var(--gray-light);
     position: absolute;
     left: 75px;
     top: 50%;
     margin-top: -18px;
-    line-height: 29px;
 }
+
+    .hero__slider.owl-carousel .owl-nav button::after {
+        display: none;
+    }
 
     .hero__slider.owl-carousel .owl-nav button:hover:after {
         animation: none;
@@ -957,6 +997,7 @@ form textarea {
 
 .hero__text h6 {
     color: var(--red);
+    text-shadow: 2px 1px 1px var(--dark);
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
@@ -971,7 +1012,7 @@ form textarea {
 }
 
 .hero__text h2 {
-    color: var(--gray);
+    color: rgba(255, 255, 255, .7);
     font-size: 48px;
     font-weight: 700;
     line-height: 58px;
@@ -984,9 +1025,13 @@ form textarea {
     transition: all, 0.6s;
 }
 
+.hero__text.text-right h2 {
+    color: rgba(43, 43, 43, .7);
+}
+
 .hero__text p {
     font-size: 16px;
-    color: white;
+    color: black;
     line-height: 28px;
     margin-bottom: 35px;
     position: relative;
@@ -995,6 +1040,10 @@ form textarea {
     -webkit-transition: all, 0.9s;
     -o-transition: all, 0.9s;
     transition: all, 0.9s;
+}
+
+.hero__text.text-right p {
+    color: white
 }
 
 .hero__social {
@@ -1524,6 +1573,12 @@ form textarea {
     .shop__sidebar__search form {
         position: relative;
     }
+
+        .shop__sidebar__search form input {
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid var(--gray-light);
+        }
 
         .shop__sidebar__search form button {
             color: var(--dark);
@@ -2601,6 +2656,10 @@ form textarea {
                     text-align: center;
                 }
 
+                .shopping__cart__table table tbody tr td.cart__close a {
+                    cursor: pointer;
+                }
+
 .update__btn {
     text-align: right;
 }
@@ -2838,7 +2897,7 @@ form textarea {
         }
 
 /*---------------------
-  Invoince
+  Invoice
 -----------------------*/
 
 .my__order .nav-pills {
@@ -2855,7 +2914,7 @@ form textarea {
         background-color: var(--red);
     }
 
-.invoince__detail {
+.invoice__detail {
     padding: 30px;
     background-color: var(--light);
 }

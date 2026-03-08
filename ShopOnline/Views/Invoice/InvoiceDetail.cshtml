@@ -14,7 +14,7 @@
                     <h4>@ViewBag.Title</h4>
                     <div class="breadcrumb__links">
                         <a href="/trang-chu">Trang chủ</a>
-                        <a href="@Url.Action("MyOrder", "Home")">Đơn hàng của tôi</a>
+                        <a href="@Url.Action("MyOrder", "Invoice")">Đơn hàng của tôi</a>
                         <span>@ViewBag.Title</span>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
 <div class="container spad">
     <div class="row">
         <div class="col-lg-8">
-            <div class="invoince__detail card">
+            <div class="invoice__detail card">
                 <h5 class="mb-3">ĐƠN HÀNG <span class="font-weight-bold theme-color">#@Model.invoinceId</span></h5>
                 <div class="row">
                     <div class="col-6">
@@ -58,15 +58,15 @@
                     <div class="col-6 text-right">
                         @if ((Model.paymentMethod.Equals("vnpay") && !Model.paymentStatus.Equals("paid")) || Model.paymentMethod.Equals("cash"))
                         {
-                            <a href="@Url.Action("CreatePaymentUrl", "Payment", new { invoinceId = Model.invoinceId })" target="_blank" class="btn site-btn">Thanh toán</a>
+                            <a href="@Url.Action("CreatePaymentUrl", "Payment", new { invoiceId = Model.invoinceId })" target="_blank" class="btn site-btn">Thanh toán</a>
                         }
                         else
                         {
-                            <button class="btn outline-btn shadow-inner" disabled>Đã thanh toán</button>
+                            <button class="btn outline-btn" disabled>Đã thanh toán</button>
                         }
                         @if (!Model.status.Equals("completed") && !Model.status.Equals("cancelled") && !Model.paymentStatus.Equals("paid"))
                         {
-                            <a href="@Url.Action("Cancel", "Home", new { id = Model.invoinceId})" class="btn outline-btn shadow-inner" onclick="return confirm('Are you sure you want to cancel this order?')">Hủy</a>
+                            <a href="@Url.Action("Cancel", "Invoice", new { id = Model.invoinceId})" class="btn outline-btn shadow-inner" onclick="return confirm('Are you sure you want to cancel this order?')">Hủy</a>
                         }
                     </div>
                 </div>
@@ -87,7 +87,7 @@
                                 <td width="400px">
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <img src=@Url.Content("" + i.Product.image) width="80%" />
+                                            <img src=@Url.Content(i.Product.image) width="80%" />
                                         </div>
                                         <div class="col-md-9 d-flex align-items-center">
                                             @i.Product.productName
@@ -128,7 +128,7 @@
             </div>
         </div>
         <div class="col-lg-4 mt-lg-0 mt-4">
-            <div class="invoince__detail card">
+            <div class="invoice__detail card">
                 <h4 class="mb-3"><img src="/Content/img/icon/place.png" style="width:10%;" alt=""> Thông tin giao hàng</h4>
                 <p style="margin: 0">
                     <b>

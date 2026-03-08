@@ -62,6 +62,7 @@
         $.ajax({
             url: '@Url.Action("DeleteCart", "Cart")',
             type: 'POST',
+            dataType: 'html',
             data: { id },
             success: function (res) {
                 $("#listCartContainer").html(res);

@@ -4,30 +4,25 @@
 }
 
 <div class="header__nav__option">
-    <a href="#" class="search-switch"><img src="~/Content/img/icon/search.png" style="width:10%;" alt=""></a>
-    <a href="#"><img src="~/Content/img/icon/favorite-folder.png" style="width:10%;" alt=""></a>
-    <a href="@Url.Action("Cart", "Cart")"><img src="~/Content/img/icon/bagg.png" style="width:10%" alt=""><span>@ViewBag.quanlityItem</span></a>
-    @*<div class="price" style="margin-right:12px;">$ @ViewBag.totalPrice</div>*@
-
     @if (Session["info"] != null)
     {
         <div class="header__nav__hover">
             <span>
-                <img class="avatar" src=@Url.Content("" + user.avatar) style="width: 24px;height:24px;" /> @user.lastName<i class="arrow_carrot-down"></i>
+                <img class="avatar mr-1" src="@Url.Content(user.avatar)" />@user.lastName<i class="arrow_carrot-down"></i>
             </span>
             <ul>
                 <li>
-                    <a href="@Url.Action("EditProfile", "Home")">
+                    <a href="@Url.Action("EditProfile", "User")">
                         Hồ sơ tài khoản
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("ChangePassword", "Home")">
+                    <a href="@Url.Action("ChangePassword", "User")">
                         Thay đổi mật khẩu
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("MyOrder", "Home")">
+                    <a href="@Url.Action("MyOrder", "Invoice")">
                         Đơn hàng của tôi
                     </a>
                 </li>
@@ -38,6 +33,11 @@
         </div> }
     else
     {
-        <a href="@Url.Action("SignIn", "User")">Đăng nhập</a>
+        <a class="text" href="@Url.Action("SignIn", "User")">Đăng nhập</a>
     }
+
+    <a href="#" class="search-switch"><img src="~/Content/img/icon/search.png" alt=""></a>
+    <a href="#"><img src="~/Content/img/icon/favorite-folder.png" alt=""></a>
+    <a href="@Url.Action("Cart", "Cart")"><img src="~/Content/img/icon/product.png" alt=""><span>@ViewBag.quanlityItem</span></a>
+    @*<div class="price" style="margin-right:12px;">$ @ViewBag.totalPrice</div>*@
 </div>

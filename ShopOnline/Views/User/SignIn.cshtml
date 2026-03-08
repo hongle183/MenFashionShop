@@ -3,15 +3,6 @@
     Layout = "~/Views/Shared/_LayoutPublicPage.cshtml";
 }
 
-@*@if (TempData["msgFailed"] != null)
-{
-    <script>
-        showToast({
-            type: "danger",
-            message: "@TempData["msgFailed"].ToString().Replace("\"", "\\\"")"
-        });
-    </script>
-}*@
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
     <script>

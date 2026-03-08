@@ -6,7 +6,7 @@
 
 <div class="container info">
     <div class="signinBx editProfile">
-        @using (Html.BeginForm("EditProfile", "Home", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("EditProfile", "User", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
             <div class="form-group">

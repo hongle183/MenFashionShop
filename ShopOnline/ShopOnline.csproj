@@ -292,6 +292,10 @@
     <Content Include="Areas\Admin\Content\assets\libs\chartist-plugin-tooltips\dist\chartist-plugin-tooltip.min.js" />
     <Content Include="Areas\Admin\Content\assets\libs\chartist\dist\chartist.min.css" />
     <Content Include="Areas\Admin\Content\assets\libs\chartist\dist\chartist.min.js" />
+    <Content Include="Areas\Admin\Content\assets\libs\datatables\datatables.css" />
+    <Content Include="Areas\Admin\Content\assets\libs\datatables\datatables.js" />
+    <Content Include="Areas\Admin\Content\assets\libs\datatables\datatables.min.css" />
+    <Content Include="Areas\Admin\Content\assets\libs\datatables\datatables.min.js" />
     <Content Include="Areas\Admin\Content\assets\libs\fullcalendar\dist\fullcalendar.min.css" />
     <Content Include="Areas\Admin\Content\assets\libs\fullcalendar\dist\fullcalendar.min.js" />
     <Content Include="Areas\Admin\Content\assets\libs\fullcalendar\dist\fullcalendar.print.min.css" />
@@ -724,10 +728,10 @@
     <Content Include="Content\css\WatchOrders.css" />
     <Content Include="Content\fonts\ElegantIcons.svg" />
     <Content Include="Content\img\admin.png" />
-    <Content Include="Content\img\avatar\00683qmbly1hgghfbvbzlj31jk15nk9l.jpg" />
-    <Content Include="Content\img\avatar\black-small-v.png" />
+    <Content Include="Content\img\avatar\244378234_2621616374649091_7842324519169438481_n.jpg" />
+    <Content Include="Content\img\avatar\244444755_2621616154649113_4814803575889368793_n.jpg" />
+    <Content Include="Content\img\avatar\avatar.png" />
     <Content Include="Content\img\avatar\Pikachu.png" />
-    <Content Include="Content\img\avatar\thank-you.jpg" />
     <Content Include="Content\img\banner\banner-1.jpg" />
     <Content Include="Content\img\banner\banner-2.jpg" />
     <Content Include="Content\img\banner\banner-3.jpg" />
@@ -765,6 +769,7 @@
     <Content Include="Content\img\icon\logout.png" />
     <Content Include="Content\img\icon\member.png" />
     <Content Include="Content\img\icon\menu.png" />
+    <Content Include="Content\img\icon\new.png" />
     <Content Include="Content\img\icon\orderlist-history.png" />
     <Content Include="Content\img\icon\password.png" />
     <Content Include="Content\img\icon\phone.png" />
@@ -792,6 +797,7 @@
     <Content Include="Content\img\Orders\process-home.png" />
     <Content Include="Content\img\Orders\process-product.png" />
     <Content Include="Content\img\Orders\three-dot.png" />
+    <Content Include="Content\img\payment_return.png" />
     <Content Include="Content\img\product\100442297_01.jpg" />
     <Content Include="Content\img\product\1053095215_01.jpg" />
     <Content Include="Content\img\product\1206445487_01.jpg" />
@@ -874,7 +880,7 @@
       <LastGenOutput>Model.cs</LastGenOutput>
     </Content>
     <Content Include="App_Browsers\qt.browser" />
-    <Content Include="Areas\Admin\Views\CRUDinvoince\PrintInvoince.cshtml" />
+    <Content Include="Areas\Admin\Views\CRUDinvoice\PrintInvoice.cshtml" />
     <Content Include="Rotativa\help-wkhtmltoimage.txt" />
     <Content Include="Rotativa\help-wkhtmltopdf.txt" />
     <Content Include="Rotativa\wkhtmltoimage.exe" />
@@ -887,12 +893,13 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\CRUDblogController.cs" />
     <Compile Include="Areas\Admin\Controllers\CRUDcategoryController.cs" />
-    <Compile Include="Areas\Admin\Controllers\CRUDinvoinceController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CRUDinvoiceController.cs" />
     <Compile Include="Areas\Admin\Controllers\CRUDmemberController.cs" />
     <Compile Include="Areas\Admin\Controllers\CRUDmenusController.cs" />
     <Compile Include="Areas\Admin\Controllers\CRUDproductController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashBoardController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginMemberController.cs" />
+    <Compile Include="Controllers\InvoiceController.cs" />
     <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="CustomAuthorizeAttribute.cs" />
     <Compile Include="Models\Article.cs">
@@ -952,6 +959,7 @@
     <Compile Include="Models\Slide.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\VnPayLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\vDoanhThuTheoNgay.cs">
       <DependentUpon>Model.tt</DependentUpon>
@@ -1012,8 +1020,8 @@
     <Content Include="Areas\Admin\Views\CRUDblog\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\CRUDblog\Index.cshtml" />
     <Content Include="Areas\Admin\Views\CRUDcategory\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\CRUDinvoince\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\CRUDinvoince\InvoinceDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\CRUDinvoice\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CRUDinvoice\InvoiceDetail.cshtml" />
     <Content Include="Areas\Admin\Views\CRUDmember\Create.cshtml" />
     <Content Include="Areas\Admin\Views\CRUDmember\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\CRUDmember\Index.cshtml" />
@@ -1023,8 +1031,8 @@
     <Content Include="Areas\Admin\Views\DashBoard\Chart.cshtml" />
     <Content Include="Areas\Admin\Views\DashBoard\EditProfile.cshtml" />
     <Content Include="Areas\Admin\Views\DashBoard\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\DashBoard\InvoinceDetail.cshtml" />
-    <Content Include="Areas\Admin\Views\DashBoard\InvoinceList.cshtml" />
+    <Content Include="Areas\Admin\Views\DashBoard\InvoiceDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\DashBoard\InvoiceList.cshtml" />
     <Content Include="Areas\Admin\Views\LoginMember\Login.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutDashBoard.cshtml" />
     <Content Include="Areas\Admin\Views\web.config" />
@@ -1055,6 +1063,8 @@
     <Content Include="Models\Model.edmx.diagram">
       <DependentUpon>Model.edmx</DependentUpon>
     </Content>
+    <Content Include="Areas\Admin\Views\CRUDcategory\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\CRUDcategory\Edit.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Article\ArticleDetail.cshtml" />
     <Content Include="Views\Article\ArticleList.cshtml" />
@@ -1062,13 +1072,9 @@
     <Content Include="Views\Cart\Checkout.cshtml" />
     <Content Include="Views\Cart\Navbar.cshtml" />
     <Content Include="Views\Home\BlogHome.cshtml" />
-    <Content Include="Views\Home\ChangePassword.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\EditProfie.cshtml" />
     <Content Include="Views\Home\Error.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\InvoinceDetail.cshtml" />
-    <Content Include="Views\Home\MyOrder.cshtml" />
     <Content Include="Views\Home\ProductHome.cshtml" />
     <Content Include="Views\Shared\_LayoutPublicPage.cshtml" />
     <Content Include="Views\Shop\Categories.cshtml" />
@@ -1083,9 +1089,14 @@
     <Content Include="Views\Menus\Categories.cshtml" />
     <Content Include="Views\Shared\_ProductItem.cshtml" />
     <Content Include="Views\Shared\_BlogItem.cshtml" />
-    <Content Include="Views\Payment\Index.cshtml" />
     <Content Include="Views\Payment\PaymentReturn.cshtml" />
     <Content Include="Views\Shop\Prices.cshtml" />
+    <Content Include="Views\Cart\_ListItem.cshtml" />
+    <Content Include="Views\User\ChangePassword.cshtml" />
+    <Content Include="Views\User\EditProfile.cshtml" />
+    <Content Include="Views\Invoice\InvoiceDetail.cshtml" />
+    <Content Include="Views\Invoice\MyOrder.cshtml" />
+    <Content Include="Views\Invoice\_ListOrder.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

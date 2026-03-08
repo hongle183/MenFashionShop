@@ -11,18 +11,17 @@ namespace ShopOnline.Controllers
         menfsEntities db = new menfsEntities();
         
         // GET: Payment
-        public ActionResult CreatePaymentUrl(string invoinceId)
+        public ActionResult CreatePaymentUrl(string invoiceId)
         {
-            Member user = (Member)Session["info"];
-            if (!Guid.TryParse(invoinceId, out Guid parsedId))
+            if (!Guid.TryParse(invoiceId, out Guid parsedId))
             {
-                return RedirectToAction("MyOrder", "Home", new { memberId = user.memberId });
+                return RedirectToAction("MyOrder", "Invoice");
             }
 
             Invoince bill = db.Invoinces.Find(parsedId);
             if (bill == null)
             {
-                return RedirectToAction("MyOrder", "Home", new { memberId = user.memberId });
+                return RedirectToAction("MyOrder", "Invoice");
             }
 
             //Get Config Info
@@ -43,11 +42,11 @@ namespace ShopOnline.Controllers
             vnpay.AddRequestData("vnp_CurrCode", "VND");
             vnpay.AddRequestData("vnp_IpAddr", Request.UserHostAddress);
             vnpay.AddRequestData("vnp_Locale", "vn");
-            vnpay.AddRequestData("vnp_OrderInfo", "Thanh toán đơn hàng " + invoinceId);
+            vnpay.AddRequestData("vnp_OrderInfo", "Thanh toán đơn hàng " + invoiceId);
             vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
 
             vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
-            vnpay.AddRequestData("vnp_TxnRef", invoinceId); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
+            vnpay.AddRequestData("vnp_TxnRef", invoiceId); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
 
             //Add Params of 2.1.0 Version
             vnpay.AddRequestData("vnp_ExpireDate", DateTime.Now.AddMinutes(15).ToString("yyyyMMddHHmmss"));
@@ -77,12 +76,12 @@ namespace ShopOnline.Controllers
                 //vnp_ResponseCode:Response code from VNPAY: 00: Thanh cong
                 //vnp_SecureHash: HmacSHA512 cua du lieu tra ve
 
-                Guid invoinceId = Guid.Parse(vnpay.GetResponseData("vnp_TxnRef"));
-                 var item = db.Invoinces.Where(model => model.invoinceId == invoinceId).FirstOrDefault();
+                Guid invoiceId = Guid.Parse(vnpay.GetResponseData("vnp_TxnRef"));
+                 var item = db.Invoinces.Where(model => model.invoinceId == invoiceId).FirstOrDefault();
 
                 string vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
                 string vnp_TransactionStatus = vnpay.GetResponseData("vnp_TransactionStatus");
-                String vnp_SecureHash = Request.QueryString["vnp_SecureHash"];
+                string vnp_SecureHash = Request.QueryString["vnp_SecureHash"];
 
                 bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, vnp_HashSecret);
                 if (checkSignature)
@@ -90,7 +89,7 @@ namespace ShopOnline.Controllers
                     if (item == null)
                     {
                         TempData["msgPaidFailed"] = "Hóa đơn không tồn tại!";
-                        return RedirectToAction("MyOrder", "Home");
+                        return RedirectToAction("MyOrder", "Invoice");
                     }
 
                     if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
@@ -116,8 +115,7 @@ namespace ShopOnline.Controllers
                 }
             }      
 
-            Member user = (Member)Session["info"];
-            return RedirectToAction("MyOrder", "Home", new { memberId = user.memberId});
+            return RedirectToAction("MyOrder", "Invoice");
         }
     }
 }

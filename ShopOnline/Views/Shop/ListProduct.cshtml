@@ -27,7 +27,7 @@
             foreach (var i in Model)
             {
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    @Html.Partial("_ProductItem", i, new ViewDataDictionary { { "returnUrl", ViewBag.returnUrl } })
+                    @Html.Partial("_ProductItem", i)
                 </div>
             }
         }

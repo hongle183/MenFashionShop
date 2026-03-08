@@ -21,7 +21,7 @@
                         {
                             <tr>
                                 <td class="product__cart__item d-flex align-items-center">
-                                    <img class="product__cart__item__pic" src=@Url.Content(""+i.imageItem) style="width:20%;">
+                                    <img class="product__cart__item__pic" src=@Url.Content(i.imageItem) style="width:20%;">
                                     <div class="product__cart__item__text">
                                         <a href="@Url.Action(" ProductDetail", "Shop" , new { meta=i.metaItem, id=i.idItem })"><h6>@i.nameItem</h6></a>
                                         <h5>@String.Format("{0:N0}", i.priceItem) ₫ <small class="discount-price">@String.Format("{0:N0}", i.unitPrice) ₫</small></h5>
@@ -37,7 +37,7 @@
                                 </td>
                                 <td class="cart__price text-center">@String.Format("{0:N0}", i.priceTotal) ₫</td>
                                 <td class="cart__close">
-                                    <a href="@Url.Action("DeleteCart","Cart", new { id = i.idItem})" id="delete-cart" data-id="@i.idItem">
+                                    <a id="delete-cart" data-id="@i.idItem">
                                         <img src="~/Content/img/icon/close.png" alt="" />
                                     </a>
                                 </td>

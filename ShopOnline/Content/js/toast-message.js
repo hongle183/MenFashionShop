@@ -1,6 +1,6 @@
 //export nó rõ ràng vào window để minifier không rút ngắn tên
 (function () {
-    window.showToast = function ({ type = '', message = '' }) {
+    window.showToast = function ({ type = '', message = '', language = 'vn' }) {
         const toast = document.querySelector('#alert-toast');
         if (toast) {
             const icons = {
@@ -9,9 +9,16 @@
                 danger: '<i class="fa-solid fa-circle-exclamation"></i>'
             };
             const titles = {
-                success: 'Thành công',
-                info: 'Thông báo',
-                danger: 'Không thành công'
+                vn: {
+                    success: 'Thành công',
+                    info: 'Thông báo',
+                    danger: 'Không thành công'
+                }, 
+                en: {
+                    success: 'Success',
+                    info: 'Notification',
+                    danger: 'Error'
+                }
             };
 
             const content = document.createElement('div');
@@ -21,7 +28,7 @@
                         ${icons[type]}
                     </div>            
                     <div class="alert-content">
-                        <h5>${titles[type]}</h5>
+                        <h4 class="mb-0">${titles[language][type]}</h4>
                         <p>${message}</p>
                     </div>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">

@@ -22,15 +22,8 @@ public class CustomAuthorizeAttribute : AuthorizeAttribute
 
     protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
     {
-        if (_role == "Admin")
-        {
-            filterContext.Result = new RedirectResult("~/Admin/LoginMember/Login");
-        }
-        else
-        {
-            // Lưu thông báo vào TempData
-            filterContext.Controller.TempData["Message"] = "Bạn cần đăng nhập để tiếp tục thao tác.";
-            filterContext.Result = new RedirectResult("~/dang-nhap");
-        }        
+        // Lưu thông báo vào TempData
+        filterContext.Controller.TempData["Message"] = "Bạn cần đăng nhập để tiếp tục thao tác.";
+        filterContext.Result = new RedirectResult("~/dang-nhap");
     }
 }

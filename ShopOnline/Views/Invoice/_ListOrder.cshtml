@@ -1,0 +1,127 @@
+﻿@using ShopOnline.Models
+@model List<Invoince>
+
+@if (Model.Count > 0)
+{
+    foreach (var i in Model)
+    {
+        <div class="card mb-5">
+            <div class="top row justify-content-between px-sm-3 pt-sm-4 px-0">
+                <h5>ĐƠN HÀNG <span class="font-weight-bold"><a href="@Url.Action("InvoiceDetail", "Invoice", new { invoiceId = i.invoinceId })">#@i.invoinceId</a></span></h5>
+                <p class="mb-0">Tổng tiền: <span class="font-weight-bold">@String.Format("{0:0,0}", i.totalMoney) ₫</span></p>
+            </div> <!-- Add class 'active' to progress -->
+            <div class="row d-flex justify-content-center">
+                <div class="col-12">
+                    @if (i.status.Equals("pending"))
+                    {
+                        <ul id="progressbar" class="text-center">
+                            <li class="active step0"></li>
+                            <li class="step0"></li>
+                            <li class="step0"></li>
+                            <li class="step0"></li>
+                        </ul>
+                    }
+                    else if (i.status.Equals("confirmed"))
+                    {
+                        <ul id="progressbar" class="text-center">
+                            <li class="active step0"></li>
+                            <li class="active step0"></li>
+                            <li class="step0"></li>
+                            <li class="step0"></li>
+                        </ul>
+                    }
+                    else if (i.status.Equals("shipping"))
+                    {
+                        <ul id="progressbar" class="text-center">
+                            <li class="active step0"></li>
+                            <li class="active step0"></li>
+                            <li class="active step0"></li>
+                            <li class="step0"></li>
+                        </ul>
+                    }
+                    else if (i.status.Equals("completed"))
+                    {
+                        <ul id="progressbar" class="text-center">
+                            <li class="active step0"></li>
+                            <li class="active step0"></li>
+                            <li class="active step0"></li>
+                            <li class="active step0"></li>
+                        </ul>
+                    }
+                    else if (i.status.Equals("cancelled"))
+                    {
+                        <ul id="progressbar" class="text-center">
+                            <li class="step0"></li>
+                            <li class="step0"></li>
+                            <li class="step0"></li>
+                            <li class="step0"></li>
+                        </ul>
+                    }
+                </div>
+            </div>
+            <div class="row justify-content-between top">
+                <div class="row d-flex icon-content">
+                    <img class="icon" src="~/Content/img/Orders/process-check.png">
+                    <div class="d-flex flex-column">
+                        <p class="font-weight-bold">Order<br>Processed</p>
+                    </div>
+                </div>
+                <div class="row d-flex icon-content">
+                    <img class="icon" src="~/Content/img/Orders/process-product.png">
+                    <div class="d-flex flex-column">
+                        <p class="font-weight-bold">Order<br>Confirmed</p>
+                    </div>
+                </div>
+                <div class="row d-flex icon-content">
+                    <img class="icon" src="~/Content/img/Orders/process-delivery.png">
+                    <div class="d-flex flex-column">
+                        <p class="font-weight-bold">Order<br>Shipping</p>
+                    </div>
+                </div>
+                <div class="row d-flex icon-content">
+                    <img class="icon" src="~/Content/img/Orders/process-home.png">
+                    <div class="d-flex flex-column">
+                        <p class="font-weight-bold">Order<br>Arrived</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer px-sm-3 pt-sm-4 px-0">
+                <div class="row text-center ">
+                    <div class="col my-auto">
+                        <b><a href="@Url.Action("InvoiceDetail", "Invoice", new { invoiceId = i.invoinceId })">Theo dõi</a></b>
+                    </div>
+                    <div class="col my-auto">
+                        <b>
+                            @if (!i.status.Equals("completed") && !i.status.Equals("cancelled") && !i.paymentStatus.Equals("paid"))
+                            {
+                                <a href="@Url.Action("Cancel", "Invoice", new { id = i.invoinceId})" onclick="return confirm('Are you sure you want to cancel this order?')">Hủy đơn</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Hủy đơn</span>
+                            }
+                        </b>
+                    </div>
+                    <div class="col my-auto">
+                        <b>
+                            @if (i.paymentStatus.Equals("paid"))
+                            {
+                                <span style="color: #a0bcde">Đã thanh toán</span>
+                            }
+                            else if ((i.paymentStatus.Equals("failed") || i.paymentStatus.Equals("pending")) && i.paymentMethod.Equals("vnpay"))
+                            {
+                                <a href="@Url.Action("CreatePaymentUrl", "Payment", new { invoiceId = i.invoinceId })" target="_blank">Thanh toán</a>
+                            }
+                            else
+                            {
+                                <span>Thanh toán tiền mặt</span>
+                            }
+                        </b>
+                    </div>
+                    <div class="col my-auto"><img class="img-fluid" src="~/Content/img/Orders/three-dot.png" width="30" height="30"></div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
