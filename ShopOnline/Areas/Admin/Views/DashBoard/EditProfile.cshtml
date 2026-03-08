@@ -29,43 +29,6 @@
     </div>
 </div>
 
-@if (TempData["msgEditProfile"] != null)
-{
-    <script>
-        showToast({
-            type: "success",
-            message: "@TempData["msgEditProfile"].ToString().Replace("\"", "\\\"")"
-        });
-    </script>
-}
-else if (TempData["msgEditProfileFailed"] != null)
-{
-    <script>
-        showToast({
-            type: "danger",
-            message: "@TempData["msgEditProfileFailed"].ToString().Replace("\"", "\\\"")"
-        });
-    </script>
-}
-@if (TempData["msgChangePassword"] != null)
-{
-    <script>
-        showToast({
-            type: "success",
-            message: "@TempData["msgChangePassword"].ToString().Replace("\"", "\\\"")"
-        });
-    </script>
-}
-else if (TempData["msgChangePasswordFailed"] != null)
-{
-    <script>
-        showToast({
-            type: "danger",
-            message: "@TempData["msgChangePasswordFailed"].ToString().Replace("\"", "\\\"")"
-        });
-    </script>
-}
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -82,7 +45,7 @@ else if (TempData["msgChangePasswordFailed"] != null)
                             @using (Html.BeginForm("EditProfile", "DashBoard", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
                             {
                                 @Html.AntiForgeryToken()
-                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                @Html.ValidationSummary(true, "", new { @class = "form-message" })
                                 <div class="form-body">
                                     <div class="row">
                                         <div class="col-md-4">
@@ -116,7 +79,7 @@ else if (TempData["msgChangePasswordFailed"] != null)
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="productName">Birthday</label>
-                                                        @Html.EditorFor(model => model.birthday, new { htmlAttributes = new { @class = "form-control", @id = "birthday", @Value = @Model.birthday.Value.Date.ToString("yyyy/MM/dd"), @placeholder = "yyyy/mm/dd" } })
+                                                        @Html.TextBoxFor(model => model.birthday, new { @class = "form-control", @type = "date", @id = "birthday", @Value = Model.birthday.HasValue ? Model.birthday.Value.ToString("yyyy-MM-dd") : "" })
                                                         <span class="form-message"></span>
                                                     </div>
                                                 </div>
@@ -143,7 +106,7 @@ else if (TempData["msgChangePasswordFailed"] != null)
                                 </div>
                                 <div class="form-actions">
                                     <div class="text-right">
-                                        <button type="submit" class="btn btn-info">Save changes</button>
+                                        <button type="submit" id="btnEditProfile" class="btn btn-info">Save changes</button>
                                         <button type="reset" class="btn btn-dark">Reset</button>
                                     </div>
                                 </div>
@@ -153,7 +116,7 @@ else if (TempData["msgChangePasswordFailed"] != null)
                             @using (Html.BeginForm("ChangePassword", "DashBoard", FormMethod.Post, new { @id = "form-2", @enctype = "multipart/form-data" }))
                             {
                                 @Html.AntiForgeryToken()
-                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                @Html.ValidationSummary(true, "", new { @class = "form-message" })
                                 <div class="form-body">
                                     @*set id rỗng để k bị trùng với id của editfor ở trên*@
                                     @Html.HiddenFor(model => model.dateCreate, new { id = "" })
@@ -186,7 +149,7 @@ else if (TempData["msgChangePasswordFailed"] != null)
                                                 <span class="form-message"></span>
                                             </div>
                                             <div class="form-group text-center">
-                                                <button type="submit" class="btn btn-info">Save changes</button>
+                                                <button type="submit" id="btnChangePassword" class="btn btn-info">Save changes</button>
                                                 <button type="reset" class="btn btn-dark">Reset</button>
                                             </div>
                                         </div>
@@ -229,9 +192,7 @@ else if (TempData["msgChangePasswordFailed"] != null)
             }, 'Mật khẩu không khớp')
         ],
     });
-</script>
 
-<script>
     const inputImg = document.querySelector("#image");
     const img = document.querySelector("#imagePreview");
 
@@ -249,4 +210,77 @@ else if (TempData["msgChangePasswordFailed"] != null)
             reader.readAsDataURL(file);
         }
     });
+
+    // Submit form (Edit Profile)
+    $(document).on('keydown', '#form-1', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+
+            // ✅ Tạo FormData để gửi cả text và file
+            var form = $("#form-1")[0]; // lấy phần tử DOM gốc, không phải đối tượng jQuery
+            var formData = new FormData(form);
+            handleSubmit(form, formData);
+        }
+    });
+
+    $('#btnEditProfile').on('click', function (e) {
+        e.preventDefault();
+
+        // ✅ Tạo FormData để gửi cả text và file
+        var form = $("#form-1")[0];
+        var formData = new FormData(form);
+        handleSubmit(form, formData);
+    });
+
+    // Submit form (Change Password)
+    $(document).on('keydown', '#form-2', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+
+            // ✅ Tạo FormData để gửi cả text và file
+            var form = $("#form-2")[0];
+            var formData = new FormData(form);
+            handleSubmit(form, formData);
+        }
+    });
+
+    $('#btnChangePassword').on('click', function (e) {
+        e.preventDefault();
+
+        // ✅ Tạo FormData để gửi cả text và file
+        var form = $("#form-2")[0];
+        var formData = new FormData(form);
+        handleSubmit(form, formData);
+    });
+
+    function handleSubmit(form, formData) {
+        $.ajax({
+            url: $(form).attr("action"),
+            type: $(form).attr("method"),
+            dataType: "json",
+            data: formData,
+            processData: false, // ❗ không xử lý dữ liệu (để giữ nguyên dạng FormData)
+            contentType: false, // ❗ để browser tự set Content-Type (multipart/form-data)
+            success: function (res) {
+                if (res.success) {
+                    showToast({
+                        type: "success",
+                        message: res.msg,
+                        language: "en"
+                    });
+
+                    $(form)[0].reset();
+                } else {
+                    showToast({
+                        type: "danger",
+                        message: res.msg,
+                        language: "en"
+                    });
+                }
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            },
+        });
+    }
 </script>

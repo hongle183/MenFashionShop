@@ -1,0 +1,100 @@
+﻿@using ShopOnline.Models
+@model List<Invoince>
+
+<div class="table-responsive" style="max-height:400px;">
+    <table class="table font-14">
+        <thead>
+            <tr class="border-0 font-weight-medium text-muted text-center">
+                <th class="border-0">
+                    Order Id
+                </th>
+                <th class="border-0 px-2">
+                    Order Date
+                </th>
+                <th class="border-0">
+                    Total money
+                </th>
+                <th class="border-0">
+                    Payment Method
+                </th>
+                <th class="border-0 px-2">
+                    Payment Status
+                </th>
+                <th class="border-0">
+                    Status
+                </th>
+                <th class="border-0" width="250px">
+                    Feature
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr class="text-center">
+                    <td class="align-middle font-weight-medium">
+                        <a href="@Url.Action("InvoiceDetail", "CRUDinvoice", new { invoiceNo = i.invoinceId})">#@i.invoinceId</a>
+                    </td>
+                    <td class="align-middle text-muted">@String.Format("{0:dd/MM/yyyy}", i.dateCreate)</td>
+                    <td class="align-middle">@String.Format("{0:N0}", i.totalMoney) ₫</td>
+                    <td class="align-middle">
+                        @if (i.paymentMethod.Equals("cash"))
+                        {
+                            <img src="~/Content/img/icon/cash.png" alt="cash" width="24">
+                        }
+                        else if (i.paymentMethod.Equals("vnpay"))
+                        {
+                            <img src="~/Content/img/icon/vnpay.ico" alt="vnpay" width="24">
+                        }
+                    </td>
+                    <td class="align-middle">
+                        @if (i.paymentStatus.Equals("pending"))
+                        {
+                            <span class="badge badge-warning">@i.paymentStatus</span>
+                        }
+                        else if (i.paymentStatus.Equals("paid"))
+                        {
+                            <span class="badge badge-success">@i.paymentStatus</span>
+                        }
+                        else if (i.paymentStatus.Equals("failed"))
+                        {
+                            <span class="badge badge-danger">@i.paymentStatus</span>
+                        }
+                    </td>
+                    <td class="align-middle">
+                        @if (i.status.Equals("pending"))
+                        {
+                            <span class="badge badge-warning">@i.status</span>
+                        }
+                        else if (i.status.Equals("comfirmed"))
+                        {
+                            <span class="badge badge-info">@i.status</span>
+                        }
+                        else if (i.status.Equals("shipping"))
+                        {
+                            <span class="badge badge-primary">@i.status</span>
+                        }
+                        else if (i.status.Equals("completed"))
+                        {
+                            <span class="badge badge-success">@i.status</span>
+                        }
+                        else if (i.status.Equals("cancelled"))
+                        {
+                            <span class="badge badge-secondary">@i.status</span>
+                        }
+                    </td>
+                    <td class="align-middle text-right">
+                        @if (i.status.Equals("pending"))
+                        {<a href="@Url.Action("Comfirmed", "CRUDinvoice", new { id = i.invoinceId})" class="btn-sm  btn-info">Comfirmed</a>}
+                        else if (i.status.Equals("comfirmed"))
+                        {<a href="@Url.Action("Shipping", "CRUDinvoice", new { id = i.invoinceId})" class="btn-sm  btn-primary">Shipping</a>}
+                        else if (i.status.Equals("shipping"))
+                        {<a href="@Url.Action("Completed", "CRUDinvoice", new { id = i.invoinceId})" class="btn-sm  btn-success">Completed</a>}
+                        @if (!i.status.Equals("completed") && !i.status.Equals("cancelled") && !i.paymentStatus.Equals("paid"))
+                        {<a href="@Url.Action("Cancel", "CRUDinvoice", new { id = i.invoinceId })" class="btn-sm  btn-light" onclick="return confirm('Are you sure you want to cancel this?')">Cancel</a>}
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

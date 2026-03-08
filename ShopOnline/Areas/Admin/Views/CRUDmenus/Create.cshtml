@@ -1,91 +1,41 @@
 ﻿@model ShopOnline.Models.Menu
-@{
-    ViewBag.Title = "Create";
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
-}
-<div class="page-breadcrumb">
-    <div class="row">
-        <div class="col-7 align-self-center">
-            <h4 class="page-title text-truncate text-dark font-weight-medium mb-1">Create menu</h4>
-            <div class="d-flex align-items-center">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb m-0 p-0">
-                        <li class="breadcrumb-item"><a href="~/Admin/CRUDmenus/Index" class="text-muted">Menu manage</a></li>
-                        <li class="breadcrumb-item text-muted active" aria-current="page">Create</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="col-5 align-self-center">
-            <div class="customize-input float-right">
-                <select class="custom-select custom-select-set form-control bg-white border-0 custom-shadow custom-radius">
-                    <option selected>Aug 19</option>
-                    <option value="1">July 19</option>
-                    <option value="2">Jun 19</option>
-                </select>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="card-title">Create menu</h3>
-                    @if (TempData["msgCreatefailed"] != null)
-                    {
-                        <script>
-                            showToast({
-                                type: "danger",
-                                message: "@TempData["msgCreatefailed"].ToString().Replace("\"", "\\\"")"
-                            });
-                        </script>
-                    }
-                    @using (Html.BeginForm("Create", "CRUDmenus", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                        <div class="form-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="menuName">Menu name</label>
-                                        <input type="text" class="form-control" name="name" id="menuName" />
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="meta">Meta</label>
-                                        <input type="text" class="form-control" name="meta" id="meta" />
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="order">Order</label>
-                                        <input type="number" class="form-control" name="order" id="order" />
-                                        <span class="form-message"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <div class="text-right">
-                                <button type="submit" class="btn btn-info">Save changes</button>
-                                <button type="reset" class="btn btn-dark">Reset</button>
-                            </div>
-                        </div>
-                    }
+@using (Html.BeginForm("Create", "CRUDmenus", FormMethod.Post, new { @id = "form-1" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "form-message" })
+
+    <div class="form-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="menuName">Menu name</label>
+                    <input type="text" class="form-control" name="name" id="menuName" />
+                    <span class="form-message"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="meta">Meta</label>
+                    <input type="text" class="form-control" name="meta" id="meta" />
+                    <span class="form-message"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="order">Order</label>
+                    @*<input type="number" class="form-control" name="order" id="order" value="@ViewBag.count" />*@
+                    @Html.DropDownListFor(model => model.order,
+                         (SelectList)ViewBag.AvailableOrders,
+                         new { @class = "form-control" })
+                    <span class="form-message"></span>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}
 <script src="~/Content/js/validator.js"></script>
 <script src="~/Areas/Admin/Content/js/helper.js"></script>
 <script>
@@ -96,16 +46,19 @@
         rules: [
             Validator.isRequired('#menuName'),
             Validator.isRequired('#meta'),
-            Validator.isRequired('#order')
+            //Validator.isRequired('#order')
         ],
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        var menuNameInput = document.getElementById('menuName');
-        var metaInput = document.getElementById('meta');
+    $(document).on('input', '#menuName', function () {
+        const menuName = $(this);
+        const meta = $('#meta');
 
-        menuNameInput.addEventListener('input', function () {
-            metaInput.value = cleanText(menuNameInput.value);
-        });
+        if (meta.length) {
+            meta.val(cleanText(menuName.val()));
+
+            // Kích hoạt lại sự kiện input để Validator bắt được thay đổi
+            meta.trigger('input');
+        }
     });
 </script>

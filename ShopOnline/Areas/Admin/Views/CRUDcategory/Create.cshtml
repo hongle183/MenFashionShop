@@ -1,0 +1,30 @@
+﻿@model ShopOnline.Models.ProductCategory
+
+@using (Html.BeginForm("Create", "CRUDcategory", FormMethod.Post, new { @id = "form-1" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "form-message" })
+
+    <div class="form-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="categoryName">Category name</label>
+                    <input type="text" class="form-control" name="categoryName" id="categoryName" placeholder="T-Shirt" />
+                    <span class="form-message"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="~/Content/js/validator.js"></script>
+<script>
+    Validator({
+        form: '#form-1',
+        formGroupSelector: '.form-group',
+        errorSelector: '.form-message',
+        rules: [
+            Validator.isRequired('#categoryName'),
+        ],
+    });
+</script>

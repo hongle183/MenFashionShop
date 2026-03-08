@@ -1,24 +1,26 @@
-﻿using System;
+﻿using ShopOnline.Models;
+using System;
 using System.Linq;
 using System.Web.Mvc;
-using ShopOnline.Models;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [CustomAuthorize("Admin")]
+    [CustomAuthorize("Manager")]
     public class CRUDcategoryController : Controller
     {
         menfsEntities db = new menfsEntities();
+        // GET: Admin/CRUDcategory
         public ActionResult Index()
         {
             return View();
         }
         [HttpGet]
-        public JsonResult DsCategory()
+        public JsonResult GetCategory()
         {
             try
             {
-                var dsCategory = db.ProductCategories.OrderByDescending(i => i.dateCreate)
+                // không lấy ICollection<>, List<>, hoặc navigation property → vòng lặp vô tận JSON.
+                var listCategory = db.ProductCategories.OrderByDescending(i => i.dateCreate)
                                                       .Select(i => new
                                                       {
                                                           categoryId = i.categoryId,
@@ -26,84 +28,111 @@ namespace ShopOnline.Areas.Admin.Controllers
                                                           dateCreate = i.dateCreate
                                                       }).ToList();
 
-                return Json(new { code = 200, dsCategory = dsCategory, msg = "Successfully get list Category!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, listCategory, msg = "Get list Category successfully!" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { code = 500, msg = "Get list Category false: " + ex.Message, JsonRequestBehavior.AllowGet });
+                return Json(new { success = false, msg = "Error: " + ex.Message, JsonRequestBehavior.AllowGet });
             }
         }
+        // GET: Admin/CRUDcategory/Create
+        [HttpGet]
+        public PartialViewResult Create()
+        {
+            return PartialView();
+        }
+        // POST: Admin/CRUDcategory/Create
         [HttpPost]
-        public JsonResult AddCategory(string categoryName)
+        [ValidateAntiForgeryToken]
+        public JsonResult Create(string categoryName)
         {
             try
             {
-                var category = new ProductCategory();
-                category.categoryName = categoryName;
-                category.status = true;
-                category.dateCreate = DateTime.Now;
+                var check = db.ProductCategories.SingleOrDefault(model => model.categoryName == categoryName);
+                if (check != null)
+                {
+                    return Json(new { success = false, msg = "This category already exists!" });
+                }
+
+                var category = new ProductCategory{
+                    categoryName = categoryName,
+                    status = true,
+                    dateCreate = DateTime.Now
+                };
 
                 db.ProductCategories.Add(category);
                 db.SaveChanges();
 
-                return Json(new { code = 200, msg = "Successfully added a new product category!!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, msg = "New product category added successfully!!" });
             }
             catch (Exception ex)
             {
-                return Json(new { code = 500, msg = "Error: " + ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
-
+        // GET: Admin/CRUDcategory/Edit/5
         [HttpGet]
-        public JsonResult Detail(Guid categoryId)
+        public PartialViewResult Edit(Guid categoryId)
         {
-            try
-            {
-                var detail = db.ProductCategories.Where(i => i.categoryId == categoryId)
-                                                   .Select(i => new
-                                                   {
-                                                       categoryId = i.categoryId,
-                                                       categoryName = i.categoryName
-                                                   }).SingleOrDefault();
+            var detail = db.ProductCategories.FirstOrDefault(i => i.categoryId == categoryId);
 
-                return Json(new { code = 200, detail = detail, msg = "Successfully get detail!" }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { code = 500, msg = "Failed get detail!" + ex.Message }, JsonRequestBehavior.AllowGet);
-            }
+            return PartialView(detail);
         }
+        // POST: Admin/CRUDcategory/Edit/5
         [HttpPost]
-        public JsonResult Update(Guid categoryId, string categoryName)
+        [ValidateAntiForgeryToken]
+        public JsonResult Edit(ProductCategory category)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage).ToList();
+
+                return Json(new { success = false, message = "Data is invalid", errors });
+            }
+
             try
             {
-                var category = db.ProductCategories.Where(i => i.categoryId == categoryId)
-                                                   .SingleOrDefault();
-                category.categoryName = (string)categoryName;
-                category.dateCreate = DateTime.Now;
+                var existing = db.ProductCategories.FirstOrDefault(i => i.categoryId == category.categoryId);
+                if (existing == null)
+                {
+                    return Json(new { success = false, msg = "Category not found!" });
+                }
+
+                existing.categoryName = category.categoryName.Trim();
+                existing.dateCreate = DateTime.Now;
                 db.SaveChanges();
-                return Json(new { code = 200, msg = "Successfully update!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, msg = "Category updated successfully!" });
             }
             catch (Exception ex)
             {
-                return Json(new { code = 500, msg = "Faily update" + ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
+        // POST: Admin/CRUDcategory/Delete/5
         [HttpPost]
         public JsonResult Delete(Guid categoryId)
         {
             try
             {
-                ProductCategory category = db.ProductCategories.Where(i => i.categoryId == categoryId)
-                                                                .SingleOrDefault();
+                var hasProducts = db.Products.Any(p => p.categoryId == categoryId);
+
+                if (hasProducts)
+                {
+                    return Json(new { success = false, msg = "Cannot delete this category because it still contains products!" });
+                }
+
+                var category = db.ProductCategories.FirstOrDefault(i => i.categoryId == categoryId);
+                if (category == null)
+                    return Json(new { success = false, msg = "Category not found!" });
+
                 db.ProductCategories.Remove(category);
                 db.SaveChanges();
-                return Json(new { code = 200, msg = "Successfully delete!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, msg = "Category deleted successfully." });
             }
             catch (Exception ex)
             {
-                return Json(new { code = 500, msg = "Failed delete! " + ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
     }

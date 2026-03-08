@@ -17,106 +17,8 @@
     @Styles.Render("~/bundles/adminCss")
     @Scripts.Render("~/bundles/jquery")
     <script src="~/Areas/Admin/Content/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        // datatable
-        window.defaultDataTableSettings = {
-            paging: true,
-            pageLength: 5,
-            responsive: true,
-            layout: {
-                topStart: {
-                    search: {
-                        placeholder: ''
-                    }
-                },
-                topEnd: null,
-                bottomStart: 'info',
-                bottomEnd: 'paging'
-            }, search: {
-                return: true
-            }
-        };
-
-        tinymce.init({
-            selector: 'textarea',
-            max_height: 400,
-            menubar: false,
-            branding: false,
-            plugins:
-                'autoresize advlist autolink lists link image charmap print preview' +
-                'anchor searchreplace visualblocks code fullscreen' +
-                'insertdatetime image table paste code help wordcount',
-            toolbar: 'undo redo | styles | ' +
-                'bold italic backcolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat image',
-            setup: (editor) => {
-                editor.on('init', () => {
-                    editor.getContainer().style.transition = 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out';
-                });
-                editor.on('focus', () => {
-                    editor.getContainer().style.borderColor = 'rgba(0,0,0,.25)';
-                });
-                editor.on('blur', () => {
-                    editor.getContainer().style.borderColor = '';
-                });
-            },
-            content_style: 'body { font-family:Rubik,sans-serif; font-size:14px }',
-            style_formats: [
-                // Adds a h1 format to style_formats that applies a class of heading
-                { title: 'Heading 1', block: 'h3', classes: 'heading' },
-                { title: 'Heading 2', block: 'h4', classes: 'heading' }
-            ],
-            image_dimensions: false,
-            image_caption: true,
-            /* enable automatic uploads of images represented by blob or data URIs*/
-            automatic_uploads: true,
-            /*
-              URL of our upload handler (for more details check: https://www.tiny.cloud/docs/configure/file-image-upload/#images_upload_url)
-              images_upload_url: 'postAcceptor.php',
-              here we add custom filepicker only to Image dialog
-            */
-            file_picker_types: 'image',
-            /* and here's our custom image picker*/
-            file_picker_callback: function (cb, value, meta) {
-                var input = document.createElement('input');
-                input.setAttribute('type', 'file');
-                input.setAttribute('accept', 'image/*');
-
-                /*
-                  Note: In modern browsers input[type="file"] is functional without
-                  even adding it to the DOM, but that might not be the case in some older
-                  or quirky browsers like IE, so you might want to add it to the DOM
-                  just in case, and visually hide it. And do not forget do remove it
-                  once you do not need it anymore.
-                */
-
-                input.onchange = function () {
-                    var file = this.files[0];
-
-                    var reader = new FileReader();
-                    reader.onload = function () {
-                        /*
-                          Note: Now we need to register the blob in TinyMCEs image blob
-                          registry. In the next release this part hopefully won't be
-                          necessary, as we are looking to handle it internally.
-                        */
-                        var id = 'blobid' + (new Date()).getTime();
-                        var blobCache = tinymce.activeEditor.editorUpload.blobCache;
-                        var base64 = reader.result.split(',')[1];
-                        var blobInfo = blobCache.create(id, file, base64);
-                        blobCache.add(blobInfo);
-
-                        /* call the callback and populate the Title field with the file name */
-                        cb(blobInfo.blobUri(), { title: file.name });
-                    };
-                    reader.readAsDataURL(file);
-                };
-
-                input.click();
-            }
-        });
-    </script>
+    <script src="~/Content/js/toast-message.js"></script>
+    <script src="~/Areas/Admin/Content/js/custom.js"></script>
 </head>
 
 <body>
@@ -327,13 +229,13 @@
                             @if (user != null)
                             {
                                 <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <img src=@Url.Content("" + user.avatar) class="avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                                    <span class="ml-2 d-none d-lg-inline-block">
+                                    <img src=@Url.Content(user.avatar) class="avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                                    <span class="ml-1 d-none d-lg-inline-block">
                                         <span>Hello,</span> <span class="text-dark">@user.lastName</span> <i data-feather="chevron-down" class="svg-icon"></i>
                                     </span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                                    <a class="dropdown-item" href="@Url.Action("EditProfile", "DashBoard", new { memberId = user.memberId })">
+                                    <a class="dropdown-item" href="@Url.Action("EditProfile", "DashBoard")">
                                         <i data-feather="user" class="svg-icon mr-2 ml-1"></i>
                                         My Profile
                                     </a>
@@ -369,7 +271,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="~/Home/Index" aria-expanded="false" target="_blank">
+                            <a class="sidebar-link" href="@Url.Action("Index", "Home", new { Area = "" })" aria-expanded="false" target="_blank">
                                 <i data-feather="shopping-bag" class="feather-icon"></i><span class="hide-menu">
                                     Back to shop
                                 </span>
@@ -378,32 +280,32 @@
                         <li class="list-divider"></li>
                         <li class="nav-small-cap"><span class="hide-menu">Components</span></li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="~/Admin/CRUDcategory/Index" aria-expanded="false">
+                            <a class="sidebar-link" href="@Url.Action("Index", "CRUDcategory", new { Area = "Admin" })" aria-expanded="false">
                                 <i data-feather="server" class="feather-icon"></i><span class="hide-menu">Category</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="~/Admin/CRUDproduct/Index" aria-expanded="false">
+                            <a class="sidebar-link" href="@Url.Action("Index", "CRUDproduct", new { Area = "Admin" })" aria-expanded="false">
                                 <i data-feather="grid" class="feather-icon"></i><span class="hide-menu">Product</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="~/Admin/CRUDblog/Index" aria-expanded="false">
+                            <a class="sidebar-link" href="@Url.Action("Index", "CRUDblog", new { Area = "Admin" })" aria-expanded="false">
                                 <i data-feather="layout" class="feather-icon"></i><span class="hide-menu">Blog</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="~/Admin/CRUDmember/Index" aria-expanded="false">
+                            <a class="sidebar-link" href="@Url.Action("Index", "CRUDmember", new { Area = "Admin" })" aria-expanded="false">
                                 <i data-feather="user" class="feather-icon"></i><span class="hide-menu">Member</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="~/Admin/CRUDinvoince/Index" aria-expanded="false">
+                            <a class="sidebar-link" href="@Url.Action("Index", "CRUDinvoice", new { Area = "Admin" })" aria-expanded="false">
                                 <i data-feather="shopping-cart" class="feather-icon"></i><span class="hide-menu">Orders</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="~/Admin/CRUDmenus/Index" aria-expanded="false">
+                            <a class="sidebar-link" href="@Url.Action("Index", "CRUDmenus", new { Area = "Admin" })" aria-expanded="false">
                                 <i data-feather="pie-chart" class="feather-icon"></i><span class="hide-menu">Menu</span>
                             </a>
                         </li>
@@ -447,17 +349,17 @@
     <!-- All Jquery -->
     <!-- ============================================================== -->
     @Scripts.Render("~/bundles/adminJs")
-    <script>
+<script>
         //session end
-        var sessionTimeoutWarning = @Session.Timeout- 1;
+        var sessionTimeoutWarning = @(Session.Timeout - 1);
 
         var sTimeout = parseInt(sessionTimeoutWarning) * 60 * 1000;
-        setTimeout('SessionEnd()', sTimeout);
+        setTimeout(SessionEnd, sTimeout);
 
         function SessionEnd() {
             window.location = "/Admin/LoginMember/Logout";
         }
-    </script>
+</script>
     @RenderSection("ChartDashboard", required: false)
     @RenderSection("scripts", required: false)
 </body>

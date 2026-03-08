@@ -39,14 +39,15 @@
                         <script>
                             showToast({
                                 type: "danger",
-                                message: "@TempData["msgCreatefailed"].ToString().Replace("\"", "\\\"")"
+                                message: "@TempData["msgCreatefailed"].ToString().Replace("\"", "\\\"")",
+                                language: "en"
                             });
                         </script>
                     }
                     @using (Html.BeginForm("Create", "CRUDblog", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.ValidationSummary(true, "", new { @class = "form-message" })
 
                         <div class="form-body">
                             <div class="row">
@@ -70,8 +71,8 @@
                                 <div class="col-4">
                                     <div class="form-group">
                                         <label for="image">Image</label>
-                                        <img id="file-ip-1-preview" style="max-height: 163px; max-width: 342px; display: block; margin-bottom: 10px" />
-                                        <input type="file" name="uploadFile" class="form-control-file" id="image" onchange="showPreview(event);" />
+                                        <img id="imagePreview" style="max-height: 163px; max-width: 342px; display: block; margin-bottom: 10px" />
+                                        <input type="file" name="uploadFile" class="form-control-file" id="image" accept="image/jpeg, image/png" />
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
@@ -108,6 +109,7 @@
         rules: [
             Validator.isRequired('#title'),
             Validator.isRequired('#image'),
+            Validator.isRequired('#description'),
         ],
     });
 
@@ -120,11 +122,18 @@
         });
     });
 
-    function showPreview(event) {
-        if (event.target.files.length > 0) {
-            var src = URL.createObjectURL(event.target.files[0]);
-            var preview = document.getElementById("file-ip-1-preview");
-            preview.src = src;
+    $("#image").on("change", function () {
+        const file = this.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                $("#imagePreview").attr("src", e.target.result).addClass("img-thumbnail");
+            };
+            reader.readAsDataURL(file);
         }
-    }
+    });
+
+    $("#form-1").on("reset", function () {
+        $("#imagePreview").removeAttr("src").removeClass("img-thumbnail");
+    });;
 </script>

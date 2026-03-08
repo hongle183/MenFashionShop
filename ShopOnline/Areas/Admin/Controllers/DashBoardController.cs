@@ -10,7 +10,7 @@ using ShopOnline.Models;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [CustomAuthorize("Admin")]
+    [CustomAuthorize("Manager")]
     public class DashBoardController : Controller
     {
         menfsEntities db = new menfsEntities();
@@ -90,75 +90,87 @@ namespace ShopOnline.Areas.Admin.Controllers
             // Chart
             return PartialView();
         }
-        public PartialViewResult InvoinceList()
+        public PartialViewResult InvoiceList()
         {
             var list = db.Invoinces.OrderByDescending(model => model.dateCreate).ToList();
             return PartialView(list);
         }
         [HttpGet]
-        public ActionResult EditProfile(Guid memberId)
+        public ActionResult EditProfile()
         {
-            Member member = db.Members.Find(memberId);
-            Session["imgPath"] = member.avatar;
-            return View(member);
+            Member user = (Member)Session["infoAdmin"];
+            Session["imgPath"] = user.avatar;
+            return View(user);
         }
         [HttpPost]
-        public ActionResult EditProfile(Member member, HttpPostedFileBase uploadFile)
+        public JsonResult EditProfile(Member member, HttpPostedFileBase uploadFile)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage).ToList();
+
+                return Json(new { success = false, msg = "Data is invalid", errors });
+            }
+
             try
             {
-                if (ModelState.IsValid)
+                // Lấy entity thật từ DB để cập nhật
+                var dbMember = db.Members.FirstOrDefault(m => m.memberId == member.memberId);
+
+                // Cập nhật thông tin được phép thay đổi
+                dbMember.firstName = member.firstName?.Trim();
+                dbMember.lastName = member.lastName?.Trim();
+                dbMember.email = member.email?.Trim();
+                dbMember.phone = member.phone?.Trim();
+                dbMember.address = member.address?.Trim();
+                dbMember.birthday = member.birthday;
+
+                string oldAvatarRel = dbMember.avatar;
+                string oldAvatarAbs = !string.IsNullOrEmpty(oldAvatarRel) ? Server.MapPath(oldAvatarRel) : null;
+
+                // Nếu có upload file mới
+                if (uploadFile != null && uploadFile.ContentLength > 0)
                 {
-                    if (uploadFile != null)
+                    string extension = Path.GetExtension(uploadFile.FileName).ToLower();
+                    if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
                     {
-                        var fileName = Path.GetFileName(uploadFile.FileName);
-                        var path = Path.Combine(Server.MapPath("~/Content/img/avatar"), fileName);
-
-                        member.avatar = "~/Content/img/avatar/" + fileName;
-                        db.Entry(member).State = System.Data.Entity.EntityState.Modified;
-
-                        string oldImgPath = Request.MapPath(Session["imgPath"].ToString()); // Lấy đường dẫn ảnh (absolute path)
-                        var avatarName = Session["imgPath"].ToString(); // Lấy đường dẫn ảnh (relative path)
-                        var checkAvatart = db.Members.Where(model => model.avatar == avatarName).ToList(); // Kiểm tra ảnh có trùng với avatar của member nào không
-
-                        if (db.SaveChanges() > 0)
-                        {
-                            uploadFile.SaveAs(path);
-                            if (System.IO.File.Exists(oldImgPath) && checkAvatart.Count < 2) // Nếu tồn tại hình trong folder và không member nào có hình này thì xóa ra khỏi folder
-                            {
-                                System.IO.File.Delete(oldImgPath);
-                            }
-                            var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();
-                            Session["infoAdmin"] = info; // Lấy thông tin mới của member lưu lại vào session hiển thị
-                            TempData["msgEditProfile"] = "Cập nhật tài khoản thành công!";
-                            return View(member);
-                        }
-
+                        return Json(new { success = false, msg = "Invalid file type. Only JPG, JPEG, or PNG are allowed." });
                     }
-                    else
+
+                    // Tạo đường dẫn file mới
+                    var fileName = Path.GetFileName(uploadFile.FileName);
+                    var newAvatarRel = "/Content/img/avatar/" + fileName;
+                    var newAvatarAbs = Path.Combine(Server.MapPath("/Content/img/avatar"), fileName);
+
+                    // Lưu file mới
+                    uploadFile.SaveAs(newAvatarAbs);
+                    dbMember.avatar = newAvatarRel;
+
+                    // Xóa ảnh cũ nếu không còn ai dùng
+                    if (!string.IsNullOrEmpty(oldAvatarAbs))
                     {
-                        member.avatar = Session["imgPath"].ToString();
-                        db.Entry(member).State = System.Data.Entity.EntityState.Modified;
-                        if (db.SaveChanges() > 0)
+                        bool isUsedByOther = db.Members.Any(m => m.avatar == oldAvatarRel && m.memberId != dbMember.memberId);
+                        if (System.IO.File.Exists(oldAvatarAbs) && !isUsedByOther)
                         {
-                            var info = db.Members.Where(model => model.memberId == member.memberId).SingleOrDefault();
-                            Session["infoAdmin"] = info;
-                            TempData["msgEditProfile"] = "Cập nhật tài khoản thành công!";
-                            return View(member);
+                            System.IO.File.Delete(oldAvatarAbs);
                         }
                     }
+
                 }
-                ViewBag.roleId = new SelectList(db.Roles, "roleId", "roleName", member.roleId);
-                return View(member);
+                db.SaveChanges();
+
+                // Cập nhật session với dữ liệu mới
+                Session["infoAdmin"] = dbMember;
+                return Json(new { success = true, msg = "Update profile successfully!" });
             }
             catch (Exception ex)
             {
-                TempData["msgEditProfileFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
-                return View(member);
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
         [HttpPost]
-        public ActionResult ChangePassword(Member member, FormCollection collection)
+        public JsonResult ChangePassword(Member member, FormCollection collection)
         {
             try
             {
@@ -174,19 +186,13 @@ namespace ShopOnline.Areas.Admin.Controllers
                 {
                     check.password = NewPassword;
                     db.SaveChanges();
-                    TempData["msgChangePassword"] = "Cập nhật mật khẩu thành công!";
-                    return RedirectToAction("EditProfile", new { memberId = member.memberId });
+                    return Json(new { success = true, msg = "Change password successfully!" });
                 }
-                else
-                {
-                    TempData["msgChangePasswordFailed"] = "Sai mật khẩu!";
-                    return RedirectToAction("EditProfile", new { memberId = member.memberId });
-                }
+                return Json(new { success = false, msg = "Password incorrect" });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                TempData["msgChangePasswordFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
-                return RedirectToAction("EditProfile", new { memberId = member.memberId });
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
     }

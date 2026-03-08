@@ -10,6 +10,8 @@ namespace ShopOnline.Areas.Admin.Controllers
     public class LoginMemberController : Controller
     {
         menfsEntities db = new menfsEntities();
+
+        // GET: Admin/LoginMember/Login
         [HttpGet]
         public ActionResult Login()
         {
@@ -20,31 +22,28 @@ namespace ShopOnline.Areas.Admin.Controllers
             return View();
         }
 
+        // POST: Admin/LoginMember/Login
         [HttpPost]
-        public ActionResult Login(string username, string password, string recaptchaToken)
+        [ValidateAntiForgeryToken]
+        public JsonResult Login(string username, string password, string recaptchaToken)
         {
-            if (string.IsNullOrEmpty(recaptchaToken) || !VerifyRecaptcha(recaptchaToken))
-            {
-                TempData["msgFailed"] = "Xác minh reCAPTCHA không thành công. Vui lòng thử lại.";
-                return RedirectToAction("Login");
-            }
+            if (string.IsNullOrEmpty(recaptchaToken) || !VerifyRecaptcha(recaptchaToken)) 
+                return Json(new { success = false, msg = "ReCAPTCHA verification failed. Please try again." });            
 
             password = Encryptor.MD5Hash(password);
             var check = db.Members.Where(model => model.phone == "admin" && model.password == password).SingleOrDefault();
 
-            // Tiếp tục xử lý logic login
             if (check == null)
-            {
-                TempData["msgFailed"] = "Username hoặc password không đúng.";
-                return View();
-            }
+                return Json(new { success = false, msg = "Username or password incorrect." });            
 
             FormsAuthentication.SetAuthCookie(check.phone, false);
             Session["UserRole"] = "Admin";
             Session["infoAdmin"] = check;
-            TempData["msgLoginSuccess"] = "Đăng nhập thành công.";
-            return RedirectToAction("Index", "DashBoard");
+            return Json(new { success = true, redirectUrl = Url.Action("Index", "DashBoard"), msg = "Login successful." });
         }
+
+        // GET: Admin/LoginMember/Logout
+        [HttpGet]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();

@@ -9,190 +9,227 @@ using System.IO;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
-    [CustomAuthorize("Admin")]
+    [CustomAuthorize("Manager")]
     public class CRUDproductController : Controller
     {
         menfsEntities db = new menfsEntities();
 
         // GET: Admin/CRUDproduct
-        public ActionResult Index(string searching)
+        public ActionResult Index()
         {
-            var products = db.Products.Where(model => model.productName.Contains(searching) || searching == null && model.status == true).OrderByDescending(model => model.dateCreate).Include(model => model.Member).Include(model => model.ProductCategory).ToList();
-            return View(products);
+            return View();
+        }
+        [HttpGet]
+        public JsonResult GetProduct()
+        {
+            try
+            {
+                // không lấy ICollection<>, List<>, hoặc navigation property → vòng lặp vô tận JSON.
+                var listProduct = db.Products.OrderByDescending(i => i.dateCreate)
+                                                      .Select(i => new
+                                                      {
+                                                          productId = i.productId,
+                                                          image = i.image,
+                                                          productName = i.productName,
+                                                          price = i.price,
+                                                          discount = i.discount,
+                                                          quantity = i.quanlity,
+                                                          category = i.ProductCategory.categoryName,
+                                                          status = i.status
+                                                      }).ToList();
+
+                return Json(new { success = true, listProduct, msg = "Get list Product successfully!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, msg = "Error: " + ex.Message, JsonRequestBehavior.AllowGet });
+            }
         }
 
         // GET: Admin/CRUDproduct/Create
         [HttpGet]
-        [ValidateInput(false)]
-        public ActionResult Create()
+        public PartialViewResult Create()
         {
             ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName");
-            return View();
+            return PartialView();
         }
 
         // POST: Admin/CRUDproduct/Create
-        [HttpPost, ValidateInput(false)]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Product product, HttpPostedFileBase uploadFile)
+        public JsonResult Create(Product product, HttpPostedFileBase uploadFile)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage).ToList();
+
+                return Json(new { success = false, msg = "Data is invalid", errors });
+            }
+
             try
             {
                 var productName = product.productName.Trim();
                 // Lấy tên sản phẩm để kiểm tra có trùng k
                 var check = db.Products.SingleOrDefault(model => model.productName == productName);
+                if (check != null)
+                    return Json(new { success = false, msg = "This product name already exists!" });                
+
+                if (uploadFile == null || uploadFile.ContentLength == 0)                
+                    return Json(new { success = false, msg = "Please select an image file to upload." });                
+
+                string extension = Path.GetExtension(uploadFile.FileName).ToLower();
+                if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")                
+                    return Json(new { success = false, msg = "Invalid file type. Only JPG, JPEG, or PNG are allowed." });                
+
+                if (product.discount >= 100)                
+                    return Json(new { success = false, msg = "Discount must be less than 100." });                
+
                 // Xử lí ảnh
                 var fileName = Path.GetFileName(uploadFile.FileName);
-                var path = Path.Combine(Server.MapPath("~/Content/img/product"), fileName);
-                string extension = Path.GetExtension(uploadFile.FileName);
+                var savePath = Path.Combine(Server.MapPath("/Content/img/product"), fileName);
+                uploadFile.SaveAs(savePath);
 
-                if (extension.ToLower() == ".jpg" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".png")
-                {
-                    if (check != null)
-                    {
-                        ModelState.AddModelError("", "Tên sản phẩm đã tồn tại");
-                    }
-                    else
-                    {
-                        if (uploadFile == null)
-                        {
-                            ModelState.AddModelError("", "Đã xảy ra lỗi khi upload file.");
-                        }
-                        else
-                        {
-                            if (product.discount >= 100)
-                            {
-                                ModelState.AddModelError("", "Giảm giá phải nhỏ hơn 100.");
-                            }
-                            else
-                            {
-                                product.productName = product.productName.Trim();
-                                product.characteristic = product.characteristic != null ? product.characteristic.Trim() : "";
-                                product.meta = product.meta.Trim();
-                                product.image = "~/Content/img/product/" + fileName;
-                                Member member = (Member)Session["infoAdmin"];
-                                product.memberId = member.memberId;
-                                product.dateCreate = DateTime.Now;
-                                product.status = true;
-                                db.Products.Add(product);
-                                if (db.SaveChanges() > 0)
-                                {
-                                    uploadFile.SaveAs(path);
-                                    ModelState.Clear();
-                                    TempData["msgCreate"] = "Thêm mới sản phẩm thành công!";
-                                    return RedirectToAction("Index");
-                                }
-                            }
-                        }
-                    }
+                product.productName = product.productName.Trim();
+                product.characteristic = product.characteristic != null ? product.characteristic.Trim() : "";
+                product.description = product.description;
+                product.meta = product.meta.Trim();
+                product.image = "/Content/img/product/" + fileName;
+                Member member = (Member)Session["infoAdmin"];
+                product.memberId = member.memberId;
+                product.dateCreate = DateTime.Now;
+                product.status = true;
 
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Invalid File Type");
-                }
-                ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName", product.categoryId);
-                return View(product);
+                db.Products.Add(product);
+                db.SaveChanges();
+
+                return Json(new { success = true, msg = "New product added successfully.!" });
             }
             catch (Exception ex)
             {
-                TempData["msgCreatefailed"] = "Đã xảy ra lỗi: " + ex.Message;
-                return RedirectToAction("Create");
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
 
         // GET: Admin/CRUDproduct/Edit/:id
         [HttpGet]
-        public ActionResult Edit(Guid? id)
+        public ActionResult Edit(Guid id)
         {
             Product product = db.Products.Find(id);
             Session["imgPath"] = product.image;
             ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName", product.categoryId);
             return View(product);
         }
-        
+
         // GET: Admin/CRUDproduct/Edit/:id
-        [HttpPost, ValidateInput(false)]
-        public ActionResult Edit(Product product, HttpPostedFileBase uploadFile, FormCollection collection)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Product product, HttpPostedFileBase uploadFile)
         {
             try
             {
-                var descriptiontemp = collection["des"];
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    if (uploadFile != null)
-                    {
-                        var fileName = Path.GetFileName(uploadFile.FileName);
-                        var path = Path.Combine(Server.MapPath("~/Content/img/product"), fileName);
-                        product.image = "~/Content/img/product/" + fileName;
-                        product.description = descriptiontemp;
-                        product.dateCreate = DateTime.Now;
-                        db.Entry(product).State = System.Data.Entity.EntityState.Modified;
-                        string oldImgPath = Request.MapPath(Session["imgPath"].ToString());
-                        if (db.SaveChanges() > 0)
-                        {
-                            TempData["msgEdit"] = "Đã cập nhật sản phẩm " + product.productName + ".";
-                            uploadFile.SaveAs(path);
-                            if (System.IO.File.Exists(oldImgPath))
-                            {
-                                System.IO.File.Delete(oldImgPath);
-                            }
-                        }
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        product.image = Session["imgPath"].ToString();
-                        product.description = descriptiontemp;
-                        product.dateCreate = DateTime.Now;
-                        //db.Products.AddOrUpdate(product);
-                        db.Entry(product).State = System.Data.Entity.EntityState.Modified;
-                        if (db.SaveChanges() > 0)
-                        {
-                            TempData["msgEdit"] = "Đã cập nhật sản phẩm " + product.productName + ".";
-                            return RedirectToAction("index");
-                        }
-                    }
+                    ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName", product.categoryId);
+                    return View(product);
                 }
-                ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName", product.categoryId);
-                return View(product);
+
+                var existing = db.Products.FirstOrDefault(p => p.productId == product.productId);
+                if (existing == null)
+                {
+                    TempData["msgEditFailed"] = "Product not found.";
+                    return RedirectToAction("Index");
+                }
+
+                // Cập nhật thông tin chung
+                existing.productName = product.productName?.Trim();
+                existing.meta = product.meta?.Trim();
+                existing.characteristic = product.characteristic?.Trim();
+                existing.discount = product.discount;
+                existing.price = product.price;
+                existing.quanlity = product.quanlity;
+                existing.description = product.description;
+                existing.dateCreate = DateTime.Now;
+                existing.status = product.status;
+
+                // ✅ Xử lý upload ảnh mới (nếu có)
+                if (uploadFile != null && uploadFile.ContentLength > 0)
+                {
+                    string extension = Path.GetExtension(uploadFile.FileName).ToLower();
+                    if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                    {
+                        ModelState.AddModelError("", "Invalid file type. Only JPG, JPEG, or PNG allowed.");
+                        ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName", product.categoryId);
+                        return View(product);
+                    }
+
+                    var fileName = Path.GetFileName(uploadFile.FileName);
+                    var newPath = Path.Combine(Server.MapPath("/Content/img/product"), fileName);
+                    var newDbPath = "/Content/img/product/" + fileName;
+
+                    // Xóa ảnh cũ nếu không có product nào dùng
+                    if (!string.IsNullOrEmpty(existing.image))
+                    {
+                        string oldPath = Server.MapPath(existing.image);
+                        bool isUsed = db.Products.Any(m => m.image == existing.image && m.productId != existing.productId);
+                        if (System.IO.File.Exists(oldPath) && !isUsed)
+                        {
+                            System.IO.File.Delete(oldPath);
+                        }
+                    }
+
+                    // Lưu file mới và cập nhật DB
+                    uploadFile.SaveAs(newPath);
+                    existing.image = newDbPath;
+                }
+
+                db.SaveChanges();
+
+                TempData["msgEdit"] = "Updated \"" + existing.productName + "\" successfully.";
+                return RedirectToAction("Index");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                TempData["msgEditFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
+                TempData["msgEditFailed"] = "Error: " + ex.Message;
                 return RedirectToAction("Index");
             }
         }
 
         // POST: Admin/CRUDproduct/Delete/:id
-        public ActionResult Delete(Guid id)
+        [HttpPost]
+        public JsonResult Delete(Guid id)
         {
             try
             {
-                var checkInvoice = db.InvoinceDetails.FirstOrDefault(model => model.invoinceId == id);
-                // Kiểm tra xem với mã Product có tồn tại trong bảng InvoinceDetail không?
-                if (checkInvoice != null) // Nếu có giá trị thì xuất thông báo lỗi
+                var hasInvoices = db.InvoinceDetails.FirstOrDefault(model => model.invoinceId == id);
+
+                if (hasInvoices != null)
                 {
-                    TempData["msgDeleteFailed"] = "Không thể xóa!";
-                    return RedirectToAction("Index");
+                    return Json(new { success = false, msg = "Cannot delete this product because it still contains invoices!" });
                 }
-                else
+
+                var product = db.Products.FirstOrDefault(i => i.productId == id);
+                if (product == null)
+                    return Json(new { success = false, msg = "Product not found!" });
+
+                // Xóa ảnh cũ nếu không còn product dùng
+                if (!string.IsNullOrEmpty(product.image))
                 {
-                    Product product = db.Products.Find(id);
-                    string currentImg = Request.MapPath(product.image);
-                    if (System.IO.File.Exists(currentImg))
+                    string currentImg = Server.MapPath(product.image);
+                    bool isUsed = db.Products.Any(m => m.image == product.image && m.productId != product.productId);
+                    if (System.IO.File.Exists(currentImg) && !isUsed)
                     {
                         System.IO.File.Delete(currentImg);
                     }
-                    db.Products.Remove(product);
-                    db.SaveChanges();
-                    TempData["msgDelete"] = "Xóa thành công sản phẩm " + product.productName + ".";
-                    return RedirectToAction("Index");
                 }
+
+                db.Products.Remove(product);
+                db.SaveChanges();
+                return Json(new { success = true, msg = "Product deleted successfully." });
             }
             catch (Exception ex)
             {
-                TempData["msgDeleteFailed"] = "Không thể xóa! " + ex.Message + ".";
-                return RedirectToAction("Index");
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
 

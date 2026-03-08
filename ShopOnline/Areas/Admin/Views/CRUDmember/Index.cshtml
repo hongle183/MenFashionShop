@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Member";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
+    var currentRole = Request.QueryString["role"];
 }
 
 <div class="page-breadcrumb">
@@ -32,59 +33,31 @@
 
 <div class="card-body">
     <h3 class="text-dark text-uppercase card-title">Member</h3>
-    <a href="@Url.Action("Create", "CRUDmember")" class="btn btn-success">Add member</a>
-    @if (TempData["msgCreate"] != null)
-    {
-        <script>
-           showToast({
-               type: "success",
-               message: "@TempData["msgCreate"].ToString().Replace("\"", "\\\"")"
-           });
-        </script>
-    }
-    @if (TempData["msgEdit"] != null)
-    {
-        <script>
-           showToast({
-               type: "success",
-               message: "@TempData["msgEdit"].ToString().Replace("\"", "\\\"")"
-           });
-        </script>
-    }
-    else if (TempData["msgEditFailed"] != null)
-    {
-        <script>
-           showToast({
-               type: "danger",
-               message: "@TempData["msgEditFailed"].ToString().Replace("\"", "\\\"")"
-           });
-        </script>
-    }
-    @if (TempData["msgDelete"] != null)
-    {
-        <script>
-           showToast({
-               type: "success",
-               message: "@TempData["msgDelete"].ToString().Replace("\"", "\\\"")"
-           });
-        </script>
-    }
-    else if (TempData["msgDeleteFailed"] != null)
-    {
-        <script>
-           showToast({
-               type: "danger",
-               message: "@TempData["msgDeleteFailed"].ToString().Replace("\"", "\\\"")"
-           });
-        </script>
-    }
+    <div class="d-flex justify-content-between">
+        <button id="btnAdd" class="btn btn-success">Add member</button>
+        <ul class="nav nav-pills ">
+            <li class="nav-item">
+                <a class="nav-link @(string.IsNullOrEmpty(currentRole) ? "active" : "")" href="@Url.Action("Index", "CRUDmember")">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentRole == "Manager" ? "active" : "")" href="@Url.Action("Index", "CRUDmember", new { role = "Manager"})">Manager</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentRole == "Employee" ? "active" : "")" href="@Url.Action("Index", "CRUDmember", new { role = "Employee"})">Employee</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentRole == "Customer Member" ? "active" : "")" href="@Url.Action("Index", "CRUDmember", new { role = "Customer Member"})">Customer Member</a>
+            </li>
+        </ul>
+    </div>
 
     <hr />
     <div class="table-responsive">
         <table class="table">
             <thead class="thead-light">
                 <tr>
-                    <th scope="col" class="text-center">Account</th>
+                    <th class="text-center">NO</th>
+                    <th class="text-center">Account</th>
                     <th class="text-center">Name</th>
                     <th class="text-center">Birthday</th>
                     <th class="text-center">Phone</th>
@@ -93,64 +66,187 @@
                     <th class="text-center">Feature</th>
                 </tr>
             </thead>
-            <tbody>
-                @if (Model.Count() == 0)
-                {
-                    <tr>
-                        <td colspan="8">No match any document</td>
-                    </tr>
-                }
-                else
-                {
-                    foreach (var i in Model)
-                    {
-                        <tr>
-                            <th scope="row" class="text-center font-weight-medium">
-                                <div class="d-flex no-block align-items-center">
-                                    <div class="">
-                                        <img src=@Url.Content("" + i.avatar) alt="user" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" />
-                                    </div>
-                                    <div class="col">
-                                        <span class="text-muted font-14">@i.email</span>
-                                    </div>
-                                </div>
-                            </th>
-                            <td class="text-center align-middle">
-                                @i.firstName<span> </span>@i.lastName
-                            </td>
-                            <td class="text-center align-middle">
-                                @String.Format("{0:dd/MM/yyyy}", i.birthday)
-                            </td>
-                            <td class="text-center align-middle">@i.phone</td>
-                            <td class="text-center align-middle">
-                                @if (i.status == true)
-                                {
-                                    <i class="fa fa-circle text-success font-12" data-toggle="tooltip" data-placement="top" title="Checked"></i>
-                                }
-                                else
-                                {
-                                    <i class="fa fa-circle text-danger font-12" data-toggle="tooltip" data-placement="top" title="Unchecked"></i>
-                                }
-                            </td>
-                            <td class="text-center align-middle">@i.Role.roleName</td>
-                            <td width="170px" class="align-middle">
-                                <a href="@Url.Action("Edit", "CRUDmember", new { memberId = i.memberId})" class="btn btn-warning">Edit</a>
-                                <a href="@Url.Action("Delete", "CRUDmember", new { memberId = i.memberId})" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>
+
+<div class="modal" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="color:#6c757d;">
+                <h4 class="modal-title">New member</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btnSubmit">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    var dataTable;
+
     $(document).ready(function () {
         dataTable = $('.table').DataTable($.extend(true, {}, defaultDataTableSettings, {
-            ordering: false,
-            columnDefs: [
-                { targets: 1, className: 'dt-left' }
+            ajax: {
+                url: '@Url.Action("GetMember", "CRUDmember", new { role = ViewBag.role })',
+                type: 'GET',
+                dataSrc: 'listMember'
+            },
+            columns: [
+                {
+                    data: null, // auto numbering
+                    className: 'text-center',
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1; // Tạo số thứ tự (NO)
+                    }
+                },
+                {
+                    data: 'email',
+                    className: 'text-start',
+                    render: function (data, type, row) {
+                        if (type === "sort" || type === "type") return data;
+
+                        return `
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-md-4">
+                                    <img src="${row.avatar ? row.avatar : '/Content/img/avatar/avatar.png'}" alt="user" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" />
+                                </div>
+                                <div class="col-md-8 text-left">
+                                    ${data || ''}
+                                </div>
+                            </div>
+                        `;
+                    }
+                },
+                { data: 'name', className: 'text-center' },
+                {
+                    data: 'birthday',
+                    className: 'text-center',
+                    render: function (data, type) {
+                        if (!data) return '';
+                        // Format "/Date(1739750400000)/" (JSON .NET)
+                        var ts = parseInt(data.replace(/\/Date\((\d+)\)\//, '$1'), 10);
+                        // Khi DataTables yêu cầu sort/type -> trả numeric (timestamp)
+                        if (type === 'sort' || type === 'type') return ts;
+
+                        // Mặc định trả về display format
+                        return moment(ts).format('DD/MM/YYYY');
+                    }
+                },
+                { data: 'phone', className: 'text-center' },
+                {
+                    data: 'status',
+                    className: 'text-center',
+                    render: function (data, type) {
+                        if (type === "sort" || type === "type") return data;
+
+                        return (data === true || data === "true")
+                            ? '<i class="fa fa-circle text-success font-12" data-toggle="tooltip" title="Checked"></i>'
+                            : '<i class="fa fa-circle text-danger font-12" data-toggle="tooltip" title="Unchecked"></i>';
+                    }
+                },
+                { data: 'role', className: 'text-center' },
+                {
+                    data: 'memberId',
+                    className: 'text-center',
+                    orderable: false,
+                    render: function (id) {
+                        return `
+                        <button class="btn btn-warning edit-btn mr-2" name="update" data-id="${id}">Edit</button>
+                    `;
+                    }
+                }
             ]
         }));
     });
+
+    // Click button Add
+    // Nút tĩnh (submit, open modal)
+    $('#btnAdd').click(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: '@Url.Action("Create", "CRUDmember")',
+            type: 'get',
+            dataType: 'html',
+            success: function (res) {
+                $('#modal .modal-body').html(res);
+                $('#modal').modal();
+            }
+        });
+    });
+
+    // Click button Edit
+    // Nút động (delete/edit trong bảng), được thêm vào DOM sau này (qua AJAX, DataTable, v.v.)
+    $(document).on('click', "button[name='update']", function () {
+        let idMember = $(this).data('id');
+        $('.modal-title').html('Update member');
+        $.ajax({
+            url: '@Url.Action("Edit", "CRUDmember")',
+            type: 'get',
+            dataType: 'html',
+            data: {
+                id: idMember
+            },
+            success: function (res) {
+                $('#modal .modal-body').html(res);
+                $('#modal').modal();
+            }
+        });
+    });
+
+    // Submit form (Add/ Edit)
+    // được thêm vào DOM sau này (qua AJAX, DataTable, v.v.)
+    $(document).on('keydown', '#form-1', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSubmit();
+        }
+    });
+
+    $('#btnSubmit').on('click', function () {
+        handleSubmit();
+    });
+
+    function handleSubmit() {
+        // ✅ Tạo FormData để gửi cả text và file
+        var form = $("#form-1")[0]; // lấy phần tử DOM gốc, không phải đối tượng jQuery
+        var formData = new FormData(form);
+
+        $.ajax({
+            url: $(form).attr("action"),
+            type: $(form).attr("method"),
+            dataType: "json",
+            data: formData,
+            processData: false, // ❗ không xử lý dữ liệu (để giữ nguyên dạng FormData)
+            contentType: false, // ❗ để browser tự set Content-Type (multipart/form-data)
+            success: function (res) {
+                if (res.success) {
+                    $("#modal").modal("hide");
+
+                    dataTable.ajax.reload(null, false); // 🔄 reload mà không tải lại trang
+                    // Tham số (null, false) => giữ nguyên trang hiện tại (không quay lại trang 1)
+
+                    showToast({
+                        type: "success",
+                        message: res.msg,
+                        language: "en"
+                    });
+                } else {
+                    showToast({
+                        type: "danger",
+                        message: res.msg,
+                        language: "en"
+                    });
+                }
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            },
+        });
+    }
 </script>

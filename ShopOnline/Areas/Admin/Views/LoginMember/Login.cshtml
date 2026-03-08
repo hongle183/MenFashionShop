@@ -15,6 +15,7 @@
     <!-- Custom CSS -->
     @Styles.Render("~/bundles/admin/login/css")
     @Scripts.Render("~/bundles/jquery")
+    <script src="~/Content/js/toast-message.js"></script>
     <script src="https://www.google.com/recaptcha/api.js?render=6LcwOrIqAAAAABgzNqIKLwBNnL9oNXltz63sLozY"></script>
 </head>
 
@@ -27,41 +28,30 @@
                 <div class="lds-pos"></div>
             </div>
         </div>
-        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center position-relative"
-             style="background: url( @Url.Content("~/Areas/Admin/Content/assets/images/background/pexels-luis-gomes-546819.jpg") ) no-repeat center center; background-size: cover;">
+        <div class="auth-wrapper">
             <div class="auth-box row">
-                <div class="col-lg-7 col-md-5 modal-bg-img" style="border-top-left-radius:5px; border-bottom-left-radius:5px; background-image: url(@Url.Content("~/Areas/Admin/Content/assets/images/pexels-pixabay-459654.jpg"));">
-                </div>
-                <div class="col-lg-5 col-md-7 bg-white" style="border-top-right-radius:5px; border-bottom-right-radius:5px;">
+                <div class="col-lg-7 col-md-5 modal-bg-img"></div>
+                <div class="col-lg-5 col-md-7 form-login">
                     <div class="p-3">
                         <div class="text-center">
                             <img src=@Url.Content("/Areas/Admin/Content/assets/images/logo-icon.png") alt="wrapkit">
                         </div>
-                        <h2 class="mt-3 text-center text-dark">SIGN IN</h2>
+                        <h2 class="mt-3">SIGN IN</h2>
                         <p class="text-center">Enter your username and password to access admin panel.</p>
-                        @using (Html.BeginForm("Login", "LoginMember", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data", @class = "form mt-4" }))
+                        @using (Html.BeginForm("Login", "LoginMember", FormMethod.Post, new { @id = "form-1", @class = "form mt-4" }))
                         {
                             @Html.AntiForgeryToken()
-                            if (TempData["msgFailed"] != null)
-                            {
-                                <script>
-                                    showToast({
-                                        type: "danger",
-                                        message: "@TempData["msgFailed"].ToString().Replace("\"", "\\\"")"
-                                    });
-                                </script>
-                            }
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label class="text-dark" for="uname">Username</label>
+                                        <label class="text-dark" for="username">Username</label>
                                         <input type="text" id="username" name="username" class="form-control">
                                         <span class="form-message"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label class="text-dark" for="pwd">Password</label>
+                                        <label class="text-dark" for="password">Password</label>
                                         <input type="password" id="password" name="password" class="form-control">
                                         <span class="form-message"></span>
                                     </div>
@@ -88,13 +78,6 @@
     </script>
     <script src="~/Content/js/validator.js"></script>
     <script>
-        grecaptcha.ready(function () {
-            grecaptcha.execute('6LcwOrIqAAAAABgzNqIKLwBNnL9oNXltz63sLozY', { action: 'SignIn' }).then(function (token) {
-                // Gửi token vào input hidden để server xử lý
-                document.getElementById('recaptchaToken').value = token;
-            });
-        });
-
         Validator({
             form: '#form-1',
             formGroupSelector: '.form-group',
@@ -102,8 +85,44 @@
             rules: [
                 Validator.isRequired('#username', 'Enter your username'),
                 Validator.isRequired('#password', 'Enter your password'),
-                //Validator.isReCaptchaValid('.g-recaptcha', 'Vui lòng xác nhận reCAPTCHA.')
             ],
+            onSubmit: function (formData) {
+                // formData là object chứa dữ liệu hợp lệ
+                var form = $("#form-1"); // jQuery object
+
+                grecaptcha.ready(function () {
+                    grecaptcha.execute('6LcwOrIqAAAAABgzNqIKLwBNnL9oNXltz63sLozY', { action: 'Login' })
+                        .then(function (token) {
+                            formData.recaptchaToken = token;
+
+                            $.ajax({
+                                url: form.attr("action"),
+                                type: form.attr("method"),
+                                data: formData,
+                                success: function (res) {
+                                    if (res.success) {
+                                        showToast({
+                                            type: "success",
+                                            message: res.msg,
+                                            language: "en"
+                                        });
+                                    } else {
+                                        showToast({
+                                            type: "danger",
+                                            message: res.msg,
+                                            language: "en"
+                                        });
+                                    }
+                                    if (res.redirectUrl) {
+                                        setTimeout(function () {
+                                            window.location.href = res.redirectUrl;
+                                        }, 200); // delay 200ms để toast xuất hiện
+                                    }
+                                }
+                            });
+                        });
+                });
+            }
         });
     </script>
 </body>

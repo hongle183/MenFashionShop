@@ -7,7 +7,8 @@ $(function () {
     var basePath = currentUrl.split("/").slice(0, -1).join("/"); // Lấy base path (loại bỏ ID hoặc action cuối)
 
     var element = $("ul#sidebarnav a").filter(function () {
-        var hrefPath = new URL(this.href, window.location.origin).pathname; // Chuyển href sang path đầy đủ
+        var hrefPath = this.href.replace(window.location.origin, '');
+        hrefPath = hrefPath.split('?')[0]; // remove params nếu cần
         return hrefPath.startsWith(basePath); // So sánh base path (không tính tham số động)
     });
 

@@ -1,0 +1,208 @@
+﻿@using ShopOnline.Models
+@model IEnumerable<Invoince>
+@{
+    ViewBag.Title = "Invoice";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
+    var currentStatus = Request.QueryString["status"];
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h4 class="page-title text-truncate text-dark font-weight-medium mb-1">Orders manage</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0 p-0">
+                        <li class="breadcrumb-item"><a href="~/Admin/DashBoard/Index">Dash board</a></li>
+                        <li class="breadcrumb-item active">Orders list</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="col-5 align-self-center">
+            <div class="customize-input float-right">
+                <select class="custom-select custom-select-set form-control bg-white border-0 custom-shadow custom-radius">
+                    <option selected>Nov 25</option>
+                    <option value="1">Oct 25</option>
+                    <option value="2">Sep 25</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["Delivery"] != null)
+{
+    <script>
+        showToast({
+            type: "success",
+            message: "@TempData["Delivery"].ToString().Replace("\"", "\\\"")",
+            language: "en"
+        });
+    </script>
+}
+else if (TempData["msgCancelOrder"] != null)
+{
+    <script>
+        showToast({
+            type: "danger",
+            message: "@TempData["msgCancelOrder"].ToString().Replace("\"", "\\\"")",
+            language: "en"
+        });
+    </script>
+}
+<div class="card-body">
+    <div class="d-flex justify-content-between">
+        <h3 class="text-dark text-uppercase card-title">Orders</h3>
+        <ul class="nav nav-pills ">
+            <li class="nav-item">
+                <a class="nav-link @(string.IsNullOrEmpty(currentStatus) ? "active" : "")" href="@Url.Action("Index", "CRUDinvoice")">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentStatus == "Pending" ? "active" : "")" href="@Url.Action("Index", "CRUDinvoice", new { status = "Pending"})">Pending</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentStatus == "Confirm" ? "active" : "")" href="@Url.Action("Index", "CRUDinvoice", new { status = "Confirm"})">Confirm</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentStatus == "Shipping" ? "active" : "")" href="@Url.Action("Index", "CRUDinvoice", new { status = "Shipping"})">Shipping</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentStatus == "Completed" ? "active" : "")" href="@Url.Action("Index", "CRUDinvoice", new { status = "Completed"})">Completed</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentStatus == "Paid" ? "active" : "")" href="@Url.Action("Index", "CRUDinvoice", new { status = "Paid"})">Paid</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentStatus == "Cancel" ? "active" : "")" href="@Url.Action("Index", "CRUDinvoice", new { status = "Cancel"})">Cancel</a>
+            </li>
+        </ul>
+    </div>
+   
+    <hr />
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" class="text-center">Order Id</th>
+                    <th class="text-center">Order Date</th>
+                    <th class="text-center">Total Money</th>
+                    <th class="text-center">Payment Method</th>
+                    <th class="text-center">Payment Status</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center" width="250px">Feature</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var dataTable;
+
+    $(document).ready(function () {
+        dataTable = $('.table').DataTable($.extend(true, {}, defaultDataTableSettings, {
+            ajax: {
+                url: '@Url.Action("GetInvoice", "CRUDinvoice")',
+                type: 'GET',
+                dataSrc: 'listInvoice'
+            },
+            order: [], // <= không sort default
+            columns: [
+                {
+                    data: 'invoiceId',
+                    className: 'text-center',
+                    render: function (data) {
+                        return `<a href="@Url.Action("InvoiceDetail", "CRUDinvoice")?invoiceNo=${data}">#${data}</a>`;
+                    }
+                },
+                {
+                    data: 'dateCreate',
+                    className: 'text-center',
+                    render: function (data, type) {
+                        if (!data) return '';
+                        // Format "/Date(1739750400000)/" (JSON .NET)
+                        var ts = parseInt(data.replace(/\/Date\((\d+)\)\//, '$1'), 10);
+                        // Khi DataTables yêu cầu sort/type -> trả numeric (timestamp)
+                        if (type === 'sort' || type === 'type') return ts;
+
+                        // Mặc định trả về display format
+                        return moment(ts).format('DD/MM/YYYY');
+                    }
+                },
+                {
+                    data: 'totalMoney',
+                    className: 'text-center',
+                    render: function (data) {
+                        if (!data) return '0';
+                        return parseFloat(data).toLocaleString('vi-VN'); // => 12.345.678
+                    }
+                },
+                {
+                    data: 'paymentMethod',
+                    className: 'text-center',
+                    render: function (data, type) {
+                        if (type === "sort" || type === "type") return data;
+
+                        if (data === "cash")
+                            return '<img src="/Content/img/icon/cash.png" alt="cash" width="24">';
+                        else if (data === "vnpay")
+                            return '<img src="/Content/img/icon/vnpay.ico" alt="vnpay" width="24">';
+                    }
+                },
+                {
+                    data: 'paymentStatus',
+                    className: 'text-center',
+                    render: function (data, type) {
+                        if (type === "sort" || type === "type") return data;
+
+                        if (data === "pending")
+                            return `<span class="badge badge-warning">${data}</span>`;
+                        else if (data === "paid")
+                            return `<span class="badge badge-success">${data}</span>`;
+                        else if (data === "failed")
+                            return `<span class="badge badge-danger">${data}</span>`;
+                    }
+                },
+                {
+                    data: 'status',
+                    className: 'text-center',
+                    render: function (data, type) {
+                        if (type === "sort" || type === "type") return data;
+
+                        if (data === "pending")
+                            return `<span class="badge badge-warning">${data}</span>`;
+                        else if (data === "confirmed")
+                            return `<span class="badge badge-info">${data}</span>`;
+                        else if (data === "shipping")
+                            return `<span class="badge badge-primary">${data}</span>`;
+                        else if (data === "completed")
+                            return `<span class="badge badge-success">${data}</span>`;
+                        else if (data === "cancelled")
+                            return `<span class="badge badge-secondary">${data}</span>`;
+                    }
+                },
+                {
+                    data: 'null',
+                    className: 'text-right',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        var html = '';
+
+                        if (row.status !== "completed" && row.status !== "cancelled" && row.paymentStatus !== "paid")
+                            html += `<a href="@Url.Action("Cancel", "CRUDinvoice")?id=${row.invoiceId}" class="btn btn-light" onclick="return confirm('Are you sure you want to cancel this?')">Cancel</a> `;
+
+                        if (row.status === "pending")
+                            html += `<a href="@Url.Action("Confirmed", "CRUDinvoice")?id=${row.invoiceId}" class="btn btn-info">Confirmed</a>`;
+                        else if (row.status === "confirmed")
+                            html += `<a href="@Url.Action("Shipping", "CRUDinvoice")?id=${row.invoiceId}" class="btn btn-primary">Shipping</a>`;
+                        else if (row.status === "shipping")
+                            html += `<a href="@Url.Action("Completed", "CRUDinvoice")?id=${row.invoiceId}" class="btn btn-success">Completed</a>`;
+
+                        return html;
+                    }
+                }
+            ]
+        }));
+    });
+</script>
