@@ -41,7 +41,7 @@ namespace shopOnline.Controllers
             Session["Cart"] = cart;
 
             // Trả về kết quả cho AJAX
-            return Json(new { success = true });
+            return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
         }
 
         public PartialViewResult Navbar() // Hiển thị số lượng sản phẩm và tiền trên navbar

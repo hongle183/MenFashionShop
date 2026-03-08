@@ -23,7 +23,8 @@
                                 <td class="product__cart__item d-flex align-items-center">
                                     <img class="product__cart__item__pic" src=@Url.Content(i.imageItem) style="width:20%;">
                                     <div class="product__cart__item__text">
-                                        <a href="@Url.Action(" ProductDetail", "Shop" , new { meta=i.metaItem, id=i.idItem })"><h6>@i.nameItem</h6></a>
+                                        <a href="@Url.Action("ProductDetail", "Shop", new { meta = i.metaItem,
+                                                                id = (CSharpVitamins.ShortGuid)i.idItem})"><h6>@i.nameItem</h6></a>
                                         <h5>@String.Format("{0:N0}", i.priceItem) ₫ <small class="discount-price">@String.Format("{0:N0}", i.unitPrice) ₫</small></h5>
                                     </div>
                                 </td>

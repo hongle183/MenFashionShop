@@ -177,6 +177,12 @@ else if (TempData["msgEditProfileFailed"] != null)
                 if (res.success) {
                     // Sau khi thêm thành công, cập nhật lại phần navbar
                     $(".header__nav__option").load("/Cart/Navbar");
+
+                    showToast({
+                        type: "success",
+                        message: res.message,
+                        language: "vn"
+                    });
                 }
             },
             error: function (err) {
