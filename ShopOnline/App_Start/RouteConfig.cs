@@ -14,21 +14,7 @@ namespace ShopOnline
                 name: "Home",
                 url: "trang-chu/{meta}",
                 defaults: new { controller = "Home", action = "Index", meta = UrlParameter.Optional }
-            );
-
-            // Route cho Sản phẩm
-            routes.MapRoute(
-                name: "Shop",
-                url: "san-pham/{meta}",
-                defaults: new { controller = "Shop", action = "Shop", meta = UrlParameter.Optional }
-            );
-
-            // Route cho Bài viết
-            routes.MapRoute(
-                name: "ArticleList",
-                url: "bai-viet/{meta}",
-                defaults: new { controller = "Article", action = "ArticleList", meta = UrlParameter.Optional }
-            );
+            );            
 
             // Route cho Về chúng tôi
             routes.MapRoute(
@@ -44,11 +30,25 @@ namespace ShopOnline
                 defaults: new { controller = "Home", action = "Contact", meta = UrlParameter.Optional }
             );
 
+            // Route cho Bài viết
+            routes.MapRoute(
+                name: "ArticleList",
+                url: "bai-viet/{meta}",
+                defaults: new { controller = "Article", action = "ArticleList", meta = UrlParameter.Optional }
+            );
+
             // Route cho Chi tiết bài viết
             routes.MapRoute(
                 name: "ArticleDetail",
                 url: "chi-tiet-bai-viet/{meta}--{id}",
                 defaults: new { controller = "Article", action = "ArticleDetail", id = UrlParameter.Optional }
+            );
+
+            // Route cho Sản phẩm
+            routes.MapRoute(
+                name: "Shop",
+                url: "san-pham/{meta}",
+                defaults: new { controller = "Shop", action = "Shop", meta = UrlParameter.Optional }
             );
 
             // Route cho Chi tiết sản phẩm
@@ -82,29 +82,29 @@ namespace ShopOnline
             // Route cho Theo dõi đơn hàng
             routes.MapRoute(
                 name: "MyOrder",
-                url: "don-hang-cua-toi",
-                defaults: new { controller = "Home", action = "MyOrder" }
+                url: "don-hang-cua-toi/{status}",
+                defaults: new { controller = "Invoice", action = "MyOrder", status = UrlParameter.Optional }
             );
 
             // Route cho Hủy đơn
             routes.MapRoute(
                 name: "Cancel",
-                url: "huy-don/{invoinceId}",
-                defaults: new { controller = "Home", action = "Cancel", invoinceId = UrlParameter.Optional }
+                url: "huy-don/{invoiceId}",
+                defaults: new { controller = "Invoice", action = "Cancel", invoiceId = UrlParameter.Optional }
             );
 
             // Route cho Chi tiết đơn hàng
             routes.MapRoute(
-                name: "InvoinceDetail",
-                url: "don-hang-cua-toi/chi-tiet/{invoinceId}",
-                defaults: new { controller = "Home", action = "InvoinceDetail", invoinceId = UrlParameter.Optional }
+                name: "InvoiceDetail",
+                url: "don-hang-cua-toi/chi-tiet/{invoiceId}",
+                defaults: new { controller = "Invoice", action = "InvoiceDetail", invoiceId = UrlParameter.Optional }
             );
 
             // Route cho Thanh toán đơn hàng
             routes.MapRoute(
                 name: "Payment",
-                url: "thanh-toan/{invoinceId}",
-                defaults: new { controller = "Payment", action = "CreatePaymentUrl", invoinceId = UrlParameter.Optional }
+                url: "thanh-toan/{invoiceId}",
+                defaults: new { controller = "Payment", action = "CreatePaymentUrl", invoiceId = UrlParameter.Optional }
             );
 
             // Route cho Đăng nhập
@@ -132,14 +132,14 @@ namespace ShopOnline
             routes.MapRoute(
                 name: "ChangePassword",
                 url: "doi-mat-khau",
-                defaults: new { controller = "Home", action = "ChangePassword" }
+                defaults: new { controller = "User", action = "ChangePassword" }
             );
 
             // Route cho Thông tin cá nhân
             routes.MapRoute(
                 name: "EditProfile",
                 url: "thong-tin-ca-nhan",
-                defaults: new { controller = "Home", action = "EditProfile" }
+                defaults: new { controller = "User", action = "EditProfile" }
             );
 
             // Route mặc định
