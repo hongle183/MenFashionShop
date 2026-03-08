@@ -1,5 +1,8 @@
 ﻿@using ShopOnline.Models
 @model PagedList.PagedList<Product>
+@{
+    var sortBy = Request.QueryString["sortBy"];
+}
 
 <div class="shop__product__option">
     <div class="row">
@@ -11,9 +14,9 @@
         <div class="col-lg-6 col-md-6 col-sm-6">
             <div class="shop__product__option__right">
                 <p>Sắp xếp theo:</p>
-                <select>
-                    <option value="asc">⇈ Giá thấp - cao</option>
-                    <option value="des">⇊ Giá cao - thấp</option>
+                <select id="sortBy">
+                    <option value="asc" @(sortBy == "asc" ? "selected" : "")>⇈ Giá thấp - cao</option>
+                    <option value="des" @(sortBy == "des" ? "selected" : "")>⇊ Giá cao - thấp</option>
                 </select>
             </div>
         </div>
@@ -36,7 +39,7 @@
     <div class="row">
         <div class="col">
             <div class="product__pagination">
-                @Html.PagedListPager(Model, page => Url.Action("Shop", "Shop", new { page = page, searching = ViewBag.searching, price = ViewBag.price }))
+                @Html.PagedListPager(Model, page => Url.Action("Shop", "Shop", new { searching = ViewBag.searching, price = ViewBag.price, sortBy = ViewBag.sortBy, page = page }))
             </div>
         </div>
     </div>

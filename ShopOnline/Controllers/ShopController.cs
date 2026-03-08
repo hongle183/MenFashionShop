@@ -28,6 +28,7 @@ namespace shopOnline.Controllers
             ViewBag.meta = meta;
             ViewBag.searching = searching;
             ViewBag.price = price;
+            ViewBag.sortBy = sortBy;
             return PartialView(products);
         }
 
@@ -36,7 +37,7 @@ namespace shopOnline.Controllers
             var pageNumber = page ?? 1;
             var pageSize = 9;
 
-            List<Product> list = db.Products.Where(model => model.ProductCategory.meta.Equals(meta) || string.IsNullOrEmpty(meta) && model.status == true).OrderByDescending(model => model.dateCreate).ToList();
+            List<Product> list = db.Products.Where(model => model.ProductCategory.meta.Equals(meta) || string.IsNullOrEmpty(meta) && model.status == true).ToList();
 
             if (!string.IsNullOrEmpty(searching))
             {
@@ -62,6 +63,21 @@ namespace shopOnline.Controllers
 
                 var result = list.Where(model => model.price >= minPrice && model.price <= maxPrice);
                 return result.ToPagedList(pageNumber, pageSize);
+            } else if (!string.IsNullOrEmpty(sortBy))
+            {
+                switch (sortBy)
+                {
+                    case "asc":
+                        list = list.OrderBy(model => model.price).ToList();
+                        break;
+                    case "des":
+                        list = list.OrderByDescending(model => model.price).ToList();
+                        break;
+                    default:
+                        list = list.OrderByDescending(model => model.dateCreate).ToList();
+                        break;
+                }
+                return list.ToPagedList(pageNumber, pageSize);
             }
 
             return list.ToPagedList(pageNumber, pageSize);            

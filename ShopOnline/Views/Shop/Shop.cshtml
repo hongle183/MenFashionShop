@@ -96,6 +96,7 @@
     $(document).on("click", ".category-item", function (e) {
         e.preventDefault();
         var meta = $(this).data("meta");
+        var href = $(this).find("a").attr("href");
 
         $.ajax({
             url: '@Url.Action("ListProduct", "Shop")',
@@ -105,14 +106,10 @@
             success: function (res) {
                 $("#listProductContainer").html(res);
                 applySetBg(); // 👈 Gọi lại hàm trong main.js
-                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới               
+                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới
 
                 // URL thay đổi mà không reload
-                var baseShopUrl = "@Url.Action("Shop", "Shop", new { meta = "" })";
-                baseShopUrl = baseShopUrl.replace(/\/+$/, ""); // xóa dấu / cuối nếu có
-
-                var newUrl = meta ? `${baseShopUrl}/${meta}` : baseShopUrl;
-                window.history.pushState({ meta }, "", newUrl);
+                window.history.pushState(null, "", href);
             },
             error: function (err) {
                 console.log(err.responseText);
@@ -139,7 +136,14 @@
             success: function (res) {
                 $("#listProductContainer").html(res);
                 applySetBg(); // 👈 Gọi lại hàm trong main.js
-                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới               
+                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới
+
+                // Lưu trạng thái vào lịch sử trình duyệt (URL thay đổi mà không reload)
+                var url = new URL(window.location.href);
+
+                url.searchParams.set("price", price); // cập nhật price
+                url.searchParams.delete("page"); // reset page
+                window.history.pushState(null, "", url);
             },
             error: function (err) {
                 console.log(err.responseText);
@@ -149,6 +153,34 @@
         // Xóa "active" của tất cả, rồi thêm vào item được chọn
         $(".price-item").removeClass("active");
         $(this).addClass("active");
+    });
+
+    // Sort with AJAX
+    $(document).on("change", "#sortBy", function (e) {
+        e.preventDefault();
+        var sortBy = $(this).val();
+
+        $.ajax({
+            url: '@Url.Action("ListProduct", "Shop")',
+            type: 'GET',
+            dataType: 'html', // vì server trả về PartialView (HTML)
+            data: { sortBy },
+            success: function (res) {
+                $("#listProductContainer").html(res);
+                applySetBg(); // 👈 Gọi lại hàm trong main.js
+                initNiceSelect();    // 👈 khởi tạo lại nice-select cho phần mới
+
+                // Lưu trạng thái vào lịch sử trình duyệt (URL thay đổi mà không reload)
+                var url = new URL(window.location.href);
+
+                url.searchParams.set("sortBy", sortBy); // cập nhật price
+                url.searchParams.delete("page"); // reset page
+                window.history.pushState(null, "", url);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
     });
 
     // Pageination with AJAX
@@ -195,7 +227,7 @@
             data: { id },
             success: function (res) {
                 if (res.success) {
-                    // Sau khi thêm thành công, cập nhật lại phần navbar                    
+                    // Sau khi thêm thành công, cập nhật lại phần navbar
                     $(".header__nav__option").load("/Cart/Navbar");
 
                     showToast({
@@ -203,7 +235,7 @@
                         message: res.message,
                         language: "vn"
                     });
-                } 
+                }
             },
             error: function (err) {
                 console.log(err.responseText);
