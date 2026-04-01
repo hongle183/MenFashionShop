@@ -13,7 +13,7 @@ namespace ShopOnline.Areas.Admin.Controllers
     [CustomAuthorize("Manager")]
     public class DashBoardController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
         public ActionResult Index()
         {
             /*---------------------------------------THỐNG KÊ------------------------------*/

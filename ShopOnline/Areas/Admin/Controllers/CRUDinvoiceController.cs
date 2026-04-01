@@ -8,7 +8,7 @@ namespace ShopOnline.Areas.Admin.Controllers
 {
     public class CRUDinvoiceController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
 
         [CustomAuthorize("Manager")]
         [HttpGet]

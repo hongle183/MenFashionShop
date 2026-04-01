@@ -8,7 +8,7 @@ namespace ShopOnline.Areas.Admin.Controllers
     [CustomAuthorize("Manager")]
     public class CRUDmenusController : Controller
     {
-        private menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
 
         // GET: Admin/CRUDmenus
         public ActionResult Index()

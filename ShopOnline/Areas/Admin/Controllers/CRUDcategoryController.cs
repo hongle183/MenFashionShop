@@ -8,7 +8,7 @@ namespace ShopOnline.Areas.Admin.Controllers
     [CustomAuthorize("Manager")]
     public class CRUDcategoryController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
         // GET: Admin/CRUDcategory
         public ActionResult Index()
         {

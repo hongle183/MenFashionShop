@@ -8,7 +8,7 @@ namespace shopOnline.Controllers
 {
     public class CartController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
         private List<Cart> getCart() // Tạo danh sách giỏ hàng và lưu vào session
         {
             if (!(Session["Cart"] is List<Cart> listCart))

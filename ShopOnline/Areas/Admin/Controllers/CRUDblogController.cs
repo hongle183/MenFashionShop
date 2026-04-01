@@ -12,7 +12,7 @@ namespace ShopOnline.Areas.Admin.Controllers
     [CustomAuthorize("Manager")]
     public class CRUDblogController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
 
         // GET: Admin/CRUDblog
         public ActionResult Index()
@@ -85,7 +85,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 db.Articles.Add(article);
                 db.SaveChanges();
 
-                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDBlog", new { area = "Admin" }), msg = "New blog added successfully!" });
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDblog", new { area = "Admin" }), msg = "New blog added successfully!" });
             }
             catch (Exception ex)
             {
@@ -151,7 +151,7 @@ namespace ShopOnline.Areas.Admin.Controllers
 
                 db.SaveChanges();
 
-                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDBlog", new { area = "Admin" }), msg = "Blog updated successfully!" });
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDblog", new { area = "Admin" }), msg = "Blog updated successfully!" });
             }
             catch (Exception ex)
             {

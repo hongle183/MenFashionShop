@@ -8,7 +8,7 @@ namespace ShopOnline.Controllers
 {
     public class PaymentController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
         
         // GET: Payment
         public ActionResult CreatePaymentUrl(string invoiceId)

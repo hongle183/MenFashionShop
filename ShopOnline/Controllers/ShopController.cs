@@ -10,7 +10,7 @@ namespace shopOnline.Controllers
 {
     public class ShopController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
         // GET: Shop
         public ActionResult Shop(string meta)
         {

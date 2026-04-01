@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="col-4">
                                     <div class="form-group">
-                                        <label for="image">Image</label>
+                                        <label for="imageInput">Image</label>
                                         <img id="imagePreview" style="max-height: 163px; display: block; margin-bottom: 10px" />
                                         <input type="file" name="uploadFile" class="form-control-file" id="imageInput" accept="image/jpeg, image/png" />
                                         <span class="form-message"></span>
@@ -171,7 +171,7 @@
         // 👉 Khi modal hiển thị -> init cropper
         $modal.on('shown.bs.modal', function () {
             cropper = new Cropper($image[0], {
-                viewMode: 3,
+                viewMode: 2,
                 dragMode: 'move',
                 aspectRatio: 5/2,   // vuông
                 autoCropArea: 1,

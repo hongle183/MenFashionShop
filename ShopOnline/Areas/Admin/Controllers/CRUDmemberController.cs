@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ShopOnline.Models;
+using ShopOnline.Services;
+using System;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using ShopOnline.Models;
-using System.IO;
 using System.Web.Security;
 
 namespace ShopOnline.Areas.Admin.Controllers
@@ -13,7 +14,7 @@ namespace ShopOnline.Areas.Admin.Controllers
     [CustomAuthorize("Manager")]
     public class CRUDmemberController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
         const string PASSWORD_DEFAULT = "123456";
 
         // GET: Admin/CRUDmember
@@ -90,16 +91,13 @@ namespace ShopOnline.Areas.Admin.Controllers
                 // ✅ Xử lý upload ảnh mới (nếu có)
                 if (uploadFile != null && uploadFile.ContentLength > 0)
                 {
-                    string extension = Path.GetExtension(uploadFile.FileName).ToLower();
-                    if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                        return Json(new { success = false, msg = "Invalid file type. Only JPG, JPEG, or PNG are allowed." });
-
                     // Xử lí ảnh
-                    var fileName = Path.GetFileName(uploadFile.FileName);
-                    member.avatar = "/Content/img/avatar/" + fileName;
+                    ImageServices imageServices = new ImageServices();
+                    string url = "/Content/img/avatar/";
+                    var savePath = Server.MapPath(url);
+                    string newImage = url + imageServices.SaveCroppedImage(savePath, uploadFile, 300, 300);
 
-                    var savePath = Path.Combine(Server.MapPath("/Content/img/avatar"), fileName);
-                    uploadFile.SaveAs(savePath);
+                    member.avatar = newImage;
                 }
                 else
                 {
@@ -116,7 +114,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 db.Members.Add(member);
                 db.SaveChanges();
 
-                return Json(new { success = true, msg = "New account added successfully.!" });
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDmember", new { area = "Admin" }), msg = "New account added successfully." });
             }
             catch (Exception ex)
             {
@@ -155,6 +153,11 @@ namespace ShopOnline.Areas.Admin.Controllers
                     return Json(new { success = false, msg = "Member not found!" });
                 }
 
+                if (existing.Role.roleName.Equals("Manager"))
+                {
+                    return Json(new { success = false, msg = "You don't have permission to edit." });
+                }
+
                 // Lấy tên đăng nhập đã nhập vào kiểm tra có trùng k
                 var check = db.Members.SingleOrDefault(model => model.memberId != existing.memberId && (model.phone == member.phone || model.email == member.email));
                 if (check != null)
@@ -163,33 +166,26 @@ namespace ShopOnline.Areas.Admin.Controllers
                 existing.email = member.email.Trim();
                 existing.phone = member.phone.Trim();
 
-                string oldAvatarRel = existing.avatar;
-                string oldAvatarAbs = !string.IsNullOrEmpty(oldAvatarRel) ? Server.MapPath(oldAvatarRel) : null;
                 // ✅ Xử lý upload ảnh mới (nếu có)
                 if (uploadFile != null && uploadFile.ContentLength > 0)
                 {
-                    string extension = Path.GetExtension(uploadFile.FileName).ToLower();
-                    if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                        return Json(new { success = false, msg = "Invalid file type. Only JPG, JPEG, or PNG are allowed." });
+                    // Xử lí ảnh
+                    ImageServices imageServices = new ImageServices();
+                    string url = "/Content/img/avatar/";
+                    var savePath = Server.MapPath(url);
+                    string newImage = url + imageServices.SaveCroppedImage(savePath, uploadFile, 300, 300);
 
-                    // Tạo đường dẫn file mới
-                    var fileName = Path.GetFileName(uploadFile.FileName);
-                    var newAvatarRel = "/Content/img/avatar/" + fileName;
-                    var newAvatarAbs = Path.Combine(Server.MapPath("/Content/img/avatar"), fileName);
-
-                    // Lưu file mới
-                    uploadFile.SaveAs(newAvatarAbs);
-                    existing.avatar = newAvatarRel;
-
-                    // Xóa ảnh cũ nếu không còn ai dùng
-                    if (!string.IsNullOrEmpty(oldAvatarAbs))
+                    // Xóa ảnh cũ nếu không có product nào dùng
+                    if (!string.IsNullOrEmpty(existing.avatar))
                     {
-                        bool isUsedByOther = db.Members.Any(m => m.avatar == oldAvatarRel && m.memberId != existing.memberId);
-                        if (System.IO.File.Exists(oldAvatarAbs) && !isUsedByOther)
+                        string oldPath = Server.MapPath(existing.avatar);
+                        if (System.IO.File.Exists(oldPath))
                         {
-                            System.IO.File.Delete(oldAvatarAbs);
+                            System.IO.File.Delete(oldPath);
                         }
                     }
+
+                    existing.avatar = newImage;
                 }
 
                 existing.firstName = member.firstName.Trim();
@@ -201,7 +197,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 existing.status = member.status;
 
                 db.SaveChanges();
-                return Json(new { success = true, msg = "Updated account " + member.firstName + " " + member.lastName + "successfully." });
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDmember", new { area = "Admin" }), msg = "Updated account " + member.firstName + " " + member.lastName + " successfully." });
             }
             catch (Exception ex)
             {

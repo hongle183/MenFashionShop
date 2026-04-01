@@ -8,7 +8,7 @@ namespace shopOnline.Controllers
     [CustomAuthorize("Customer Member")]
     public class InvoiceController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
         [HttpGet]
         public ActionResult MyOrder(string status)
         {

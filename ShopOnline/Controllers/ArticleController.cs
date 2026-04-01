@@ -9,7 +9,7 @@ namespace ShopOnline.Controllers
 {
     public class ArticleController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
         public ActionResult ArticleList(int? page)
         {
             int pageSize = 6;

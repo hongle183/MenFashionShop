@@ -34,7 +34,7 @@
 <div class="card-body">
     <h3 class="text-dark text-uppercase card-title">Member</h3>
     <div class="d-flex justify-content-between">
-        <button id="btnAdd" class="btn btn-success">Add member</button>
+        <a href="@Url.Action("Create", "CRUDmember")" class="btn btn-success">Add member</a>
         <ul class="nav nav-pills ">
             <li class="nav-item">
                 <a class="nav-link @(string.IsNullOrEmpty(currentRole) ? "active" : "")" href="@Url.Action("Index", "CRUDmember")">All</a>
@@ -71,21 +71,6 @@
     </div>
 </div>
 
-<div class="modal" tabindex="-1" role="dialog" id="modal">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="color:#0e1822;">
-                <h4 class="modal-title">New member</h4>
-            </div>
-            <div class="modal-body"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="btnSubmit">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
     var dataTable;
 
@@ -116,13 +101,13 @@
                                     <img src="${row.avatar ? row.avatar : '/Content/img/avatar/avatar.png'}" alt="user" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;" />
                                 </div>
                                 <div class="col-md-8 text-left">
-                                    ${data || ''}
+                                    <b>${data || ''}</b>
                                 </div>
                             </div>
                         `;
                     }
                 },
-                { data: 'name', className: 'text-center' },
+                { data: 'name', className: 'text-left' },
                 {
                     data: 'birthday',
                     className: 'text-center',
@@ -154,99 +139,14 @@
                     data: 'memberId',
                     className: 'text-center',
                     orderable: false,
-                    render: function (id) {
-                        return `
-                        <button class="btn btn-warning edit-btn mr-2" name="update" data-id="${id}">Edit</button>
-                    `;
+                    render: function (data, type, row) {
+                        return row.role === "Manager"
+                             ? ''
+                              :
+                        `<a href="@Url.Action("Edit", "CRUDmember")?id=${data}" class="btn btn-warning edit-btn mr-2">Edit</a>`;
                     }
                 }
             ]
         }));
     });
-
-    // Click button Add
-    // Nút tĩnh (submit, open modal)
-    $('#btnAdd').click(function (e) {
-        e.preventDefault();
-
-        $.ajax({
-            url: '@Url.Action("Create", "CRUDmember")',
-            type: 'get',
-            dataType: 'html',
-            success: function (res) {
-                $('#modal .modal-body').html(res);
-                $('#modal').modal();
-            }
-        });
-    });
-
-    // Click button Edit
-    // Nút động (delete/edit trong bảng), được thêm vào DOM sau này (qua AJAX, DataTable, v.v.)
-    $(document).on('click', "button[name='update']", function () {
-        let idMember = $(this).data('id');
-        $('.modal-title').html('Update member');
-        $.ajax({
-            url: '@Url.Action("Edit", "CRUDmember")',
-            type: 'get',
-            dataType: 'html',
-            data: {
-                id: idMember
-            },
-            success: function (res) {
-                $('#modal .modal-body').html(res);
-                $('#modal').modal();
-            }
-        });
-    });
-
-    // Submit form (Add/ Edit)
-    // được thêm vào DOM sau này (qua AJAX, DataTable, v.v.)
-    $(document).on('keydown', '#form-1', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            handleSubmit();
-        }
-    });
-
-    $('#btnSubmit').on('click', function () {
-        handleSubmit();
-    });
-
-    function handleSubmit() {
-        // ✅ Tạo FormData để gửi cả text và file
-        var form = $("#form-1")[0]; // lấy phần tử DOM gốc, không phải đối tượng jQuery
-        var formData = new FormData(form);
-
-        $.ajax({
-            url: $(form).attr("action"),
-            type: $(form).attr("method"),
-            dataType: "json",
-            data: formData,
-            processData: false, // ❗ không xử lý dữ liệu (để giữ nguyên dạng FormData)
-            contentType: false, // ❗ để browser tự set Content-Type (multipart/form-data)
-            success: function (res) {
-                if (res.success) {
-                    $("#modal").modal("hide");
-
-                    dataTable.ajax.reload(null, false); // 🔄 reload mà không tải lại trang
-                    // Tham số (null, false) => giữ nguyên trang hiện tại (không quay lại trang 1)
-
-                    showToast({
-                        type: "success",
-                        message: res.msg,
-                        language: "en"
-                    });
-                } else {
-                    showToast({
-                        type: "danger",
-                        message: res.msg,
-                        language: "en"
-                    });
-                }
-            },
-            error: function (err) {
-                console.log(err.responseText);
-            },
-        });
-    }
 </script>

@@ -9,7 +9,7 @@ namespace ShopOnline.Areas.Admin.Controllers
 {
     public class LoginMemberController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
 
         // GET: Admin/LoginMember/Login
         [HttpGet]

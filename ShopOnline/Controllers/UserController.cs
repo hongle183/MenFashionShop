@@ -16,7 +16,7 @@ namespace ShopOnline.Controllers
 {
     public class UserController : Controller
     {
-        menfsEntities db = new menfsEntities();        
+        private readonly menfsEntities db = new menfsEntities();        
         [HttpGet]
         public ActionResult SignIn()
         {

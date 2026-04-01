@@ -11,7 +11,7 @@ namespace ShopOnline.Areas.Admin.Controllers
     [CustomAuthorize("Manager")]
     public class CRUDproductController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
 
         // GET: Admin/CRUDproduct
         public ActionResult Index()
@@ -97,7 +97,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 db.Products.Add(product);
                 db.SaveChanges();
 
-                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDProduct", new { area = "Admin" }), msg = "New product added successfully.!" });
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDproduct", new { area = "Admin" }), msg = "New product added successfully.!" });
             }
             catch (Exception ex)
             {
@@ -167,7 +167,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 }
 
                 db.SaveChanges();
-                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDProduct", new { area = "Admin" }), msg = "Updated \"" + existing.productName + "\" successfully." });
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDproduct", new { area = "Admin" }), msg = "Updated \"" + existing.productName + "\" successfully." });
             }
             catch (Exception ex)
             {
