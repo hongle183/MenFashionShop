@@ -147,6 +147,9 @@
     <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Rotativa.1.7.3\lib\net461\Rotativa.dll</HintPath>
     </Reference>
+    <Reference Include="SixLabors.ImageSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13, processorArchitecture=MSIL">
+      <HintPath>..\packages\SixLabors.ImageSharp.1.0.4\lib\net472\SixLabors.ImageSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
@@ -717,6 +720,7 @@
     <Content Include="Areas\Admin\Content\js\tinymce\tinymce.min.js" />
     <Content Include="Content\css\404.css" />
     <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\cropper.min.css" />
     <Content Include="Content\css\elegant-icons.css" />
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\formUser.css" />
@@ -831,6 +835,7 @@
     <Content Include="Content\img\rating.png" />
     <Content Include="Content\img\vnpay.svg" />
     <Content Include="Content\js\bootstrap.min.js" />
+    <Content Include="Content\js\cropper.min.js" />
     <Content Include="Content\js\jquery-3.7.1.min.js" />
     <Content Include="Content\js\jquery.countdown.min.js" />
     <Content Include="Content\js\jquery.magnific-popup.min.js" />
@@ -901,7 +906,7 @@
     <Compile Include="Areas\Admin\Controllers\LoginMemberController.cs" />
     <Compile Include="Controllers\InvoiceController.cs" />
     <Compile Include="Controllers\PaymentController.cs" />
-    <Compile Include="CustomAuthorizeAttribute.cs" />
+    <Compile Include="Services\CustomAuthorizeAttribute.cs" />
     <Compile Include="Models\Article.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -967,6 +972,7 @@
     <Compile Include="Models\vHoaDonTrongNgay.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Services\ImageServices.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Content\assets\extra-libs\taskboard\example1\delete.php" />

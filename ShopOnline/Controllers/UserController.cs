@@ -1,18 +1,22 @@
-﻿using System;
+﻿using ShopOnline.Models;
+using ShopOnline.Services;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
+using System;
+using System.IO;
 using System.Linq;
-using System.Web.Mvc;
-using ShopOnline.Models;
 using System.Net;
+using System.Web;
+using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.Web.Security;
-using System.Web;
-using System.IO;
 
 namespace ShopOnline.Controllers
 {
     public class UserController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        menfsEntities db = new menfsEntities();        
         [HttpGet]
         public ActionResult SignIn()
         {
@@ -45,7 +49,7 @@ namespace ShopOnline.Controllers
                 if (role == "Manager")
                 {
                     Session["infoAdmin"] = check;
-                    return Json(new { success = true, redirectUrl = Url.Action("Index", "DashBoard", new { area = "Admin" }), msg = "Login successful." });
+                    return Json(new { success = true, redirectUrl = Url.Action("Index", "DashBoard", new { area = "Admin" }), message = "Đăng nhập thành công!" });
                 }
 
                 Session["info"] = check;
@@ -89,7 +93,7 @@ namespace ShopOnline.Controllers
                     member.status = true;
                     db.Members.Add(member);
                     var result = db.SaveChanges();
-                    
+
                     if (result > 0)
                     {
                         return Json(new { success = true, redirectUrl = Url.Action("SignIn", "User"), message = "Đăng ký thành công! Vui lòng đăng nhập." });
@@ -136,40 +140,7 @@ namespace ShopOnline.Controllers
                     dbMember.phone = member.phone?.Trim();
                     dbMember.address = member.address?.Trim();
                     dbMember.birthday = member.birthday;
-
-                    string oldAvatarRel = dbMember.avatar;
-                    string oldAvatarAbs = !string.IsNullOrEmpty(oldAvatarRel) ? Server.MapPath(oldAvatarRel) : null;
-
-                    // Nếu có upload file mới
-                    if (uploadFile != null && uploadFile.ContentLength > 0)
-                    {                        
-                        string extension = Path.GetExtension(uploadFile.FileName).ToLower();
-                        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                        {
-                            ModelState.AddModelError("", "Invalid file type. Only JPG, JPEG, or PNG are allowed.");
-                            return View(dbMember);
-                        }
-
-                        // Tạo đường dẫn file mới
-                        var fileName = Path.GetFileName(uploadFile.FileName);
-                        var newAvatarRel = "/Content/img/avatar/" + fileName;
-                        var newAvatarAbs = Path.Combine(Server.MapPath("/Content/img/avatar"), fileName);
-
-                        // Lưu file mới
-                        uploadFile.SaveAs(newAvatarAbs);
-                        dbMember.avatar = newAvatarRel;
-
-                        // Xóa ảnh cũ nếu không còn ai dùng
-                        if (!string.IsNullOrEmpty(oldAvatarAbs))
-                        {
-                            bool isUsedByOther = db.Members.Any(m => m.avatar == oldAvatarRel && m.memberId != dbMember.memberId);
-                            if (System.IO.File.Exists(oldAvatarAbs) && !isUsedByOther)
-                            {
-                                System.IO.File.Delete(oldAvatarAbs);
-                            }
-                        }
-
-                    }
+                    
                     db.SaveChanges();
 
                     // Cập nhật session với dữ liệu mới
@@ -185,6 +156,47 @@ namespace ShopOnline.Controllers
             {
                 TempData["msgEditProfileFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
                 return RedirectToAction("Index", "Home");
+            }
+        }
+        [CustomAuthorize("Customer Member")]
+        [HttpPost]
+        public JsonResult UpdateAvatar(HttpPostedFileBase uploadFile)
+        {
+            try
+            {
+                Member user = (Member)Session["info"];
+                // Lấy entity thật từ DB để cập nhật
+                var dbMember = db.Members.FirstOrDefault(m => m.memberId == user.memberId);
+
+                string oldAvatarRel = dbMember.avatar;
+                string oldAvatarAbs = !string.IsNullOrEmpty(oldAvatarRel) ? Server.MapPath(oldAvatarRel) : null;
+
+                string url = "/Content/img/avatar/";
+                var uploadDir = Server.MapPath(url);
+                ImageServices imageServices = new ImageServices();
+                string newAvatarRel = url + imageServices.SaveCroppedImage(uploadDir, uploadFile, 300, 300);
+
+                if (string.IsNullOrEmpty(newAvatarRel))
+                {
+                    return Json(new { success = false, message = "Lỗi khi xử lý ảnh. Vui lòng thử lại." });
+                }
+                else
+                {
+                    dbMember.avatar = newAvatarRel;
+                    if (System.IO.File.Exists(oldAvatarAbs))
+                    {
+                        System.IO.File.Delete(oldAvatarAbs);
+                    }
+                }
+                db.SaveChanges();
+
+                // Cập nhật session với dữ liệu mới
+                Session["info"] = dbMember;
+                return Json(new { success = true, message = "Cập nhật ảnh đại diện thành công!", avatarUrl = newAvatarRel });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Đã xảy ra lỗi: " + ex.Message + "." });
             }
         }
         [CustomAuthorize("Customer Member")]
@@ -230,7 +242,6 @@ namespace ShopOnline.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
         private bool VerifyRecaptcha(string token)
         {
             string secretKey = "6LcwOrIqAAAAAEcsgF-BkkfPmckoqbwfMOI57L_G";

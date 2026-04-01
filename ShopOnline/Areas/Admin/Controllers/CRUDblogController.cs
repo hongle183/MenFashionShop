@@ -1,4 +1,5 @@
 ﻿using ShopOnline.Models;
+using ShopOnline.Services;
 using System;
 using System.Data;
 using System.IO;
@@ -55,52 +56,40 @@ namespace ShopOnline.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Article article, HttpPostedFileBase uploadFile)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage).ToList();
+
+                return Json(new { success = false, msg = "Data is invalid", errors });
+            }
             try
             {
-                if (ModelState.IsValid)
-                {
-                    if (uploadFile == null || uploadFile.ContentLength == 0)
-                    {
-                        ModelState.AddModelError("", "Please select an image file to upload.");
+                if (uploadFile == null || uploadFile.ContentLength == 0)
+                    return Json(new { success = false, msg = "Please select an image file to upload." });
+                // Xử lí ảnh
+                ImageServices imageServices = new ImageServices();
+                string url = "/Content/img/blog/";
+                var savePath = Server.MapPath(url);
+                string newImage = url + imageServices.SaveCroppedImage(savePath, uploadFile, 1500, 600);
 
-                        return View(article);
-                    }
+                article.title = article.title.Trim();
+                article.description = article.description.Trim();
+                article.content = article.content;
+                article.meta = article.meta.Trim();
+                article.image = newImage;
+                article.memberId = new Guid("e4d33c53-b8a3-4f82-9ff3-e611912631fe");
+                article.dateCreate = DateTime.Now;
+                article.status = true;
 
-                    string extension = Path.GetExtension(uploadFile.FileName).ToLower();
-                    if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                    {
-                        ModelState.AddModelError("", "Invalid file type. Only JPG, JPEG, or PNG are allowed.");
+                db.Articles.Add(article);
+                db.SaveChanges();
 
-                        return View(article);
-                    }
-
-                    // Xử lí ảnh
-                    var fileName = Path.GetFileName(uploadFile.FileName);
-                    var savePath = Path.Combine(Server.MapPath("/Content/img/blog"), fileName);
-                    uploadFile.SaveAs(savePath);
-
-                    article.title = article.title.Trim();
-                    article.description = article.description.Trim();
-                    article.content = article.content;
-                    article.meta = article.meta.Trim();
-                    article.image = "/Content/img/blog/" + fileName;
-                    article.memberId = new Guid("e4d33c53-b8a3-4f82-9ff3-e611912631fe");
-                    article.dateCreate = DateTime.Now;
-                    article.status = true;
-
-                    db.Articles.Add(article);
-                    db.SaveChanges();
-
-                    TempData["msgCreate"] = "New blog added successfully!";
-                    return RedirectToAction("Index");
-
-                }
-                return View(article);
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDBlog", new { area = "Admin" }), msg = "New blog added successfully!" });
             }
             catch (Exception ex)
             {
-                TempData["msgCreatefailed"] = "Error: " + ex.Message + ".";
-                return RedirectToAction("Create");
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
 
@@ -118,67 +107,55 @@ namespace ShopOnline.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Article article, HttpPostedFileBase uploadFile)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage).ToList();
+
+                return Json(new { success = false, msg = "Data is invalid", errors });
+            }
             try
             {
-                if (ModelState.IsValid)
+                var existing = db.Articles.FirstOrDefault(p => p.articleId == article.articleId);
+                if (existing == null)
+                    return Json(new { success = false, msg = "This blog not found." });
+
+                // Cập nhật thông tin chung
+                existing.title = article.title.Trim();
+                existing.description = article.description.Trim();
+                existing.content = article.content;
+                existing.meta = article.meta.Trim();
+                existing.status = article.status;
+                existing.dateCreate = DateTime.Now;
+
+                // ✅ Xử lý upload ảnh mới (nếu có)
+                if (uploadFile != null && uploadFile.ContentLength > 0)
                 {
-                    var existing = db.Articles.FirstOrDefault(p => p.articleId == article.articleId);
-                    if (existing == null)
+                    ImageServices imageServices = new ImageServices();
+                    string url = "/Content/img/blog/";
+                    var savePath = Server.MapPath(url);
+                    string newImage = url + imageServices.SaveCroppedImage(savePath, uploadFile, 1500, 600);
+
+                    // Xóa ảnh cũ nếu không có article nào dùng
+                    if (!string.IsNullOrEmpty(existing.image))
                     {
-                        TempData["msgEditFailed"] = "Blog not found.";
-                        return RedirectToAction("Index");
+                        string oldPath = Server.MapPath(existing.image);
+                        if (System.IO.File.Exists(oldPath))
+                        {
+                            System.IO.File.Delete(oldPath);
+                        }
                     }
 
-                    // Cập nhật thông tin chung
-                    existing.title = article.title.Trim();
-                    existing.description = article.description.Trim();
-                    existing.content = article.content;
-                    existing.meta = article.meta.Trim();
-                    existing.status = article.status;
-                    existing.dateCreate = DateTime.Now;
-
-                    // ✅ Xử lý upload ảnh mới (nếu có)
-                    if (uploadFile != null && uploadFile.ContentLength > 0)
-                    {
-                        string extension = Path.GetExtension(uploadFile.FileName).ToLower();
-                        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                        {
-                            ModelState.AddModelError("", "Invalid file type. Only JPG, JPEG, or PNG allowed.");
-                            return View(article);
-                        }
-
-                        var fileName = Path.GetFileName(uploadFile.FileName);
-                        var newPath = Path.Combine(Server.MapPath("/Content/img/blog"), fileName);
-                        var newDbPath = "/Content/img/blog/" + fileName;
-
-
-                        // Xóa ảnh cũ nếu không có article nào dùng
-                        if (!string.IsNullOrEmpty(existing.image))
-                        {
-                            string oldPath = Server.MapPath(existing.image);
-                            bool isUsed = db.Articles.Any(m => m.image == existing.image && m.articleId != existing.articleId);
-                            if (System.IO.File.Exists(oldPath) && !isUsed)
-                            {
-                                System.IO.File.Delete(oldPath);
-                            }
-                        }
-
-                        // Lưu file mới và cập nhật DB
-                        uploadFile.SaveAs(newPath);
-                        existing.image = newDbPath;
-                    }
-
-                    db.SaveChanges();
-
-                    TempData["msgEdit"] = "Blog updated successfully.";
-                    return RedirectToAction("Index");
+                    existing.image = newImage;
                 }
-                return View(article);
+
+                db.SaveChanges();
+
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDBlog", new { area = "Admin" }), msg = "Blog updated successfully!" });
             }
             catch (Exception ex)
             {
-                TempData["msgEditFailed"] = "Error: " + ex.Message + ".";
-                return RedirectToAction("Index");
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
         // POST: Admin/CRUDblog/Delete/5

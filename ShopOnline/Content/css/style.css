@@ -1346,7 +1346,7 @@ form textarea {
     }
 
 .product__item__pic {
-    height: 260px;
+    aspect-ratio: 4/5;
     position: relative;
     border: none;
     background-position: center center;
@@ -1449,6 +1449,7 @@ form textarea {
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 70%;
         }
 
         .product__item__pic .product__item__options .heart__option {
@@ -1484,7 +1485,7 @@ form textarea {
 
     .product__item__text h6 {
         color: var(--dark);
-        font-size: 16px;
+        font-size: 95%;
         font-weight: 500;
         margin-bottom: 5px;
         -webkit-transition: all, 0.3s;
@@ -1502,7 +1503,7 @@ form textarea {
             margin-right: -5px;
         }
 
-    .product__item__text h5 {
+    .product__item__text .price {
         color: #0d0d0d;
         font-weight: 700;
     }
@@ -2955,7 +2956,7 @@ form textarea {
     }
 
 .blog__item__pic {
-    height: 270px;
+    aspect-ratio: 5/2;
 }
 
 .blog__item__text {
@@ -3447,6 +3448,10 @@ form textarea {
 @media only screen and (min-width: 1200px) {
     .container {
         max-width: 1170px;
+    }
+
+    .container-extend {
+        max-width: 1300px;
     }
 }
 

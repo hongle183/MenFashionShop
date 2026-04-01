@@ -6,7 +6,7 @@
 
 <div class="container info">
     <div class="signinBx editProfile">
-        @using (Html.BeginForm("EditProfile", "User", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("EditProfile", "User", FormMethod.Post, new { @id = "form-1" }))
         {
             @Html.AntiForgeryToken()
             <div class="form-group">
@@ -30,10 +30,8 @@
                                id="avatarInput"
                                name="uploadFile"
                                accept=".png,.jpg,.jpeg"
-                               onchange="document.getElementById('picture').src = window.URL.createObjectURL(this.files[0])"
                                style="display: none;" />
-
-                        <button type="button" id="upload-button" class="circle-btn outline-btn" style="position: absolute; padding: 0; right: 12%; bottom: 10px;" onclick="document.getElementById('avatarInput').click();">
+                        <button type="button" id="upload-button" class="circle-btn outline-btn" style="position: absolute; padding: 0; right: 14%; bottom: 10px;" onclick="document.getElementById('avatarInput').click();">
                             <img src="~/Content/img/icon/favorite-folder.png" alt="" />
                         </button>
                     </div>
@@ -92,6 +90,29 @@
     </div>
 </div>
 
+<!-- Modal crop image -->
+<div class="modal fade" id="modal" data-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="font-weight-bold modal-title">Chọn ảnh đại diện</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <div style="width:70vh; height:70vh;">
+                    <img id="image" style="max-width:100%; display:block;">
+                </div>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center">
+                <button type="button" data-dismiss="modal" class="btn outline-btn">Hủy</button>
+                <button id="btnCrop" class="btn site-btn">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     var obj = document.querySelector(".navbar li:nth-child(1)");
     obj.classList.remove("active");
@@ -107,8 +128,94 @@
             Validator.isRequired('#lastName'),
             Validator.isEmail('#email'),
             Validator.isRequired('#phone'),
-            Validator.isDate('#birthday'),           
+            Validator.isDate('#birthday'),
             Validator.isRequired('#address')
         ],
+    });
+
+    $(function () {
+        var $input = $('#avatarInput');
+        var $image = $('#image');
+        var $modal = $('#modal');
+        var cropper;
+
+        // 👉 Khi chọn file
+        $input.on('change', function (e) {
+            var files = e.target.files;
+
+            if (files && files.length > 0) {
+                var file = files[0];
+
+                // tạo URL tạm để preview
+                var url = URL.createObjectURL(file);
+
+                $image.css('opacity', 0);
+                // gán vào img
+                $image.attr('src', url);
+
+                $modal.modal('show');
+            }
+        });
+
+        // 👉 Khi modal hiển thị -> init cropper
+        $modal.on('shown.bs.modal', function () {
+            cropper = new Cropper($image[0], {
+                viewMode: 3,
+                dragMode: 'move',
+                aspectRatio: 1,   // vuông
+                autoCrop: true,
+                ready: function () {
+                    $image.css('opacity', 1);
+                }
+            });
+        });
+
+        // 👉 Khi đóng modal -> destroy cropper
+        $modal.on('hidden.bs.modal', function () {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+
+            $input.val('');
+        });
+
+        $("#btnCrop").on('click', function () {
+            $(this).prop('disabled', true);
+            var canvas = cropper.getCroppedCanvas({
+                width: 300,
+                height: 300
+            });
+
+            canvas.toBlob(function (blob) {
+                var formData = new FormData();
+                formData.append('uploadFile', blob);
+
+                $.ajax({
+                    url: '@Url.Action("UpdateAvatar", "User")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        if (res.success) {
+                            // Sau khi thêm thành công, cập nhật lại phần navbar
+                            $(".header__nav__option").load("/Cart/Navbar");
+                            $("#picture").attr('src', res.avatarUrl);
+
+                            showToast({
+                                type: "success",
+                                message: res.message,
+                                language: "vn"
+                            });
+
+                            $modal.modal('hide');
+                        }
+                    }
+                });
+            }, 'image/jpeg');
+
+            $(this).prop('disabled', false);
+        });
     });
 </script>

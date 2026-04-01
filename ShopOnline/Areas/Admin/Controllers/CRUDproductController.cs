@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ShopOnline.Models;
-using System.IO;
+using ShopOnline.Services;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
@@ -48,10 +47,10 @@ namespace ShopOnline.Areas.Admin.Controllers
 
         // GET: Admin/CRUDproduct/Create
         [HttpGet]
-        public PartialViewResult Create()
+        public ActionResult Create()
         {
             ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName");
-            return PartialView();
+            return View();
         }
 
         // POST: Admin/CRUDproduct/Create
@@ -66,35 +65,30 @@ namespace ShopOnline.Areas.Admin.Controllers
 
                 return Json(new { success = false, msg = "Data is invalid", errors });
             }
-
             try
             {
                 var productName = product.productName.Trim();
                 // Lấy tên sản phẩm để kiểm tra có trùng k
                 var check = db.Products.SingleOrDefault(model => model.productName == productName);
                 if (check != null)
-                    return Json(new { success = false, msg = "This product name already exists!" });                
+                    return Json(new { success = false, msg = "This product name already exists!" });
 
-                if (uploadFile == null || uploadFile.ContentLength == 0)                
-                    return Json(new { success = false, msg = "Please select an image file to upload." });                
+                if (product.discount >= 100)
+                    return Json(new { success = false, msg = "Discount must be less than 100." });
 
-                string extension = Path.GetExtension(uploadFile.FileName).ToLower();
-                if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")                
-                    return Json(new { success = false, msg = "Invalid file type. Only JPG, JPEG, or PNG are allowed." });                
-
-                if (product.discount >= 100)                
-                    return Json(new { success = false, msg = "Discount must be less than 100." });                
-
+                if (uploadFile == null || uploadFile.ContentLength == 0)
+                    return Json(new { success = false, msg = "Please select an image file to upload." });
                 // Xử lí ảnh
-                var fileName = Path.GetFileName(uploadFile.FileName);
-                var savePath = Path.Combine(Server.MapPath("/Content/img/product"), fileName);
-                uploadFile.SaveAs(savePath);
+                ImageServices imageServices = new ImageServices();
+                string url = "/Content/img/product/";
+                var savePath = Server.MapPath(url);
+                string newImage = url + imageServices.SaveCroppedImage(savePath, uploadFile, 400, 500);
 
                 product.productName = product.productName.Trim();
                 product.characteristic = product.characteristic != null ? product.characteristic.Trim() : "";
                 product.description = product.description;
                 product.meta = product.meta.Trim();
-                product.image = "/Content/img/product/" + fileName;
+                product.image = newImage;
                 Member member = (Member)Session["infoAdmin"];
                 product.memberId = member.memberId;
                 product.dateCreate = DateTime.Now;
@@ -103,7 +97,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 db.Products.Add(product);
                 db.SaveChanges();
 
-                return Json(new { success = true, msg = "New product added successfully.!" });
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDProduct", new { area = "Admin" }), msg = "New product added successfully.!" });
             }
             catch (Exception ex)
             {
@@ -124,22 +118,20 @@ namespace ShopOnline.Areas.Admin.Controllers
         // GET: Admin/CRUDproduct/Edit/:id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Product product, HttpPostedFileBase uploadFile)
+        public JsonResult Edit(Product product, HttpPostedFileBase uploadFile)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage).ToList();
+
+                return Json(new { success = false, msg = "Data is invalid", errors });
+            }
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName", product.categoryId);
-                    return View(product);
-                }
-
                 var existing = db.Products.FirstOrDefault(p => p.productId == product.productId);
                 if (existing == null)
-                {
-                    TempData["msgEditFailed"] = "Product not found.";
-                    return RedirectToAction("Index");
-                }
+                    return Json(new { success = false, msg = "This product not found." });
 
                 // Cập nhật thông tin chung
                 existing.productName = product.productName?.Trim();
@@ -155,43 +147,31 @@ namespace ShopOnline.Areas.Admin.Controllers
                 // ✅ Xử lý upload ảnh mới (nếu có)
                 if (uploadFile != null && uploadFile.ContentLength > 0)
                 {
-                    string extension = Path.GetExtension(uploadFile.FileName).ToLower();
-                    if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                    {
-                        ModelState.AddModelError("", "Invalid file type. Only JPG, JPEG, or PNG allowed.");
-                        ViewBag.categoryId = new SelectList(db.ProductCategories, "categoryId", "categoryName", product.categoryId);
-                        return View(product);
-                    }
-
-                    var fileName = Path.GetFileName(uploadFile.FileName);
-                    var newPath = Path.Combine(Server.MapPath("/Content/img/product"), fileName);
-                    var newDbPath = "/Content/img/product/" + fileName;
+                    // Xử lí ảnh
+                    ImageServices imageServices = new ImageServices();
+                    string url = "/Content/img/product/";
+                    var savePath = Server.MapPath(url);
+                    string newImage = url + imageServices.SaveCroppedImage(savePath, uploadFile, 400, 500);
 
                     // Xóa ảnh cũ nếu không có product nào dùng
                     if (!string.IsNullOrEmpty(existing.image))
                     {
                         string oldPath = Server.MapPath(existing.image);
-                        bool isUsed = db.Products.Any(m => m.image == existing.image && m.productId != existing.productId);
-                        if (System.IO.File.Exists(oldPath) && !isUsed)
+                        if (System.IO.File.Exists(oldPath))
                         {
                             System.IO.File.Delete(oldPath);
                         }
                     }
 
-                    // Lưu file mới và cập nhật DB
-                    uploadFile.SaveAs(newPath);
-                    existing.image = newDbPath;
+                    existing.image = newImage;
                 }
 
                 db.SaveChanges();
-
-                TempData["msgEdit"] = "Updated \"" + existing.productName + "\" successfully.";
-                return RedirectToAction("Index");
+                return Json(new { success = true, redirectUrl = Url.Action("Index", "CRUDProduct", new { area = "Admin" }), msg = "Updated \"" + existing.productName + "\" successfully." });
             }
             catch (Exception ex)
             {
-                TempData["msgEditFailed"] = "Error: " + ex.Message;
-                return RedirectToAction("Index");
+                return Json(new { success = false, msg = "Error: " + ex.Message });
             }
         }
 

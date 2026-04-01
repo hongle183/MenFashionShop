@@ -29,7 +29,7 @@
             <i class="fa fa-star"></i>
             <i class="fa fa-star-o"></i>
         </div>
-        <h5>
+        <h6 class="price">
             @if (Model.discount != 0)
             {
                 var giaDaGiam = Model.price - ((Model.price * Model.discount) / 100);
@@ -40,7 +40,7 @@
             {
                 @String.Format("{0:#,0}", Model.price)
             }
-        </h5>
+        </h6>
         <div class="product__color__select">
             <label for="pc-7">
                 <input type="radio" id="pc-7">

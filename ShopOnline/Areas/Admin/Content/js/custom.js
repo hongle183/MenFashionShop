@@ -105,8 +105,8 @@
             menubar: false,
             branding: false,
             plugins:
-                'autoresize advlist autolink lists link image charmap print preview' +
-                'anchor searchreplace visualblocks code fullscreen' +
+                'autoresize advlist autolink lists link image charmap print preview ' +
+                'anchor searchreplace visualblocks code fullscreen ' +
                 'insertdatetime image table paste code help wordcount',
             toolbar: 'undo redo | styles | ' +
                 'bold italic backcolor | alignleft aligncenter ' +

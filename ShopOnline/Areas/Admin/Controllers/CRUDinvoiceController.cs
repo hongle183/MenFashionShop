@@ -27,9 +27,11 @@ namespace ShopOnline.Areas.Admin.Controllers
                                                       {
                                                           invoiceId = i.invoinceId,
                                                           dateCreate = i.dateCreate,
+                                                          customer = i.Member.firstName,
                                                           totalMoney = i.totalMoney,
                                                           paymentMethod = i.paymentMethod,
                                                           paymentStatus = i.paymentStatus,
+                                                          note = i.note,
                                                           status = i.status
                                                       }).ToList();
 

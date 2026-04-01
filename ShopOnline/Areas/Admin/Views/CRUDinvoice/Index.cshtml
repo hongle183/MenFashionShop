@@ -84,12 +84,11 @@ else if (TempData["msgCancelOrder"] != null)
         <table class="table">
             <thead class="thead-light">
                 <tr>
-                    <th scope="col" class="text-center">Order Id</th>
-                    <th class="text-center">Order Date</th>
-                    <th class="text-center">Total Money</th>
-                    <th class="text-center">Payment Method</th>
+                    <th scope="col" class="text-center">Order</th>
+                    <th class="text-center">Cost</th>
                     <th class="text-center">Payment Status</th>
                     <th class="text-center">Status</th>
+                    <th class="text-center">Note</th>
                     <th class="text-center" width="250px">Feature</th>
                 </tr>
             </thead>
@@ -110,44 +109,34 @@ else if (TempData["msgCancelOrder"] != null)
             order: [], // <= không sort default
             columns: [
                 {
-                    data: 'invoiceId',
-                    className: 'text-center',
-                    render: function (data) {
-                        return `<a href="@Url.Action("InvoiceDetail", "CRUDinvoice")?invoiceNo=${data}">#${data}</a>`;
-                    }
-                },
-                {
-                    data: 'dateCreate',
-                    className: 'text-center',
-                    render: function (data, type) {
-                        if (!data) return '';
+                    data: null,
+                    className: 'text-left',
+                    orderable: false,
+                    render: function (data, type, row) {
                         // Format "/Date(1739750400000)/" (JSON .NET)
-                        var ts = parseInt(data.replace(/\/Date\((\d+)\)\//, '$1'), 10);
+                        var ts = parseInt(row.dateCreate.replace(/\/Date\((\d+)\)\//, '$1'), 10);
                         // Khi DataTables yêu cầu sort/type -> trả numeric (timestamp)
                         if (type === 'sort' || type === 'type') return ts;
 
-                        // Mặc định trả về display format
-                        return moment(ts).format('DD/MM/YYYY');
+                        return `<div class="font-14">
+                                    <p class="mb-0">Order ID: <b><a href="@Url.Action("InvoiceDetail", "CRUDinvoice")?invoiceNo=${row.invoiceId}">#${row.invoiceId}</a></b></p>
+                                    <p class="mb-0">Customer name: <b>${row.customer}</b></p>
+                                    <p class="mb-0">Create time: <b>${moment(ts).format('DD/MM/YYYY hh:mm:ss')}</b></p>
+                                </div>`;
                     }
                 },
                 {
                     data: 'totalMoney',
-                    className: 'text-center',
-                    render: function (data) {
-                        if (!data) return '0';
-                        return parseFloat(data).toLocaleString('vi-VN'); // => 12.345.678
-                    }
-                },
-                {
-                    data: 'paymentMethod',
-                    className: 'text-center',
-                    render: function (data, type) {
-                        if (type === "sort" || type === "type") return data;
+                    className: 'text-left',
+                    render: function (data, type, row) {
+                        var total = !data ? 0 : parseFloat(data).toLocaleString('vi-VN');
 
-                        if (data === "cash")
-                            return '<img src="/Content/img/icon/cash.png" alt="cash" width="24">';
-                        else if (data === "vnpay")
-                            return '<img src="/Content/img/icon/vnpay.ico" alt="vnpay" width="24">';
+                        if (type === "sort" || type === "type") return total;
+                        // => 12.345.678
+                        return `<div class="font-14">
+                                    <p class="mb-0">Total money: <b>${total} ₫</b></p>
+                                    <p class="mb-0">Payment method: <b>${row.paymentMethod}</b></p>
+                                </div>`; 
                     }
                 },
                 {
@@ -183,21 +172,28 @@ else if (TempData["msgCancelOrder"] != null)
                     }
                 },
                 {
-                    data: 'null',
+                    data: 'note',
+                    className: 'text-center font-14',
+                    render: function (data) {
+                        return data;
+                    }
+                },
+                {
+                    data: 'invoiceId',
                     className: 'text-right',
                     orderable: false,
                     render: function (data, type, row) {
                         var html = '';
 
                         if (row.status !== "completed" && row.status !== "cancelled" && row.paymentStatus !== "paid")
-                            html += `<a href="@Url.Action("Cancel", "CRUDinvoice")?id=${row.invoiceId}" class="btn btn-light" onclick="return confirm('Are you sure you want to cancel this?')">Cancel</a> `;
+                            html += `<a href="@Url.Action("Cancel", "CRUDinvoice")?id=${data}" class="btn btn-light" onclick="return confirm('Are you sure you want to cancel this?')">Cancel</a> `;
 
                         if (row.status === "pending")
-                            html += `<a href="@Url.Action("Confirmed", "CRUDinvoice")?id=${row.invoiceId}" class="btn btn-info">Confirmed</a>`;
+                            html += `<a href="@Url.Action("Confirmed", "CRUDinvoice")?id=${data}" class="btn btn-info">Confirmed</a>`;
                         else if (row.status === "confirmed")
-                            html += `<a href="@Url.Action("Shipping", "CRUDinvoice")?id=${row.invoiceId}" class="btn btn-primary">Shipping</a>`;
+                            html += `<a href="@Url.Action("Shipping", "CRUDinvoice")?id=${data}" class="btn btn-primary">Shipping</a>`;
                         else if (row.status === "shipping")
-                            html += `<a href="@Url.Action("Completed", "CRUDinvoice")?id=${row.invoiceId}" class="btn btn-success">Completed</a>`;
+                            html += `<a href="@Url.Action("Completed", "CRUDinvoice")?id=${data}" class="btn btn-success">Completed</a>`;
 
                         return html;
                     }

@@ -18,6 +18,7 @@ namespace ShopOnline.App_Start
                                             "~/Content/css/nice-select.css",
                                             "~/Content/css/owl.carousel.min.css",
                                             "~/Content/css/slicknav.min.css",
+                                            "~/Content/css/cropper.min.css",
                                             "~/Content/css/style.css",
                                             "~/Content/css/404.css",
                                             "~/Content/css/formUser.css"
@@ -32,6 +33,7 @@ namespace ShopOnline.App_Start
                                             "~/Areas/Admin/Content/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css",
                                             "~/Areas/Admin/Content/assets/libs/datatables/datatables.min.css",                                           
                                             "~/Content/css/font-awesome.min.css",
+                                            "~/Content/css/cropper.min.css",
                                             "~/Areas/Admin/Content/css/style.min.css"
             ));
             bundle.Add(new ScriptBundle("~/bundles/js").Include(
@@ -43,7 +45,8 @@ namespace ShopOnline.App_Start
                                             "~/Content/js/jquery.countdown.min.js",
                                             "~/Content/js/jquery.slicknav.js",
                                             "~/Content/js/mixitup.min.js",
-                                            "~/Content/js/owl.carousel.min.js",                                           
+                                            "~/Content/js/owl.carousel.min.js",       
+                                            "~/Content/js/cropper.min.js",
                                             "~/Content/js/main.js"
              ));
             bundle.Add(new ScriptBundle("~/bundles/adminJs").Include(
@@ -61,6 +64,7 @@ namespace ShopOnline.App_Start
                                 "~/Areas/Admin/Content/assets/extra-libs/sparkline/sparkline.js",
                                 "~/Areas/Admin/Content/assets/libs/moment/moment.js",
                                 "~/Areas/Admin/Content/js/sidebarmenu.js",
+                                "~/Content/js/cropper.min.js",
                                 "~/Areas/Admin/Content/js/custom.js"
             ));
             bundle.Add(new ScriptBundle("~/bundles/admin/login/js").Include(

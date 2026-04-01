@@ -35,7 +35,7 @@ namespace shopOnline.Controllers
         private IPagedList<Product> GetProducts(int? page, string meta, string searching, string price, string sortBy)
         {
             var pageNumber = page ?? 1;
-            var pageSize = 9;
+            var pageSize = 12;
 
             List<Product> list = db.Products.Where(model => model.ProductCategory.meta.Equals(meta) || string.IsNullOrEmpty(meta) && model.status == true).ToList();
 

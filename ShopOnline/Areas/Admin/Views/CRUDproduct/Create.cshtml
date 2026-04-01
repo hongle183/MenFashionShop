@@ -1,81 +1,146 @@
 ﻿@model ShopOnline.Models.Product
+@{
+    ViewBag.Title = "Product";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
+}
 
-@using (Html.BeginForm("Create", "CRUDproduct", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new { @class = "form-message" })
-
-    <div class="form-body">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="form-group">
-                    <label for="productName">Product name</label>
-                    <input type="text" class="form-control" name="productName" id="productName" />
-                    <span class="form-message"></span>
-                </div>
-                <div class="form-group">
-                    <label for="meta">Meta</label>
-                    <input type="text" class="form-control" name="meta" id="meta" />
-                    <span class="form-message"></span>
-                </div>
-                <div class="form-group">
-                    <label for="characteristic">Characteristic</label>
-                    <input type="text" class="form-control" name="characteristic" id="characteristic" />
-                    <span class="form-message"></span>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="">Category</label>
-                            @Html.DropDownList("categoryId", null, htmlAttributes: new { @class = "form-control" })
-                            <span class="form-message"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="quanlity">Quality</label>
-                            <input type="number" class="form-control" name="quanlity" id="quanlity" />
-                            <span class="form-message"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="price">Price</label>
-                            <input type="number" class="form-control" name="price" id="price" />
-                            <span class="form-message"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="discount">Discount</label>
-                            <input type="number" class="form-control" name="discount" id="discount" />
-                            <span class="form-message"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="image">Image</label>
-                    <img id="imagePreview" style="max-height: 300px; width: auto; display: block; margin-bottom: 10px;" />
-                    <input type="file" name="uploadFile" class="form-control-file" id="image" accept="image/jpeg, image/png" />
-                    <span class="form-message"></span>
-                </div>
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h4 class="page-title text-truncate text-dark font-weight-medium mb-1">Create product</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0 p-0">
+                        <li class="breadcrumb-item"><a href="~/Admin/CRUDproduct/Index" class="text-muted">Product manage</a></li>
+                        <li class="breadcrumb-item text-muted active" aria-current="page">Create</li>
+                    </ol>
+                </nav>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea name="description" class="form-control textareaTinym" id="description"></textarea>
-                    <span class="form-message"></span>
+        <div class="col-5 align-self-center">
+            <div class="customize-input float-right">
+                <select class="custom-select custom-select-set form-control bg-white border-0 custom-shadow custom-radius">
+                    <option selected>Aug 19</option>
+                    <option value="1">July 19</option>
+                    <option value="2">Jun 19</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Create product</h3>
+                    @using (Html.BeginForm("Create", "CRUDproduct", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "form-message" })
+
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="productName">Product name</label>
+                                        <input type="text" class="form-control" name="productName" id="productName" />
+                                        <span class="form-message"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="meta">Meta</label>
+                                        <input type="text" class="form-control" name="meta" id="meta" />
+                                        <span class="form-message"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="characteristic">Characteristic</label>
+                                        <input type="text" class="form-control" name="characteristic" id="characteristic" />
+                                        <span class="form-message"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="">Category</label>
+                                                @Html.DropDownList("categoryId", null, htmlAttributes: new { @class = "form-control" })
+                                                <span class="form-message"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="quanlity">Quality</label>
+                                                <input type="number" class="form-control" name="quanlity" id="quanlity" />
+                                                <span class="form-message"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="price">Price</label>
+                                                <input type="number" class="form-control" name="price" id="price" />
+                                                <span class="form-message"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="discount">Discount</label>
+                                                <input type="number" class="form-control" name="discount" id="discount" />
+                                                <span class="form-message"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="image">Image</label>
+                                        <img id="imagePreview" style="max-height: 324px; width: auto; display: block; margin-bottom: 10px;" />
+                                        <input type="file" name="uploadFile" class="form-control-file" id="imageInput" accept="image/jpeg, image/png" />
+                                        <span class="form-message"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea name="description" class="form-control textareaTinym" id="description"></textarea>
+                                        <span class="form-message"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <div class="text-right">
+                                    <button id="btnAdd" type="button" class="btn btn-info">Save changes</button>
+                                    <button type="reset" class="btn btn-dark">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
-}
+</div>
+
+<!-- Modal crop image -->
+<div class="modal fade" id="modalCropImage" data-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0" style="color:#0e1822;">
+                <h4 class="modal-title">Crop product image</h4>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <div style="max-width:70vh; max-height:70vh;">
+                    <img id="image" style="max-width:100%; display:block;">
+                </div>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center">
+                <button type="button" data-dismiss="modal" class="btn btn-dark">Cancel</button>
+                <button id="btnCrop" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="~/Content/js/validator.js"></script>
 <script src="~/Areas/Admin/Content/js/helper.js"></script>
@@ -90,7 +155,7 @@
             Validator.isRequired('#quanlity'),
             Validator.isRequired('#price'),
             Validator.isRequired('#discount'),
-            Validator.isRequired('#image'),
+            Validator.isRequired('#imageInput'),
         ],
     });
 
@@ -106,18 +171,110 @@
         }
     });
 
-    $("#image").on("change", function () {
-        const file = this.files[0];
-        if (file) {
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                $("#imagePreview").attr("src", e.target.result).addClass("img-thumbnail");
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+    $(function () {
+        var form = $("#form-1");
+        var $input = $('#imageInput');
+        var $image = $('#image');
+        var $modal = $('#modalCropImage');
+        var cropper;
+        var croppedImageBlob = null;
 
-    $("#form-1").on("reset", function () {
-        $("#imagePreview").attr("src", "@Url.Content("~/Content/img/avatar/avatar.png")").removeClass("img-thumbnail");
+        // 👉 Khi chọn file
+        $input.on('change', function (e) {
+            var files = e.target.files;
+
+            if (files && files.length > 0) {
+                // tạo URL tạm để preview
+                var url = URL.createObjectURL(files[0]);
+
+                $image.css('opacity', 0);
+                // gán vào img
+                $image.attr('src', url);
+
+                $modal.modal('show');
+            }
+        });
+
+        // 👉 Khi modal hiển thị -> init cropper
+        $modal.on('shown.bs.modal', function () {
+            cropper = new Cropper($image[0], {
+                viewMode: 3,
+                dragMode: 'move',
+                aspectRatio: 4/5,   // vuông
+                autoCropArea: 1,
+                ready: function () {
+                    $image.css('opacity', 1);
+                }
+            });
+        });
+
+        // 👉 Khi đóng modal -> destroy cropper
+        $modal.on('hidden.bs.modal', function () {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        });
+
+        $("#btnCrop").on('click', function () {
+            var canvas = cropper.getCroppedCanvas({
+                width: 400,
+                height: 500
+            });
+
+            canvas.toBlob(function (blob) {
+                $("#imagePreview").attr('src', URL.createObjectURL(blob)).addClass("img-thumbnail");
+                $modal.modal('hide');
+
+                croppedImageBlob = blob;
+            });
+        });
+
+        $('#btnAdd').click(function (e) {
+            e.preventDefault();
+            var formData = new FormData(form[0]);
+
+            // nếu đã crop thì dùng ảnh crop
+            if (croppedImageBlob) {
+                formData.set('uploadFile', croppedImageBlob, 'img.jpg');
+            }
+
+            $.ajax({
+                url: form.attr("action"),
+                type: form.attr("method"),
+                dataType: "json",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    if (res.success) {
+                        showToast({
+                            type: "success",
+                            message: res.msg,
+                            language: "en"
+                        });
+
+                        if (res.redirectUrl) {
+                            setTimeout(function () {
+                                window.location.href = res.redirectUrl;
+                            }, 500); // delay 500ms để toast xuất hiện
+                        }
+                    } else {
+                        showToast({
+                            type: "danger",
+                            message: res.msg,
+                            language: "en"
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                },
+            });
+        });
+
+        form.on("reset", function () {
+            $("#imagePreview").attr("src", "@Url.Content("~/Content/img/avatar/avatar.png")").removeClass("img-thumbnail");
+        });
     });
 </script>

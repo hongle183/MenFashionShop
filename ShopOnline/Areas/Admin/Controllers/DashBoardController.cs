@@ -1,12 +1,12 @@
-﻿using System;
+﻿using ShopOnline.Models;
+using ShopOnline.Services;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using ShopOnline.Models;
 
 namespace ShopOnline.Areas.Admin.Controllers
 {
@@ -103,7 +103,7 @@ namespace ShopOnline.Areas.Admin.Controllers
             return View(user);
         }
         [HttpPost]
-        public JsonResult EditProfile(Member member, HttpPostedFileBase uploadFile)
+        public JsonResult EditProfile(Member member)
         {
             if (!ModelState.IsValid)
             {
@@ -125,39 +125,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                 dbMember.phone = member.phone?.Trim();
                 dbMember.address = member.address?.Trim();
                 dbMember.birthday = member.birthday;
-
-                string oldAvatarRel = dbMember.avatar;
-                string oldAvatarAbs = !string.IsNullOrEmpty(oldAvatarRel) ? Server.MapPath(oldAvatarRel) : null;
-
-                // Nếu có upload file mới
-                if (uploadFile != null && uploadFile.ContentLength > 0)
-                {
-                    string extension = Path.GetExtension(uploadFile.FileName).ToLower();
-                    if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                    {
-                        return Json(new { success = false, msg = "Invalid file type. Only JPG, JPEG, or PNG are allowed." });
-                    }
-
-                    // Tạo đường dẫn file mới
-                    var fileName = Path.GetFileName(uploadFile.FileName);
-                    var newAvatarRel = "/Content/img/avatar/" + fileName;
-                    var newAvatarAbs = Path.Combine(Server.MapPath("/Content/img/avatar"), fileName);
-
-                    // Lưu file mới
-                    uploadFile.SaveAs(newAvatarAbs);
-                    dbMember.avatar = newAvatarRel;
-
-                    // Xóa ảnh cũ nếu không còn ai dùng
-                    if (!string.IsNullOrEmpty(oldAvatarAbs))
-                    {
-                        bool isUsedByOther = db.Members.Any(m => m.avatar == oldAvatarRel && m.memberId != dbMember.memberId);
-                        if (System.IO.File.Exists(oldAvatarAbs) && !isUsedByOther)
-                        {
-                            System.IO.File.Delete(oldAvatarAbs);
-                        }
-                    }
-
-                }
+                
                 db.SaveChanges();
 
                 // Cập nhật session với dữ liệu mới
@@ -193,6 +161,46 @@ namespace ShopOnline.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, msg = "Error: " + ex.Message });
+            }
+        }
+        [HttpPost]
+        public JsonResult UpdateAvatar(HttpPostedFileBase uploadFile)
+        {
+            try
+            {
+                Member user = (Member)Session["infoAdmin"];
+                // Lấy entity thật từ DB để cập nhật
+                var dbMember = db.Members.FirstOrDefault(m => m.memberId == user.memberId);
+
+                string oldAvatarRel = dbMember.avatar;
+                string oldAvatarAbs = !string.IsNullOrEmpty(oldAvatarRel) ? Server.MapPath(oldAvatarRel) : null;
+
+                string url = "/Areas/Admin/Content/assets/images/avatar/";
+                var uploadDir = Server.MapPath(url);
+                ImageServices imageServices = new ImageServices();
+                string newAvatarRel = url + imageServices.SaveCroppedImage(uploadDir, uploadFile, 300, 300);
+
+                if (string.IsNullOrEmpty(newAvatarRel))
+                {
+                    return Json(new { success = false, message = "Error processing image. Please try again." });
+                }
+                else
+                {
+                    dbMember.avatar = newAvatarRel;
+                    if (System.IO.File.Exists(oldAvatarAbs))
+                    {
+                        System.IO.File.Delete(oldAvatarAbs);
+                    }
+                }
+                db.SaveChanges();
+
+                // Cập nhật session với dữ liệu mới
+                Session["infoAdmin"] = dbMember;
+                return Json(new { success = true, message = "Update avatar successfully!", avatarUrl = newAvatarRel });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error: " + ex.Message + "." });
             }
         }
     }
