@@ -14,7 +14,6 @@
         <EntityTypeShape EntityType="menfsModel.Product" Width="1.5" PointX="5.25" PointY="1.25" />
         <EntityTypeShape EntityType="menfsModel.ProductCategory" Width="1.5" PointX="3" PointY="1.25" />
         <EntityTypeShape EntityType="menfsModel.Role" Width="1.5" PointX="0.75" PointY="6.375" />
-        <EntityTypeShape EntityType="menfsModel.Slide" Width="1.5" PointX="9.75" PointY="0.75" />
         <EntityTypeShape EntityType="menfsModel.vDoanhThuTheoNgay" Width="1.5" PointX="9.75" PointY="4.75" />
         <EntityTypeShape EntityType="menfsModel.vHoaDonTrongNgay" Width="1.5" PointX="9.75" PointY="7.75" />
         <AssociationConnector Association="menfsModel.FK_ARTICLE_MEMBER" />
@@ -24,6 +23,7 @@
         <AssociationConnector Association="menfsModel.FK_MEMBER_ROLE" />
         <AssociationConnector Association="menfsModel.FK_PRODUCT_MEMBER" />
         <AssociationConnector Association="menfsModel.FK_PRODUCT_CATEGORY" />
+        <EntityTypeShape EntityType="menfsModel.Slide" Width="1.5" PointX="10.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

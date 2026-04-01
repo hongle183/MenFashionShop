@@ -9,7 +9,7 @@ namespace shopOnline.Controllers
 {
     public class HomeController : Controller
     {
-        menfsEntities db = new menfsEntities();
+        private readonly menfsEntities db = new menfsEntities();
         public ActionResult Index()
         {
             return View();
@@ -34,6 +34,11 @@ namespace shopOnline.Controllers
         public ActionResult Error()
         {
             return View();
+        }
+        public PartialViewResult SlideHome()
+        {
+            var list = db.Slides.Where(i => i.status == true).OrderBy(model => model.order).ToList();
+            return PartialView(list);
         }
         public PartialViewResult ProductHome()
         {

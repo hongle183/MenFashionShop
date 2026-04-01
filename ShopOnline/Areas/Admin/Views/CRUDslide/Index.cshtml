@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Slide";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h4 class="page-title text-truncate text-dark font-weight-medium mb-1">Slide manage</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0 p-0">
+                        <li class="breadcrumb-item"><a href="~/Admin/CRUDSlide/Index">Dash board</a></li>
+                        <li class="breadcrumb-item active">Slide list</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="col-5 align-self-center">
+            <div class="customize-input float-right">
+                <select class="custom-select custom-select-set form-control bg-white border-0 custom-shadow custom-radius">
+                    <option selected>Nov 25</option>
+                    <option value="1">Oct 25</option>
+                    <option value="2">Sep 25</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-body">
+    <h3 class="text-dark text-uppercase card-title">Slide</h3>
+    <hr />
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th class="text-center">Image</th>
+                    <th class="text-center">Subtitle</th> 
+                    <th class="text-center">Title</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Order</th>
+                    <th class="text-center">Date Update</th>
+                    <th class="text-center" width="300px">Feature</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var dataTable;
+
+    $(document).ready(function () {
+        dataTable = $('.table').DataTable($.extend(true, {}, defaultDataTableSettings, {
+            ajax: {
+                url: '@Url.Action("GetSlide", "CRUDslide")',
+                type: 'GET',
+                dataSrc: 'listSlide'
+            },
+            columns: [
+                {
+                    data: 'image',
+                    className: 'text-center',
+                    render: function (data, type) {
+                        return `<img src="${data ? data : ''}" style="height:90px; border-radius:8px;" />`;
+                    }
+                },
+                {
+                    data: 'subtitle',
+                    className: 'text-center',
+                    render: function (data) {
+                        return `<small class="text-uppercase font-weight-bold">${data}</small>`;
+                    }
+                },
+                { data: 'title', className: 'text-center' },
+                {
+                    data: 'status',
+                    className: 'text-center',
+                    render: function (data, type) {
+                        if (type === "sort" || type === "type") return data;
+
+                        return (data === true || data === "true")
+                            ? '<i class="fa fa-circle text-success font-12" data-toggle="tooltip" title="Checked"></i>'
+                            : '<i class="fa fa-circle text-danger font-12" data-toggle="tooltip" title="Unchecked"></i>';
+                    }
+                },
+                { data: 'order', className: 'text-center' },
+                {
+                    data: 'dateCreate',
+                    className: 'text-center',
+                    render: function (data, type) {
+                        if (!data) return '';
+                        // Format "/Date(1739750400000)/" (JSON .NET)
+                        var ts = parseInt(data.replace(/\/Date\((\d+)\)\//, '$1'), 10);
+                        // Khi DataTables yêu cầu sort/type -> trả numeric (timestamp)
+                        if (type === 'sort' || type === 'type') return ts;
+
+                        // Mặc định trả về display format
+                        return moment(ts).format('DD/MM/YYYY');
+                    }
+                },
+                {
+                    data: 'slideId',
+                    className: 'text-center',
+                    orderable: false,
+                    render: function (id) {
+                        return `
+                        <div class="d-flex justify-content-center">
+                            <a href="@Url.Action("Edit", "CRUDslide")?id=${id}" class="btn btn-warning edit-btn mr-2">Edit</a>
+                        </div>
+                    `;
+                    }
+                }
+            ]
+        }));
+    });   
+</script>

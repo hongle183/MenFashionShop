@@ -1,0 +1,238 @@
+﻿@model ShopOnline.Models.Slide
+@{
+    ViewBag.Title = "Slide";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutDashBoard.cshtml";
+}
+
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h4 class="page-title text-truncate text-dark font-weight-medium mb-1">Edit slide</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb m-0 p-0">
+                        <li class="breadcrumb-item"><a href="~/Admin/CRUDslide/Index" class="text-muted">Slide list</a></li>
+                        <li class="breadcrumb-item text-muted active" aria-current="page">Edit</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="col-5 align-self-center">
+            <div class="customize-input float-right">
+                <select class="custom-select custom-select-set form-control bg-white border-0 custom-shadow custom-radius">
+                    <option selected>Aug 19</option>
+                    <option value="1">July 19</option>
+                    <option value="2">Jun 19</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Edit slide @Model.order</h3>
+                    @using (Html.BeginForm("Edit", "CRUDslide", FormMethod.Post, new { @id = "form-1", @enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "form-message" })
+                        <div class="form-body">
+                            @Html.HiddenFor(model => model.slideId)
+                            @Html.HiddenFor(model => model.order)
+                            @Html.HiddenFor(model => model.dateCreate)
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="subtitle">Subtitle</label>
+                                                @Html.EditorFor(model => model.subtitle, new { htmlAttributes = new { @class = "form-control", @id = "subtitle" } })
+                                                <span class="form-message"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="title">Title</label>
+                                                @Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control", @id = "title" } })
+                                                <span class="form-message"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="description">Description</label>
+                                                @Html.EditorFor(model => model.description, new { htmlAttributes = new { @class = "form-control", @id = "description" } })
+                                                <span class="form-message"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="status">Public</label>
+                                                @{
+                                                    bool status = (Model.status.GetValueOrDefault(false) ? true : false);
+                                                }
+                                                @Html.CheckBoxFor(model => status)
+                                                <p>Update date: @Model.dateCreate</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="imageInput">Image</label>
+                                        <img id="imagePreview" src=@Url.Content(Model.image) class="img-thumbnail" style="display:block; margin-bottom:10px" />
+                                        <input type="file" name="uploadFile" class="form-control-file" id="imageInput"
+                                               accept="image/jpeg, image/png" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="text-right">
+                                <button id="btnEdit" type="button" class="btn btn-info">Save changes</button>
+                                <a href="~/Admin/CRUDslide/Index" class="btn btn-dark">Back to list</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal crop image -->
+<div class="modal fade" id="modalCropImage" data-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0" style="color:#0e1822;">
+                <h4 class="modal-title">Crop slide image</h4>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <div style="max-width:70vh; max-height:70vh;">
+                    <img id="image" style="width:100%; display:block;">
+                </div>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center">
+                <button type="button" data-dismiss="modal" class="btn btn-dark">Cancel</button>
+                <button id="btnCrop" class="btn btn-info">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/js/validator.js"></script>
+<script src="~/Areas/Admin/Content/js/helper.js"></script>
+<script>
+    Validator({
+        form: '#form-1',
+        formGroupSelector: '.form-group',
+        errorSelector: '.form-message',
+        rules: [
+            Validator.isRequired('#subtitle'),
+            Validator.isRequired('#title'),
+            Validator.isRequired('#description')
+        ],
+    });
+
+    $(function () {
+        var form = $("#form-1");
+        var $input = $('#imageInput');
+        var $image = $('#image');
+        var $modal = $('#modalCropImage');
+        var cropper;
+        var croppedImageBlob = null;
+
+        // 👉 Khi chọn file
+        $input.on('change', function (e) {
+            var files = e.target.files;
+
+            if (files && files.length > 0) {
+                // tạo URL tạm để preview
+                var url = URL.createObjectURL(files[0]);
+
+                $image.css('opacity', 0);
+                // gán vào img
+                $image.attr('src', url);
+
+                $modal.modal('show');
+            }
+        });
+
+        // 👉 Khi modal hiển thị -> init cropper
+        $modal.on('shown.bs.modal', function () {
+            cropper = new Cropper($image[0], {
+                viewMode: 3,
+                dragMode: 'move',
+                aspectRatio: 2 / 1,
+                autoCropArea: 1,
+                ready: function () {
+                    $image.css('opacity', 1);
+                }
+            });
+        });
+
+        // 👉 Khi đóng modal -> destroy cropper
+        $modal.on('hidden.bs.modal', function () {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        });
+
+        $("#btnCrop").on('click', function () {
+            var canvas = cropper.getCroppedCanvas({
+                width: 1600,
+                height: 800
+            });
+
+            canvas.toBlob(function (blob) {
+                $("#imagePreview").attr('src', URL.createObjectURL(blob)).addClass("img-thumbnail");
+                $modal.modal('hide');
+
+                croppedImageBlob = blob;
+            });
+        });
+
+        $('#btnEdit').click(function (e) {
+            e.preventDefault();
+            var formData = new FormData(form[0]);
+
+            // nếu đã crop thì dùng ảnh crop
+            if (croppedImageBlob) {
+                formData.set('uploadFile', croppedImageBlob, 'img.jpg');
+            }
+
+            $.ajax({
+                url: form.attr("action"),
+                type: form.attr("method"),
+                dataType: "json",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    if (res.success) {
+                        showToast({
+                            type: "success",
+                            message: res.msg,
+                            language: "en"
+                        });
+
+                        if (res.redirectUrl) {
+                            setTimeout(function () {
+                                window.location.href = res.redirectUrl;
+                            }, 500); // delay 500ms để toast xuất hiện
+                        }
+                    } else {
+                        showToast({
+                            type: "danger",
+                            message: res.msg,
+                            language: "en"
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                },
+            });
+        });
+    });
+</script>

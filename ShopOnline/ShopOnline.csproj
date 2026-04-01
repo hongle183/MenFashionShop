@@ -902,6 +902,7 @@
     <Compile Include="Areas\Admin\Controllers\CRUDmemberController.cs" />
     <Compile Include="Areas\Admin\Controllers\CRUDmenusController.cs" />
     <Compile Include="Areas\Admin\Controllers\CRUDproductController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CRUDslideController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashBoardController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginMemberController.cs" />
     <Compile Include="Controllers\InvoiceController.cs" />
@@ -1071,6 +1072,8 @@
     </Content>
     <Content Include="Areas\Admin\Views\CRUDcategory\Create.cshtml" />
     <Content Include="Areas\Admin\Views\CRUDcategory\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\CRUDslide\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CRUDslide\Edit.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Article\ArticleDetail.cshtml" />
     <Content Include="Views\Article\ArticleList.cshtml" />
@@ -1103,6 +1106,7 @@
     <Content Include="Views\Invoice\InvoiceDetail.cshtml" />
     <Content Include="Views\Invoice\MyOrder.cshtml" />
     <Content Include="Views\Invoice\_ListOrder.cshtml" />
+    <Content Include="Views\Home\SlideHome.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

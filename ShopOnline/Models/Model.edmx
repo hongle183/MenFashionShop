@@ -131,11 +131,11 @@
           <Key>
             <PropertyRef Name="slideId" />
           </Key>
-          <Property Name="slideId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="nvarchar" MaxLength="50" />
+          <Property Name="slideId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="subtitle" Type="nvarchar" MaxLength="50" />
+          <Property Name="title" Type="nvarchar" MaxLength="50" />
           <Property Name="description" Type="nvarchar" MaxLength="250" />
-          <Property Name="url" Type="varchar" MaxLength="50" />
-          <Property Name="meta" Type="nvarchar" MaxLength="50" />
+          <Property Name="image" Type="varchar" MaxLength="2000" />
           <Property Name="status" Type="bit" />
           <Property Name="order" Type="int" />
           <Property Name="dateCreate" Type="smalldatetime" />
@@ -325,7 +325,6 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <EntitySet Name="Products" EntityType="menfsModel.Product" />
           <EntitySet Name="ProductCategories" EntityType="menfsModel.ProductCategory" />
           <EntitySet Name="Roles" EntityType="menfsModel.Role" />
-          <EntitySet Name="Slides" EntityType="menfsModel.Slide" />
           <EntitySet Name="vDoanhThuTheoNgays" EntityType="menfsModel.vDoanhThuTheoNgay" />
           <EntitySet Name="vHoaDonTrongNgays" EntityType="menfsModel.vHoaDonTrongNgay" />
           <AssociationSet Name="FK_ARTICLE_MEMBER" Association="menfsModel.FK_ARTICLE_MEMBER">
@@ -356,6 +355,7 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             <End Role="ProductCategory" EntitySet="ProductCategories" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
+          <EntitySet Name="Slides" EntityType="menfsModel.Slide" />
         </EntityContainer>
         <EntityType Name="Article">
           <Key>
@@ -493,19 +493,6 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <Property Name="dateCreate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Members" Relationship="menfsModel.FK_MEMBER_ROLE" FromRole="Role" ToRole="Member" />
         </EntityType>
-        <EntityType Name="Slide">
-          <Key>
-            <PropertyRef Name="slideId" />
-          </Key>
-          <Property Name="slideId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="url" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="meta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="status" Type="Boolean" />
-          <Property Name="order" Type="Int32" />
-          <Property Name="dateCreate" Type="DateTime" Precision="0" />
-        </EntityType>
         <EntityType Name="vDoanhThuTheoNgay">
           <Key>
             <PropertyRef Name="dateCreate" />
@@ -613,6 +600,19 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Slide">
+          <Key>
+            <PropertyRef Name="slideId" />
+          </Key>
+          <Property Name="slideId" Type="Guid" Nullable="false" />
+          <Property Name="subtitle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="image" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="order" Type="Int32" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -749,20 +749,6 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Slides">
-            <EntityTypeMapping TypeName="menfsModel.Slide">
-              <MappingFragment StoreEntitySet="Slide">
-                <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
-                <ScalarProperty Name="order" ColumnName="order" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="meta" ColumnName="meta" />
-                <ScalarProperty Name="url" ColumnName="url" />
-                <ScalarProperty Name="description" ColumnName="description" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="slideId" ColumnName="slideId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="vDoanhThuTheoNgays">
             <EntityTypeMapping TypeName="menfsModel.vDoanhThuTheoNgay">
               <MappingFragment StoreEntitySet="vDoanhThuTheoNgay">
@@ -784,6 +770,20 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
                 <ScalarProperty Name="totalMoney" ColumnName="totalMoney" />
                 <ScalarProperty Name="memberId" ColumnName="memberId" />
                 <ScalarProperty Name="invoinceId" ColumnName="invoinceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Slides">
+            <EntityTypeMapping TypeName="menfsModel.Slide">
+              <MappingFragment StoreEntitySet="Slide">
+                <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
+                <ScalarProperty Name="order" ColumnName="order" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="subtitle" ColumnName="subtitle" />
+                <ScalarProperty Name="slideId" ColumnName="slideId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -15,10 +15,10 @@ namespace ShopOnline.Models
     public partial class Slide
     {
         public System.Guid slideId { get; set; }
-        public string name { get; set; }
+        public string subtitle { get; set; }
+        public string title { get; set; }
         public string description { get; set; }
-        public string url { get; set; }
-        public string meta { get; set; }
+        public string image { get; set; }
         public Nullable<bool> status { get; set; }
         public Nullable<int> order { get; set; }
         public Nullable<System.DateTime> dateCreate { get; set; }
