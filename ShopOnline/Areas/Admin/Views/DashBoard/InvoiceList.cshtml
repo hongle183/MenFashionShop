@@ -6,7 +6,7 @@
         <thead>
             <tr class="border-0 font-weight-medium text-muted text-center">
                 <th class="border-0">
-                    Order Id
+                    Order
                 </th>
                 <th class="border-0 px-2">
                     Order Date
@@ -33,7 +33,7 @@
             {
                 <tr class="text-center">
                     <td class="align-middle font-weight-medium">
-                        <a href="@Url.Action("InvoiceDetail", "CRUDinvoice", new { invoiceNo = i.invoinceId})">#@i.invoinceId</a>
+                        <a href="@Url.Action("InvoiceDetail", "CRUDinvoice", new { invoiceNo = i.invoinceId})">#@i.invoinceNo</a>
                     </td>
                     <td class="align-middle text-muted">@String.Format("{0:dd/MM/yyyy}", i.dateCreate)</td>
                     <td class="align-middle">@String.Format("{0:N0}", i.totalMoney) ₫</td>

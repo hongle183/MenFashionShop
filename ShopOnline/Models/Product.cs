@@ -11,8 +11,7 @@ namespace ShopOnline.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.Web.Mvc;
-
+    
     public partial class Product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -27,7 +26,6 @@ namespace ShopOnline.Models
         public Nullable<int> price { get; set; }
         public Nullable<int> discount { get; set; }
         public string characteristic { get; set; }
-        [AllowHtml]
         public string description { get; set; }
         public Nullable<int> quanlity { get; set; }
         public string brand { get; set; }

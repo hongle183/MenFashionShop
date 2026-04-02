@@ -22,6 +22,7 @@ namespace ShopOnline.Models
     
         public System.Guid invoinceId { get; set; }
         public System.Guid memberId { get; set; }
+        public string invoinceNo { get; set; }
         public Nullable<int> totalMoney { get; set; }
         public string paymentMethod { get; set; }
         public string paymentStatus { get; set; }

@@ -26,6 +26,7 @@ namespace ShopOnline.Areas.Admin.Controllers
                                                       .Select(i => new
                                                       {
                                                           invoiceId = i.invoinceId,
+                                                          invoiceNo = i.invoinceNo,
                                                           dateCreate = i.dateCreate,
                                                           customer = i.Member.firstName,
                                                           totalMoney = i.totalMoney,

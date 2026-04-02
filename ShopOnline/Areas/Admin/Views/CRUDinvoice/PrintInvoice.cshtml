@@ -13,14 +13,14 @@
 <body style="font-size: 120%;">
     <div class="card">
         <div class="card-body payment-return">
-            <div class="text-center"><img src="~/Content/img/logo.png" alt="" style="max-width:40%;"></div>
+            <div class="text-center"><img src="~/Content/img/logo.png" alt="" style="max-width:30%;"></div>
             <h4>FashionStore</h4>
-            <p>19 Đ. Nguyễn Hữu Thọ, Quận 7</p>
-            <p>Hotline: +84 338 650 639</p>
-            <h4 class="theme-color mb-3">PHIẾU TÍNH TIỀN</h4>
+            <p>19 Đ. Nguyễn Hữu Thọ, Quận 7. Hotline: +84 338 650 639</p>
+            <h4 class="theme-color">PHIẾU TÍNH TIỀN</h4>
+            <p class="mb-3">Số: @Model.invoinceNo</p>
             <table class="w-100">
                 <tr>
-                    <td>Tên khách hàng: @Model.Member.firstName @Model.Member.lastName</td>
+                    <td>Khách hàng: @Model.Member.firstName @Model.Member.lastName</td>
                     <td>Mã giao dịch: <b>@Model.transactionId</b></td>
                 </tr>
                 <tr>
@@ -76,6 +76,9 @@
                         <br /><span>Mọi thắc mắc xin liên hệ +84 338 xxx xxx</span>
                     </td>
                     <td><img src="~/Content/img/Orders/process-check.png" alt="" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center">Cảm ơn quý khách đã ủng hộ</td>
                 </tr>
             </table>
         </div>

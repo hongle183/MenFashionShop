@@ -37,6 +37,7 @@
           </Key>
           <Property Name="invoinceId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="memberId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="invoinceNo" Type="varchar" MaxLength="30" />
           <Property Name="totalMoney" Type="int" />
           <Property Name="paymentMethod" Type="nvarchar" MaxLength="50" />
           <Property Name="paymentStatus" Type="nvarchar" MaxLength="20" />
@@ -400,6 +401,7 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <Property Name="dateCreate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Member" Relationship="menfsModel.FK_INVOINCE_MEMBER" FromRole="Invoince" ToRole="Member" />
           <NavigationProperty Name="InvoinceDetails" Relationship="menfsModel.FK_INVOINCEDETAIL_INVOINCE" FromRole="Invoince" ToRole="InvoinceDetail" />
+          <Property Name="invoinceNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="InvoinceDetail">
           <Key>
@@ -650,6 +652,7 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <EntitySetMapping Name="Invoinces">
             <EntityTypeMapping TypeName="menfsModel.Invoince">
               <MappingFragment StoreEntitySet="Invoince">
+                <ScalarProperty Name="invoinceNo" ColumnName="invoinceNo" />
                 <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="meta" ColumnName="meta" />

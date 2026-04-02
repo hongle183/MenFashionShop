@@ -168,7 +168,7 @@ namespace shopOnline.Controllers
             catch (Exception ex)
             {
                 TempData["msgOrderFailed"] = "Đã xảy ra lỗi: " + ex.Message + ".";
-                return RedirectToAction("Index");
+                return RedirectToAction("Cart", "Cart");
             }
         }
 

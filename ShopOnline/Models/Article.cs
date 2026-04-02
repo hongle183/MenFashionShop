@@ -11,15 +11,13 @@ namespace ShopOnline.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.Web.Mvc;
-
+    
     public partial class Article
     {
         public System.Guid articleId { get; set; }
         public string title { get; set; }
         public string description { get; set; }
         public string image { get; set; }
-        [AllowHtml]
         public string content { get; set; }
         public System.Guid memberId { get; set; }
         public string meta { get; set; }

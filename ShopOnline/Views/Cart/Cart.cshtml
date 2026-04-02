@@ -23,6 +23,17 @@
     </div>
 </section>
 <!-- Breadcrumb Section End -->
+
+@if (TempData["msgOrderFailed"] != null)
+{
+    <script>
+        showToast({
+            type: "danger",
+            message: "@TempData["msgOrderFailed"].ToString().Replace("\"", "\\\"")"
+        });
+    </script>
+}
+
 <!-- Shopping Cart Section Begin -->
 <section class="shopping-cart spad">
     <div class="container">

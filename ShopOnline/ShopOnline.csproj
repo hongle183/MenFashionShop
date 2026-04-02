@@ -1038,7 +1038,6 @@
     <Content Include="Areas\Admin\Views\DashBoard\Chart.cshtml" />
     <Content Include="Areas\Admin\Views\DashBoard\EditProfile.cshtml" />
     <Content Include="Areas\Admin\Views\DashBoard\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\DashBoard\InvoiceDetail.cshtml" />
     <Content Include="Areas\Admin\Views\DashBoard\InvoiceList.cshtml" />
     <Content Include="Areas\Admin\Views\LoginMember\Login.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutDashBoard.cshtml" />

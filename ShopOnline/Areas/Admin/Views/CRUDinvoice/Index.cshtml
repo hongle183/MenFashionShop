@@ -119,7 +119,7 @@ else if (TempData["msgCancelOrder"] != null)
                         if (type === 'sort' || type === 'type') return ts;
 
                         return `<div class="font-14">
-                                    <p class="mb-0">Order ID: <b><a href="@Url.Action("InvoiceDetail", "CRUDinvoice")?invoiceNo=${row.invoiceId}">#${row.invoiceId}</a></b></p>
+                                    <p class="mb-0">Order: <b><a href="@Url.Action("InvoiceDetail", "CRUDinvoice")?invoiceNo=${row.invoiceId}">#${row.invoiceNo}</a></b></p>
                                     <p class="mb-0">Customer name: <b>${row.customer}</b></p>
                                     <p class="mb-0">Create time: <b>${moment(ts).format('DD/MM/YYYY hh:mm:ss')}</b></p>
                                 </div>`;

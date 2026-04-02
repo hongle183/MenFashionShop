@@ -7,7 +7,7 @@
     {
         <div class="card mb-5">
             <div class="top row justify-content-between px-sm-3 pt-sm-4 px-0">
-                <h5>ĐƠN HÀNG <span class="font-weight-bold"><a href="@Url.Action("InvoiceDetail", "Invoice", new { invoiceId = i.invoinceId })">#@i.invoinceId</a></span></h5>
+                <h5>ĐƠN HÀNG <span class="font-weight-bold"><a href="@Url.Action("InvoiceDetail", "Invoice", new { invoiceId = i.invoinceId })">#@i.invoinceNo</a></span></h5>
                 <p class="mb-0">Tổng tiền: <span class="font-weight-bold">@String.Format("{0:0,0}", i.totalMoney) ₫</span></p>
             </div> <!-- Add class 'active' to progress -->
             <div class="row d-flex justify-content-center">

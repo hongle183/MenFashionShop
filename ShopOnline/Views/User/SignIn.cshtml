@@ -103,6 +103,12 @@
                                 }
                             }
                         });
+                    })
+                    .catch(function () {
+                        showToast({
+                            type: "danger",
+                            message: "Không thể xác thực reCAPTCHA. Vui lòng kiểm tra kết nối mạng và thử lại."
+                        });
                     });
             });
         }

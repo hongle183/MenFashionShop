@@ -23,12 +23,12 @@
         <div class="signinBx payment-return">
             <div class="text-center"><img src="~/Content/img/logo.png" alt="" style="max-width:40%;"></div>
             <h4>FashionStore</h4>
-            <p>19 Đ. Nguyễn Hữu Thọ, Quận 7</p>
-            <p>Hotline: +84 338 650 639</p>
-            <h4 class="theme-color mb-3">PHIẾU TÍNH TIỀN</h4>          
+            <p>19 Đ. Nguyễn Hữu Thọ, Quận 7. Hotline: +84 338 650 639</p>
+            <h4 class="theme-color">PHIẾU TÍNH TIỀN</h4>
+            <p class="mb-3">Số: @Model.invoinceNo</p>
             <table class="w-100">
                 <tr>
-                    <td>Tên khách hàng: @Model.Member.firstName @Model.Member.lastName</td>
+                    <td>Khách hàng: @Model.Member.firstName @Model.Member.lastName</td>
                     <td>Mã giao dịch: <b>@Model.transactionId</b></td>
                 </tr>
                 <tr>
@@ -78,6 +78,7 @@
                     <td class="text-right"><b>@String.Format("{0:N0}", Model.totalMoney) ₫</b></td>
                 </tr>
             </table>
+            <p class="text-center">Cảm ơn quý khách đã ủng hộ</p>
             <div class="text-center mt-4"> <a href="/trang-chu" class="btn outline-btn">Back to shop</a></div>
         </div> 
     </div>
