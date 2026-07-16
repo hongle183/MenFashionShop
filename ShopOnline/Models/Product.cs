@@ -17,6 +17,7 @@ namespace ShopOnline.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
+            this.Variants = new HashSet<Variant>();
             this.InvoinceDetails = new HashSet<InvoinceDetail>();
         }
     
@@ -27,17 +28,19 @@ namespace ShopOnline.Models
         public Nullable<int> discount { get; set; }
         public string characteristic { get; set; }
         public string description { get; set; }
-        public Nullable<int> quanlity { get; set; }
         public string brand { get; set; }
         public System.Guid categoryId { get; set; }
         public System.Guid memberId { get; set; }
         public string meta { get; set; }
         public Nullable<bool> status { get; set; }
         public Nullable<System.DateTime> dateCreate { get; set; }
+        public string productCode { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<InvoinceDetail> InvoinceDetails { get; set; }
         public virtual Member Member { get; set; }
         public virtual ProductCategory ProductCategory { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Variant> Variants { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<InvoinceDetail> InvoinceDetails { get; set; }
     }
 }

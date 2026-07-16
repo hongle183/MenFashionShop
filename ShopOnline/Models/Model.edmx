@@ -19,6 +19,15 @@
           <Property Name="status" Type="bit" />
           <Property Name="dateCreate" Type="smalldatetime" />
         </EntityType>
+        <EntityType Name="Color">
+          <Key>
+            <PropertyRef Name="colorId" />
+          </Key>
+          <Property Name="colorId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="code" Type="nchar" MaxLength="10" />
+          <Property Name="hex" Type="nchar" MaxLength="6" />
+          <Property Name="dateCreate" Type="smalldatetime" />
+        </EntityType>
         <EntityType Name="Contact">
           <Key>
             <PropertyRef Name="contactId" />
@@ -51,10 +60,13 @@
           <Key>
             <PropertyRef Name="invoinceId" />
             <PropertyRef Name="productId" />
+            <PropertyRef Name="sizeId" />
+            <PropertyRef Name="colorId" />
           </Key>
           <Property Name="invoinceId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="productId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="size" Type="varchar" MaxLength="10" />
+          <Property Name="sizeId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="colorId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="quanlity" Type="int" />
           <Property Name="price" Type="int" />
           <Property Name="discount" Type="int" />
@@ -93,13 +105,13 @@
             <PropertyRef Name="productId" />
           </Key>
           <Property Name="productId" Type="uniqueidentifier" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="productCode" Type="varchar" MaxLength="6" />
           <Property Name="productName" Type="nvarchar" MaxLength="250" />
           <Property Name="image" Type="varchar" MaxLength="2000" />
           <Property Name="price" Type="int" />
           <Property Name="discount" Type="int" />
           <Property Name="characteristic" Type="nvarchar" MaxLength="200" />
           <Property Name="description" Type="nvarchar" MaxLength="2000" />
-          <Property Name="quanlity" Type="int" />
           <Property Name="brand" Type="nvarchar" MaxLength="250" />
           <Property Name="categoryId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="memberId" Type="uniqueidentifier" Nullable="false" />
@@ -128,6 +140,14 @@
           <Property Name="status" Type="bit" />
           <Property Name="dateCreate" Type="smalldatetime" />
         </EntityType>
+        <EntityType Name="Size">
+          <Key>
+            <PropertyRef Name="sizeId" />
+          </Key>
+          <Property Name="sizeId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="code" Type="nchar" MaxLength="10" />
+          <Property Name="dateCreate" Type="smalldatetime" />
+        </EntityType>
         <EntityType Name="Slide">
           <Key>
             <PropertyRef Name="slideId" />
@@ -139,6 +159,22 @@
           <Property Name="image" Type="varchar" MaxLength="2000" />
           <Property Name="status" Type="bit" />
           <Property Name="order" Type="int" />
+          <Property Name="dateCreate" Type="smalldatetime" />
+        </EntityType>
+        <EntityType Name="Variant">
+          <Key>
+            <PropertyRef Name="productId" />
+            <PropertyRef Name="sizeId" />
+            <PropertyRef Name="colorId" />
+          </Key>
+          <Property Name="productId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="sizeId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="colorId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="sku" Type="nchar" MaxLength="16" />
+          <Property Name="cost" Type="int" />
+          <Property Name="quantity" Type="int" Nullable="false" />
+          <Property Name="image" Type="varchar" MaxLength="2000" />
+          <Property Name="status" Type="bit" />
           <Property Name="dateCreate" Type="smalldatetime" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -192,6 +228,18 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_INVOINCEDETAIL_COLOR">
+          <End Role="Color" Type="Self.Color" Multiplicity="1" />
+          <End Role="InvoinceDetail" Type="Self.InvoinceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Color">
+              <PropertyRef Name="colorId" />
+            </Principal>
+            <Dependent Role="InvoinceDetail">
+              <PropertyRef Name="colorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_INVOINCEDETAIL_INVOINCE">
           <End Role="Invoince" Type="Self.Invoince" Multiplicity="1" />
           <End Role="InvoinceDetail" Type="Self.InvoinceDetail" Multiplicity="*" />
@@ -213,6 +261,18 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             </Principal>
             <Dependent Role="InvoinceDetail">
               <PropertyRef Name="productId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_INVOINCEDETAIL_SIZE">
+          <End Role="Size" Type="Self.Size" Multiplicity="1" />
+          <End Role="InvoinceDetail" Type="Self.InvoinceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Size">
+              <PropertyRef Name="sizeId" />
+            </Principal>
+            <Dependent Role="InvoinceDetail">
+              <PropertyRef Name="sizeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -252,8 +312,45 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_VARIENT_COLOR">
+          <End Role="Color" Type="Self.Color" Multiplicity="1" />
+          <End Role="Variant" Type="Self.Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Color">
+              <PropertyRef Name="colorId" />
+            </Principal>
+            <Dependent Role="Variant">
+              <PropertyRef Name="colorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VARIENT_PRODUCT">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Variant" Type="Self.Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="productId" />
+            </Principal>
+            <Dependent Role="Variant">
+              <PropertyRef Name="productId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VARIENT_SIZE">
+          <End Role="Size" Type="Self.Size" Multiplicity="1" />
+          <End Role="Variant" Type="Self.Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Size">
+              <PropertyRef Name="sizeId" />
+            </Principal>
+            <Dependent Role="Variant">
+              <PropertyRef Name="sizeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="menfsModelStoreContainer">
           <EntitySet Name="Article" EntityType="Self.Article" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Color" EntityType="Self.Color" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Contact" EntityType="Self.Contact" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Invoince" EntityType="Self.Invoince" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InvoinceDetail" EntityType="Self.InvoinceDetail" Schema="dbo" store:Type="Tables" />
@@ -262,7 +359,9 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductCategory" EntityType="Self.ProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Size" EntityType="Self.Size" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Slide" EntityType="Self.Slide" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Variant" EntityType="Self.Variant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="vDoanhThuTheoNgay" EntityType="Self.vDoanhThuTheoNgay" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vDoanhThuTheoNgay].[dateCreate] AS [dateCreate], 
@@ -291,12 +390,20 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             <End Role="Member" EntitySet="Member" />
             <End Role="Invoince" EntitySet="Invoince" />
           </AssociationSet>
+          <AssociationSet Name="FK_INVOINCEDETAIL_COLOR" Association="Self.FK_INVOINCEDETAIL_COLOR">
+            <End Role="Color" EntitySet="Color" />
+            <End Role="InvoinceDetail" EntitySet="InvoinceDetail" />
+          </AssociationSet>
           <AssociationSet Name="FK_INVOINCEDETAIL_INVOINCE" Association="Self.FK_INVOINCEDETAIL_INVOINCE">
             <End Role="Invoince" EntitySet="Invoince" />
             <End Role="InvoinceDetail" EntitySet="InvoinceDetail" />
           </AssociationSet>
           <AssociationSet Name="FK_INVOINCEDETAIL_PRODUCT" Association="Self.FK_INVOINCEDETAIL_PRODUCT">
             <End Role="Product" EntitySet="Product" />
+            <End Role="InvoinceDetail" EntitySet="InvoinceDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOINCEDETAIL_SIZE" Association="Self.FK_INVOINCEDETAIL_SIZE">
+            <End Role="Size" EntitySet="Size" />
             <End Role="InvoinceDetail" EntitySet="InvoinceDetail" />
           </AssociationSet>
           <AssociationSet Name="FK_MEMBER_ROLE" Association="Self.FK_MEMBER_ROLE">
@@ -311,6 +418,18 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             <End Role="Member" EntitySet="Member" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
+          <AssociationSet Name="FK_VARIENT_COLOR" Association="Self.FK_VARIENT_COLOR">
+            <End Role="Color" EntitySet="Color" />
+            <End Role="Variant" EntitySet="Variant" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VARIENT_PRODUCT" Association="Self.FK_VARIENT_PRODUCT">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Variant" EntitySet="Variant" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VARIENT_SIZE" Association="Self.FK_VARIENT_SIZE">
+            <End Role="Size" EntitySet="Size" />
+            <End Role="Variant" EntitySet="Variant" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -320,7 +439,6 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <EntitySet Name="Articles" EntityType="menfsModel.Article" />
           <EntitySet Name="Contacts" EntityType="menfsModel.Contact" />
           <EntitySet Name="Invoinces" EntityType="menfsModel.Invoince" />
-          <EntitySet Name="InvoinceDetails" EntityType="menfsModel.InvoinceDetail" />
           <EntitySet Name="Members" EntityType="menfsModel.Member" />
           <EntitySet Name="Menus" EntityType="menfsModel.Menu" />
           <EntitySet Name="Products" EntityType="menfsModel.Product" />
@@ -336,14 +454,6 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             <End Role="Member" EntitySet="Members" />
             <End Role="Invoince" EntitySet="Invoinces" />
           </AssociationSet>
-          <AssociationSet Name="FK_INVOINCEDETAIL_INVOINCE" Association="menfsModel.FK_INVOINCEDETAIL_INVOINCE">
-            <End Role="Invoince" EntitySet="Invoinces" />
-            <End Role="InvoinceDetail" EntitySet="InvoinceDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_INVOINCEDETAIL_PRODUCT" Association="menfsModel.FK_INVOINCEDETAIL_PRODUCT">
-            <End Role="Product" EntitySet="Products" />
-            <End Role="InvoinceDetail" EntitySet="InvoinceDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_MEMBER_ROLE" Association="menfsModel.FK_MEMBER_ROLE">
             <End Role="Role" EntitySet="Roles" />
             <End Role="Member" EntitySet="Members" />
@@ -357,7 +467,39 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
           <EntitySet Name="Slides" EntityType="menfsModel.Slide" />
-        </EntityContainer>
+          <EntitySet Name="Colors" EntityType="menfsModel.Color" />
+          <EntitySet Name="Sizes" EntityType="menfsModel.Size" />
+          <EntitySet Name="Variants" EntityType="menfsModel.Variant" />
+          <AssociationSet Name="FK_VARIENT_COLOR" Association="menfsModel.FK_VARIENT_COLOR">
+            <End Role="Color" EntitySet="Colors" />
+            <End Role="Variant" EntitySet="Variants" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VARIENT_PRODUCT" Association="menfsModel.FK_VARIENT_PRODUCT">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Variant" EntitySet="Variants" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VARIENT_SIZE" Association="menfsModel.FK_VARIENT_SIZE">
+            <End Role="Size" EntitySet="Sizes" />
+            <End Role="Variant" EntitySet="Variants" />
+          </AssociationSet>
+          <EntitySet Name="InvoinceDetails" EntityType="menfsModel.InvoinceDetail" />
+          <AssociationSet Name="FK_INVOINCEDETAIL_COLOR" Association="menfsModel.FK_INVOINCEDETAIL_COLOR">
+            <End Role="Color" EntitySet="Colors" />
+            <End Role="InvoinceDetail" EntitySet="InvoinceDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOINCEDETAIL_INVOINCE" Association="menfsModel.FK_INVOINCEDETAIL_INVOINCE">
+            <End Role="Invoince" EntitySet="Invoinces" />
+            <End Role="InvoinceDetail" EntitySet="InvoinceDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOINCEDETAIL_PRODUCT" Association="menfsModel.FK_INVOINCEDETAIL_PRODUCT">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="InvoinceDetail" EntitySet="InvoinceDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOINCEDETAIL_SIZE" Association="menfsModel.FK_INVOINCEDETAIL_SIZE">
+            <End Role="Size" EntitySet="Sizes" />
+            <End Role="InvoinceDetail" EntitySet="InvoinceDetails" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="Article">
           <Key>
             <PropertyRef Name="articleId" />
@@ -400,22 +542,8 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="dateCreate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Member" Relationship="menfsModel.FK_INVOINCE_MEMBER" FromRole="Invoince" ToRole="Member" />
-          <NavigationProperty Name="InvoinceDetails" Relationship="menfsModel.FK_INVOINCEDETAIL_INVOINCE" FromRole="Invoince" ToRole="InvoinceDetail" />
           <Property Name="invoinceNo" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="InvoinceDetail">
-          <Key>
-            <PropertyRef Name="invoinceId" />
-            <PropertyRef Name="productId" />
-          </Key>
-          <Property Name="invoinceId" Type="Guid" Nullable="false" />
-          <Property Name="productId" Type="Guid" Nullable="false" />
-          <Property Name="size" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="quanlity" Type="Int32" />
-          <Property Name="price" Type="Int32" />
-          <Property Name="discount" Type="Int32" />
-          <NavigationProperty Name="Invoince" Relationship="menfsModel.FK_INVOINCEDETAIL_INVOINCE" FromRole="InvoinceDetail" ToRole="Invoince" />
-          <NavigationProperty Name="Product" Relationship="menfsModel.FK_INVOINCEDETAIL_PRODUCT" FromRole="InvoinceDetail" ToRole="Product" />
+          <NavigationProperty Name="InvoinceDetails" Relationship="menfsModel.FK_INVOINCEDETAIL_INVOINCE" FromRole="Invoince" ToRole="InvoinceDetail" />
         </EntityType>
         <EntityType Name="Member">
           <Key>
@@ -461,16 +589,17 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <Property Name="discount" Type="Int32" />
           <Property Name="characteristic" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="description" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
-          <Property Name="quanlity" Type="Int32" />
           <Property Name="brand" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="categoryId" Type="Guid" Nullable="false" />
           <Property Name="memberId" Type="Guid" Nullable="false" />
           <Property Name="meta" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="status" Type="Boolean" />
           <Property Name="dateCreate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="InvoinceDetails" Relationship="menfsModel.FK_INVOINCEDETAIL_PRODUCT" FromRole="Product" ToRole="InvoinceDetail" />
           <NavigationProperty Name="Member" Relationship="menfsModel.FK_PRODUCT_MEMBER" FromRole="Product" ToRole="Member" />
           <NavigationProperty Name="ProductCategory" Relationship="menfsModel.FK_PRODUCT_CATEGORY" FromRole="Product" ToRole="ProductCategory" />
+          <Property Name="productCode" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Variants" Relationship="menfsModel.FK_VARIENT_PRODUCT" FromRole="Product" ToRole="Variant" />
+          <NavigationProperty Name="InvoinceDetails" Relationship="menfsModel.FK_INVOINCEDETAIL_PRODUCT" FromRole="Product" ToRole="InvoinceDetail" />
         </EntityType>
         <EntityType Name="ProductCategory">
           <Key>
@@ -542,30 +671,6 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_INVOINCEDETAIL_INVOINCE">
-          <End Type="menfsModel.Invoince" Role="Invoince" Multiplicity="1" />
-          <End Type="menfsModel.InvoinceDetail" Role="InvoinceDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Invoince">
-              <PropertyRef Name="invoinceId" />
-            </Principal>
-            <Dependent Role="InvoinceDetail">
-              <PropertyRef Name="invoinceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_INVOINCEDETAIL_PRODUCT">
-          <End Type="menfsModel.Product" Role="Product" Multiplicity="1" />
-          <End Type="menfsModel.InvoinceDetail" Role="InvoinceDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Product">
-              <PropertyRef Name="productId" />
-            </Principal>
-            <Dependent Role="InvoinceDetail">
-              <PropertyRef Name="productId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_MEMBER_ROLE">
           <End Type="menfsModel.Role" Role="Role" Multiplicity="1" />
           <End Type="menfsModel.Member" Role="Member" Multiplicity="*" />
@@ -615,6 +720,149 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <Property Name="order" Type="Int32" />
           <Property Name="dateCreate" Type="DateTime" Precision="0" />
         </EntityType>
+        <EntityType Name="Color">
+          <Key>
+            <PropertyRef Name="colorId" />
+          </Key>
+          <Property Name="colorId" Type="Guid" Nullable="false" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="hex" Type="String" MaxLength="6" FixedLength="true" Unicode="true" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Variants" Relationship="menfsModel.FK_VARIENT_COLOR" FromRole="Color" ToRole="Variant" />
+          <NavigationProperty Name="InvoinceDetails" Relationship="menfsModel.FK_INVOINCEDETAIL_COLOR" FromRole="Color" ToRole="InvoinceDetail" />
+        </EntityType>
+        <EntityType Name="Size">
+          <Key>
+            <PropertyRef Name="sizeId" />
+          </Key>
+          <Property Name="sizeId" Type="Guid" Nullable="false" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Variants" Relationship="menfsModel.FK_VARIENT_SIZE" FromRole="Size" ToRole="Variant" />
+          <NavigationProperty Name="InvoinceDetails" Relationship="menfsModel.FK_INVOINCEDETAIL_SIZE" FromRole="Size" ToRole="InvoinceDetail" />
+        </EntityType>
+        <EntityType Name="Variant">
+          <Key>
+            <PropertyRef Name="productId" />
+            <PropertyRef Name="sizeId" />
+            <PropertyRef Name="colorId" />
+          </Key>
+          <Property Name="productId" Type="Guid" Nullable="false" />
+          <Property Name="sizeId" Type="Guid" Nullable="false" />
+          <Property Name="colorId" Type="Guid" Nullable="false" />
+          <Property Name="sku" Type="String" MaxLength="16" FixedLength="true" Unicode="true" />
+          <Property Name="cost" Type="Int32" />
+          <Property Name="quantity" Type="Int32" Nullable="false" />
+          <Property Name="image" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="dateCreate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Color" Relationship="menfsModel.FK_VARIENT_COLOR" FromRole="Variant" ToRole="Color" />
+          <NavigationProperty Name="Product" Relationship="menfsModel.FK_VARIENT_PRODUCT" FromRole="Variant" ToRole="Product" />
+          <NavigationProperty Name="Size" Relationship="menfsModel.FK_VARIENT_SIZE" FromRole="Variant" ToRole="Size" />
+        </EntityType>
+        <Association Name="FK_VARIENT_COLOR">
+          <End Type="menfsModel.Color" Role="Color" Multiplicity="1" />
+          <End Type="menfsModel.Variant" Role="Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Color">
+              <PropertyRef Name="colorId" />
+            </Principal>
+            <Dependent Role="Variant">
+              <PropertyRef Name="colorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VARIENT_PRODUCT">
+          <End Type="menfsModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="menfsModel.Variant" Role="Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="productId" />
+            </Principal>
+            <Dependent Role="Variant">
+              <PropertyRef Name="productId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VARIENT_SIZE">
+          <End Type="menfsModel.Size" Role="Size" Multiplicity="1" />
+          <End Type="menfsModel.Variant" Role="Variant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Size">
+              <PropertyRef Name="sizeId" />
+            </Principal>
+            <Dependent Role="Variant">
+              <PropertyRef Name="sizeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="InvoinceDetail">
+          <Key>
+            <PropertyRef Name="invoinceId" />
+            <PropertyRef Name="productId" />
+            <PropertyRef Name="sizeId" />
+            <PropertyRef Name="colorId" />
+          </Key>
+          <Property Name="invoinceId" Type="Guid" Nullable="false" />
+          <Property Name="productId" Type="Guid" Nullable="false" />
+          <Property Name="sizeId" Type="Guid" Nullable="false" />
+          <Property Name="colorId" Type="Guid" Nullable="false" />
+          <Property Name="quanlity" Type="Int32" />
+          <Property Name="price" Type="Int32" />
+          <Property Name="discount" Type="Int32" />
+          <NavigationProperty Name="Color" Relationship="menfsModel.FK_INVOINCEDETAIL_COLOR" FromRole="InvoinceDetail" ToRole="Color" />
+          <NavigationProperty Name="Invoince" Relationship="menfsModel.FK_INVOINCEDETAIL_INVOINCE" FromRole="InvoinceDetail" ToRole="Invoince" />
+          <NavigationProperty Name="Product" Relationship="menfsModel.FK_INVOINCEDETAIL_PRODUCT" FromRole="InvoinceDetail" ToRole="Product" />
+          <NavigationProperty Name="Size" Relationship="menfsModel.FK_INVOINCEDETAIL_SIZE" FromRole="InvoinceDetail" ToRole="Size" />
+        </EntityType>
+        <Association Name="FK_INVOINCEDETAIL_COLOR">
+          <End Type="menfsModel.Color" Role="Color" Multiplicity="1" />
+          <End Type="menfsModel.InvoinceDetail" Role="InvoinceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Color">
+              <PropertyRef Name="colorId" />
+            </Principal>
+            <Dependent Role="InvoinceDetail">
+              <PropertyRef Name="colorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_INVOINCEDETAIL_INVOINCE">
+          <End Type="menfsModel.Invoince" Role="Invoince" Multiplicity="1" />
+          <End Type="menfsModel.InvoinceDetail" Role="InvoinceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Invoince">
+              <PropertyRef Name="invoinceId" />
+            </Principal>
+            <Dependent Role="InvoinceDetail">
+              <PropertyRef Name="invoinceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_INVOINCEDETAIL_PRODUCT">
+          <End Type="menfsModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="menfsModel.InvoinceDetail" Role="InvoinceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="productId" />
+            </Principal>
+            <Dependent Role="InvoinceDetail">
+              <PropertyRef Name="productId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_INVOINCEDETAIL_SIZE">
+          <End Type="menfsModel.Size" Role="Size" Multiplicity="1" />
+          <End Type="menfsModel.InvoinceDetail" Role="InvoinceDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Size">
+              <PropertyRef Name="sizeId" />
+            </Principal>
+            <Dependent Role="InvoinceDetail">
+              <PropertyRef Name="sizeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -666,18 +914,6 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="InvoinceDetails">
-            <EntityTypeMapping TypeName="menfsModel.InvoinceDetail">
-              <MappingFragment StoreEntitySet="InvoinceDetail">
-                <ScalarProperty Name="discount" ColumnName="discount" />
-                <ScalarProperty Name="price" ColumnName="price" />
-                <ScalarProperty Name="quanlity" ColumnName="quanlity" />
-                <ScalarProperty Name="size" ColumnName="size" />
-                <ScalarProperty Name="productId" ColumnName="productId" />
-                <ScalarProperty Name="invoinceId" ColumnName="invoinceId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Members">
             <EntityTypeMapping TypeName="menfsModel.Member">
               <MappingFragment StoreEntitySet="Member">
@@ -712,13 +948,13 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="menfsModel.Product">
               <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="productCode" ColumnName="productCode" />
                 <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="meta" ColumnName="meta" />
                 <ScalarProperty Name="memberId" ColumnName="memberId" />
                 <ScalarProperty Name="categoryId" ColumnName="categoryId" />
                 <ScalarProperty Name="brand" ColumnName="brand" />
-                <ScalarProperty Name="quanlity" ColumnName="quanlity" />
                 <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="characteristic" ColumnName="characteristic" />
                 <ScalarProperty Name="discount" ColumnName="discount" />
@@ -787,6 +1023,53 @@ warning 6002: The table/view 'fashionstore.dbo.vHoaDonTrongNgay' does not have a
                 <ScalarProperty Name="title" ColumnName="title" />
                 <ScalarProperty Name="subtitle" ColumnName="subtitle" />
                 <ScalarProperty Name="slideId" ColumnName="slideId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Colors">
+            <EntityTypeMapping TypeName="menfsModel.Color">
+              <MappingFragment StoreEntitySet="Color">
+                <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
+                <ScalarProperty Name="hex" ColumnName="hex" />
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="colorId" ColumnName="colorId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sizes">
+            <EntityTypeMapping TypeName="menfsModel.Size">
+              <MappingFragment StoreEntitySet="Size">
+                <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="sizeId" ColumnName="sizeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Variants">
+            <EntityTypeMapping TypeName="menfsModel.Variant">
+              <MappingFragment StoreEntitySet="Variant">
+                <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="cost" ColumnName="cost" />
+                <ScalarProperty Name="sku" ColumnName="sku" />
+                <ScalarProperty Name="colorId" ColumnName="colorId" />
+                <ScalarProperty Name="sizeId" ColumnName="sizeId" />
+                <ScalarProperty Name="productId" ColumnName="productId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvoinceDetails">
+            <EntityTypeMapping TypeName="menfsModel.InvoinceDetail">
+              <MappingFragment StoreEntitySet="InvoinceDetail">
+                <ScalarProperty Name="discount" ColumnName="discount" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="quanlity" ColumnName="quanlity" />
+                <ScalarProperty Name="colorId" ColumnName="colorId" />
+                <ScalarProperty Name="sizeId" ColumnName="sizeId" />
+                <ScalarProperty Name="productId" ColumnName="productId" />
+                <ScalarProperty Name="invoinceId" ColumnName="invoinceId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

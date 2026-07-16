@@ -12,18 +12,19 @@ namespace ShopOnline.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class InvoinceDetail
+    public partial class Variant
     {
-        public System.Guid invoinceId { get; set; }
         public System.Guid productId { get; set; }
         public System.Guid sizeId { get; set; }
         public System.Guid colorId { get; set; }
-        public Nullable<int> quanlity { get; set; }
-        public Nullable<int> price { get; set; }
-        public Nullable<int> discount { get; set; }
+        public string sku { get; set; }
+        public Nullable<int> cost { get; set; }
+        public int quantity { get; set; }
+        public string image { get; set; }
+        public Nullable<bool> status { get; set; }
+        public Nullable<System.DateTime> dateCreate { get; set; }
     
         public virtual Color Color { get; set; }
-        public virtual Invoince Invoince { get; set; }
         public virtual Product Product { get; set; }
         public virtual Size Size { get; set; }
     }

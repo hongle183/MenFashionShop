@@ -12,27 +12,21 @@ namespace ShopOnline.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Invoince
+    public partial class Size
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Invoince()
+        public Size()
         {
+            this.Variants = new HashSet<Variant>();
             this.InvoinceDetails = new HashSet<InvoinceDetail>();
         }
     
-        public System.Guid invoinceId { get; set; }
-        public System.Guid memberId { get; set; }
-        public Nullable<int> totalMoney { get; set; }
-        public string paymentMethod { get; set; }
-        public string paymentStatus { get; set; }
-        public string transactionId { get; set; }
-        public string note { get; set; }
-        public string meta { get; set; }
-        public string status { get; set; }
+        public System.Guid sizeId { get; set; }
+        public string code { get; set; }
         public Nullable<System.DateTime> dateCreate { get; set; }
-        public string invoinceNo { get; set; }
     
-        public virtual Member Member { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Variant> Variants { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InvoinceDetail> InvoinceDetails { get; set; }
     }

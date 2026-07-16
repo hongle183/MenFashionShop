@@ -6,10 +6,10 @@ namespace ShopOnline.Models
     public class Cart
     {
         private readonly menfsEntities db = new menfsEntities();
-        public Guid idItem { get; set; }
+        public Guid productId { get; set; }
+        public Guid sizeId { get; set; }
+        public Guid colorId { get; set; }
         public string nameItem { get; set; }
-        public string metaItem { get; set; }
-        public string imageItem { get; set; }
         public int priceItem { get; set; }
         public int unitPrice { get; set; }
         public int quantity { get; set; }
@@ -28,17 +28,17 @@ namespace ShopOnline.Models
                 return discountItem * quantity;
             }
         }
-        public Cart(Guid idProduct)
+        public Cart(Guid productId, Guid sizeId, Guid colorId)
         {
-            this.idItem = idProduct;
-            Product item = db.Products.Single(model => model.productId == idItem);
-            this.nameItem = item.productName;
-            this.metaItem = item.meta;
-            this.imageItem = item.image;
-            this.unitPrice = int.Parse(item.price.ToString());
-            this.priceItem = this.unitPrice - (this.unitPrice * int.Parse(item.discount.ToString()) / 100);
+            this.productId = productId;
+            this.sizeId = sizeId;
+            this.colorId = colorId;
+            Variant item = db.Variants.Single(model => model.productId == productId && model.sizeId == sizeId && model.colorId == colorId);
+            this.nameItem = item.Product.productName;
+            this.unitPrice = int.Parse(item.Product.price.ToString());
+            this.discountItem = this.unitPrice * int.Parse(item.Product.discount.ToString()) / 100;
+            this.priceItem = this.unitPrice - (this.unitPrice * int.Parse(item.Product.discount.ToString()) / 100);
             this.quantity = 1;
-            this.discountItem = this.unitPrice * int.Parse(item.discount.ToString()) / 100;
         }
     }
 }

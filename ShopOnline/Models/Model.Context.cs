@@ -28,7 +28,6 @@ namespace ShopOnline.Models
         public virtual DbSet<Article> Articles { get; set; }
         public virtual DbSet<Contact> Contacts { get; set; }
         public virtual DbSet<Invoince> Invoinces { get; set; }
-        public virtual DbSet<InvoinceDetail> InvoinceDetails { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Menu> Menus { get; set; }
         public virtual DbSet<Product> Products { get; set; }
@@ -37,5 +36,9 @@ namespace ShopOnline.Models
         public virtual DbSet<vDoanhThuTheoNgay> vDoanhThuTheoNgays { get; set; }
         public virtual DbSet<vHoaDonTrongNgay> vHoaDonTrongNgays { get; set; }
         public virtual DbSet<Slide> Slides { get; set; }
+        public virtual DbSet<Color> Colors { get; set; }
+        public virtual DbSet<Size> Sizes { get; set; }
+        public virtual DbSet<Variant> Variants { get; set; }
+        public virtual DbSet<InvoinceDetail> InvoinceDetails { get; set; }
     }
 }
