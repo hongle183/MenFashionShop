@@ -1,0 +1,100 @@
+﻿@model ShopOnline.Models.Color
+
+@using (Html.BeginForm("Edit", "CRUDcolor", FormMethod.Post, new { @id = "form-1" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "form-message" })
+
+    <div class="form-body">
+        <div class="row">
+            <div class="col-md-12">
+                @Html.HiddenFor(model => model.colorId)
+                <div class="form-group">
+                    <label for="code">Code</label>
+                    @Html.EditorFor(model => model.code, new { htmlAttributes = new { @class = "form-control", @id = "code", @placeholder = "GRN" } })
+                    <span class="form-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="hex">Color</label>
+                    <div class="d-flex align-items-center" style="gap: 15px;">
+                        @Html.EditorFor(model => model.hex, new { htmlAttributes = new { @class = "form-control", @id = "hex", @readonly = "readonly" } })
+                        <div style="box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px; ">
+                            <div class="color-picker"></div>
+                        </div>
+                    </div>
+                    <span class="form-message"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    Validator({
+        form: '#form-1',
+        formGroupSelector: '.form-group',
+        errorSelector: '.form-message',
+        rules: [
+            Validator.isRequired('#code'),
+            Validator.isRequired('#hex', "Vui lòng chọn màu."),
+            Validator.isHexColor('#hex'),
+        ],
+        onSubmit: function (data, formElement) {
+            $.ajax({
+                url: formElement.action,
+                type: formElement.method,
+                dataType: "json",
+                data: data,
+                success: function (res) {
+                    if (res.success) {
+                        $("#modal").modal("hide");
+
+                        dataTable.ajax.reload(null, false); // 🔄 reload mà không tải lại trang
+                        // Tham số (null, false) => giữ nguyên trang hiện tại (không quay lại trang 1)
+
+                        showToast({
+                            type: "success",
+                            message: res.msg,
+                            language: "en"
+                        });
+                    } else {
+                        showToast({
+                            type: "danger",
+                            message: res.msg,
+                            language: "en"
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log(err.responseText);
+                },
+            });
+        }
+    });
+
+    function initPickr() {
+        const pickr = Pickr.create({
+            el: '.color-picker',
+            theme: 'monolith',
+            default: $("#hex").val().trim(),
+            components: {
+                // Main components
+                preview: true,
+                hue: true,
+
+                // Input / output Options
+                interaction: {
+                    input: true,
+                    save: true
+                }
+            }
+        });
+
+        pickr.on('save', function (color) {
+            $('#hex').val(color.toHEXA().toString());
+            pickr.hide();
+        });
+    }
+
+    initPickr(); 
+</script>
